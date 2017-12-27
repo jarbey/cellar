@@ -55,7 +55,8 @@ class DisplayCommand extends AbstractCommand {
 
 		$this->display_manager->sendDisplay([
 			new Display($text, new DisplayPosition(0, 0), DisplayColor::red()),
-			new Display($text, new DisplayPosition(0, 36), DisplayColor::green()),
+			new Display($text, new DisplayPosition(36, 36), DisplayColor::green()),
+			new Display($text, new DisplayPosition(72, 72), DisplayColor::blue()),
 		]);
 	}
 

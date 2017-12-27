@@ -38,7 +38,7 @@ def draw_lines(lines):
     disp.clear()
     i = 1
     for line in lines:
-        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'], line['position']['x']), 270, font, fill=(line['color']['r'], line['color']['g'], line['color']['b']))
+        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'] - FONT_SIZE, line['position']['x']), 270, font, fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
     draw_rotated_text(disp.buffer, "IP : %s" % IP, (0, 180), 270, font_small, fill=(255,255,255))
     disp.display()
