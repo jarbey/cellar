@@ -10,10 +10,11 @@ namespace App\Service;
 
 
 use App\Entity\SensorData;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class SensorManager {
+class SensorManager extends AbstractManager {
 
 	/** @var string */
 	private $sensor_script;
@@ -25,7 +26,8 @@ class SensorManager {
 	 * SensorManager constructor.
 	 * @param $sensor_script
 	 */
-	public function __construct($sensor_script, $gpios) {
+	public function __construct(LoggerInterface $logger, $sensor_script, $gpios) {
+		parent::__construct($logger);
 		$this->sensor_script = $sensor_script;
 		$this->gpios = explode(',', $gpios);
 	}
@@ -34,9 +36,11 @@ class SensorManager {
 	 * @return SensorData[]
 	 */
 	public function executeSensor() {
-		$datas = [];
+		$this->getLogger()->debug('ENTER executeSensor for ' . count($this->gpios) . ' GPIOs');
 
+		$datas = [];
 		foreach ($this->gpios as $gpio) {
+			$this->getLogger()->debug('executeSensor GPIO ' . $gpio);
 			$process = new Process($this->sensor_script . ' 22 ' . $gpio);
 			$process->run();
 
@@ -45,9 +49,11 @@ class SensorManager {
 				throw new ProcessFailedException($process);
 			}
 
-			list($temperature, $humidity) = $process->getOutput();
+			$output = trim($process->getOutput());
+			$this->getLogger()->debug('Ouput : ' . $output);
+			list($temperature, $humidity) = explode(';', $output);
 
-			$datas[] = new SensorData(date('U'), $temperature, $humidity);
+			$datas[] = new SensorData(date('U'), $gpio, $temperature, $humidity);
 		}
 
 		return $datas;

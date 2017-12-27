@@ -30,3 +30,4 @@ services:
     App\Service\SensorManager:
         arguments:
             $sensor_script: '%sensor_script%'
+            $gpios: '%gpios%'

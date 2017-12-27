@@ -11,15 +11,12 @@ namespace App\Command;
 
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
-class InformationUpdateCommand extends Command {
+class InformationUpdateCommand extends AbstractCommand {
 
 	/** @var SensorManager */
 	private $sensor_manager;
@@ -29,11 +26,12 @@ class InformationUpdateCommand extends Command {
 
 	/**
 	 * InformationUpdateCommand constructor.
+	 * @param LoggerInterface $logger
 	 * @param SensorManager $sensor_manager
 	 * @param DisplayManager $display_manager
 	 */
-	public function __construct(SensorManager $sensor_manager, DisplayManager $display_manager) {
-		parent::__construct();
+	public function __construct(LoggerInterface $logger, SensorManager $sensor_manager, DisplayManager $display_manager) {
+		parent::__construct($logger);
 		$this->sensor_manager = $sensor_manager;
 		$this->display_manager = $display_manager;
 	}
@@ -42,7 +40,7 @@ class InformationUpdateCommand extends Command {
 	protected function configure()
 	{
 		$this
-			->setName('information:update')
+			->setName('cellar:information:update')
 			->setDescription('Send information to databse')
 			->setHelp('This command get current values from sensor and push-it into the database')
 		;
@@ -50,21 +48,21 @@ class InformationUpdateCommand extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$datas = $this->sensor_manager->executeSensor();
+		while (true) {
+			$datas = $this->sensor_manager->executeSensor();
 
-		/*
-		$helper = $this->getHelper('question');
-		$question = new Question('Information a afficher');
-		$bundle = $helper->ask($input, $output, $question);
+			foreach ($datas as $data) {
+				$this->getLogger()->info('Gpio {gpio} : T {temperature} ; H {humidity}', [
+					'gpio' => $data->getGpio(),
+					'temperature' => $data->getTemperature(),
+					'humidity' => $data->getHumidity(),
+				]);
+				$this->display_manager->sendDisplay(["T : " . $data->getTemperature() . " C", "H : " . $data->getHumidity() . " %"]);
+			}
 
-		$this->display_manager->sendDisplay([$bundle]);
-		*/
-
-		foreach ($datas as $data) {
-			$this->display_manager->sendDisplay(["T : " . $data->getTemperature() . " C", "H : " . $data->getHumidity() . " %"]);
+			sleep(1);
 		}
 
-		$output->writeln('Test');
 	}
 
 

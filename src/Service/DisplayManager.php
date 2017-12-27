@@ -9,15 +9,18 @@
 namespace App\Service;
 
 
-class DisplayManager {
+use Psr\Log\LoggerInterface;
+
+class DisplayManager extends AbstractManager {
 
 	private $_socket;
 
 	/**
 	 * DisplayManager constructor.
+	 * @param LoggerInterface $logger
 	 */
-	public function __construct() {
-
+	public function __construct(LoggerInterface $logger) {
+		parent::__construct($logger);
 	}
 
 	private function init() {
@@ -39,7 +42,11 @@ class DisplayManager {
 			$this->init();
 		}
 
-		socket_write($this->_socket, json_encode((object)['lines' => $lines]));
+		$json = json_encode((object)['lines' => $lines]);
+
+		$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
+
+		socket_write($this->_socket, $json);
 		return socket_read($this->_socket, 1);
 	}
 
