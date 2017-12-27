@@ -9,11 +9,35 @@
 namespace App\Command;
 
 
+use App\Service\DisplayManager;
+use App\Service\SensorManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProcessHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class InformationUpdateCommand extends Command {
+
+	/** @var SensorManager */
+	private $sensor_manager;
+
+	/** @var DisplayManager */
+	private $display_manager;
+
+	/**
+	 * InformationUpdateCommand constructor.
+	 * @param SensorManager $sensor_manager
+	 * @param DisplayManager $display_manager
+	 */
+	public function __construct(SensorManager $sensor_manager, DisplayManager $display_manager) {
+		parent::__construct();
+		$this->sensor_manager = $sensor_manager;
+		$this->display_manager = $display_manager;
+	}
+
 
 	protected function configure()
 	{
@@ -26,6 +50,20 @@ class InformationUpdateCommand extends Command {
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$datas = $this->sensor_manager->executeSensor();
+
+		/*
+		$helper = $this->getHelper('question');
+		$question = new Question('Information a afficher');
+		$bundle = $helper->ask($input, $output, $question);
+
+		$this->display_manager->sendDisplay([$bundle]);
+		*/
+
+		foreach ($datas as $data) {
+			$this->display_manager->sendDisplay(["T : " . $data->getTemperature() . " C", "H : " . $data->getHumidity() . " %"]);
+		}
+
 		$output->writeln('Test');
 	}
 
