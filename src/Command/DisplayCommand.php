@@ -9,6 +9,9 @@
 namespace App\Command;
 
 
+use App\Entity\Display;
+use App\Entity\DisplayColor;
+use App\Entity\DisplayPosition;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
@@ -48,9 +51,12 @@ class DisplayCommand extends AbstractCommand {
 	{
 		$helper = $this->getHelper('question');
 		$question = new Question('Information a afficher');
-		$bundle = $helper->ask($input, $output, $question);
+		$text = $helper->ask($input, $output, $question);
 
-		$this->display_manager->sendDisplay([$bundle, $bundle]);
+		$this->display_manager->sendDisplay([
+			new Display($text, new DisplayPosition(0, 0), DisplayColor::red()),
+			new Display($text, new DisplayPosition(0, 36), DisplayColor::green()),
+		]);
 	}
 
 

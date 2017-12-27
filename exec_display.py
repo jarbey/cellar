@@ -38,7 +38,7 @@ def draw_lines(lines):
     disp.clear()
     i = 1
     for line in lines:
-        draw_rotated_text(disp.buffer, line, (320 - (i * LINE_HEIGHT), 0), 270, font, fill=(255,255,255))
+        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'], line['position']['x']), 270, font, fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
     draw_rotated_text(disp.buffer, "IP : %s" % IP, (0, 180), 270, font_small, fill=(255,255,255))
     disp.display()
@@ -69,23 +69,24 @@ class ClientThread(threading.Thread):
         self.clientsocket = clientsocket
 
     def run(self):
-        r = self.clientsocket.recv(8192)
+        while True:
+            r = self.clientsocket.recv(8192)
 
-        try:
-            print("Recu : %s" % r)
-            data = json.loads(r)
-        except:
-            print "ERROR PARSING JSON"
-            sys.exit(1)
+            try:
+                print("Recu : %s" % r)
+                data = json.loads(r)
+            except:
+                print "ERROR PARSING JSON"
+                sys.exit(1)
 
-        draw_lines(data['lines'])
-        self.clientsocket.send("1")
+            draw_lines(data['display'])
+            self.clientsocket.send("1")
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tcpsock.bind(("",1111))
 
-draw_lines(["IP : %s" % IP])
+draw_lines([])
 
 while True:
     tcpsock.listen(10)

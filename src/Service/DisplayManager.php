@@ -9,6 +9,7 @@
 namespace App\Service;
 
 
+use App\Entity\Display;
 use Psr\Log\LoggerInterface;
 
 class DisplayManager extends AbstractManager {
@@ -36,13 +37,16 @@ class DisplayManager extends AbstractManager {
 		}
 	}
 
-
-	public function sendDisplay($lines) {
+	/**
+	 * @param Display[] $display_list
+	 * @return string
+	 */
+	public function sendDisplay($display_list = array()) {
 		if (!$this->_socket) {
 			$this->init();
 		}
 
-		$json = json_encode((object)['lines' => $lines]);
+		$json = json_encode((object)['display' => $display_list]);
 
 		$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
 
