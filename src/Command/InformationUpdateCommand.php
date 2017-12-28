@@ -16,7 +16,6 @@ use App\Entity\DisplayPosition;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -62,8 +61,10 @@ class InformationUpdateCommand extends AbstractCommand {
 					'humidity' => $data->getHumidity(),
 				]);
 				$this->display_manager->sendDisplay([
-					new Display("T : " . $data->getTemperature() . "°C", new DisplayFont(36), new DisplayPosition(80, 100), DisplayColor::white()),
-					new Display("H : " . $data->getHumidity() . " %", new DisplayFont(48), new DisplayPosition(240, 94), DisplayColor::red())
+					new Display(date('d/M/Y H:i:s'), new DisplayFont(12), new DisplayPosition(250, 0), DisplayColor::white()),
+
+					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(70, 100), DisplayColor::white()),
+					new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(240, 100), DisplayColor::red())
 				]);
 			}
 
