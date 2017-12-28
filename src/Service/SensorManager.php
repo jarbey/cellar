@@ -41,7 +41,7 @@ class SensorManager extends AbstractManager {
 		$datas = [];
 		foreach ($this->gpios as $gpio) {
 			$this->getLogger()->debug('executeSensor GPIO ' . $gpio);
-			$process = new Process($this->sensor_script . ' 22 ' . $gpio);
+			$process = new Process($this->sensor_script . ' 2302 ' . $gpio);
 			$process->run();
 
 			// executes after the command finishes

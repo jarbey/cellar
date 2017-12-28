@@ -15,9 +15,10 @@ import json
 import sys
 
 
-FONT_SIZE = 36
-FONT_SIZE_SMALL = 18
-LINE_HEIGHT = 36
+fonts = {}
+fonts[36] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 36)
+fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
+
 IP = sys.argv[1]
 
 def draw_rotated_text(image, text, position, angle, font, fill=(255,255,255)):
@@ -38,7 +39,10 @@ def draw_lines(lines):
     disp.clear()
     i = 1
     for line in lines:
-        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'] - FONT_SIZE, line['position']['x']), 270, font, fill=(line['color']['r'], line['color']['g'], line['color']['b']))
+        # Check if font size already exists
+        if line['font']['size'] not in fonts.keys:
+            fonts[line['font']['size']] = ImageFont.truetype('/home/pi/cellar/arial.ttf', line['font']['size'])
+        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'] - line['font']['size'], line['position']['x']), 270, fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
     draw_rotated_text(disp.buffer, "IP : %s" % IP, (0, 180), 270, font_small, fill=(255,255,255))
     disp.display()
@@ -57,8 +61,7 @@ disp = TFT.ILI9486(DC, rst=RST, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_h
 # Initialize display.
 disp.begin()
 
-font = ImageFont.truetype('/home/pi/cellar/arial.ttf', FONT_SIZE)
-font_small = ImageFont.truetype('/home/pi/cellar/arial.ttf', FONT_SIZE_SMALL)
+
 
 class ClientThread(threading.Thread):
 

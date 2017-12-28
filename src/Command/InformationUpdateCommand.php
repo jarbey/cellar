@@ -11,6 +11,7 @@ namespace App\Command;
 
 use App\Entity\Display;
 use App\Entity\DisplayColor;
+use App\Entity\DisplayFont;
 use App\Entity\DisplayPosition;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
@@ -61,8 +62,8 @@ class InformationUpdateCommand extends AbstractCommand {
 					'humidity' => $data->getHumidity(),
 				]);
 				$this->display_manager->sendDisplay([
-					new Display("T : " . $data->getTemperature() . " C", new DisplayPosition(80, 100), DisplayColor::white()),
-					new Display("H : " . $data->getHumidity() . " %", new DisplayPosition(240, 100), DisplayColor::white())
+					new Display("T : " . $data->getTemperature() . "°C", new DisplayFont(36), new DisplayPosition(80, 100), DisplayColor::white()),
+					new Display("H : " . $data->getHumidity() . " %", new DisplayFont(48), new DisplayPosition(240, 94), DisplayColor::red())
 				]);
 			}
 

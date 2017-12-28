@@ -14,6 +14,9 @@ class Display implements \JsonSerializable {
 	/** @var string */
 	private $text;
 
+	/** @var DisplayFont */
+	private $font;
+
 	/** @var DisplayPosition */
 	private $position;
 
@@ -23,6 +26,7 @@ class Display implements \JsonSerializable {
 	function jsonSerialize() {
 		return (object)[
 			'text' => $this->getText(),
+			'font' => $this->getFont(),
 			'position' => $this->getPosition(),
 			'color' => $this->getColor()
 		];
@@ -32,11 +36,13 @@ class Display implements \JsonSerializable {
 	/**
 	 * DisplayText constructor.
 	 * @param string $text
+	 * @param DisplayFont $font
 	 * @param DisplayPosition $position
 	 * @param DisplayColor $color
 	 */
-	public function __construct($text, DisplayPosition $position, DisplayColor $color) {
+	public function __construct($text, DisplayFont $font, DisplayPosition $position, DisplayColor $color) {
 		$this->text = $text;
+		$this->font = $font;
 		$this->position = $position;
 		$this->color = $color;
 	}
@@ -88,6 +94,23 @@ class Display implements \JsonSerializable {
 	 */
 	public function setColor($color) {
 		$this->color = $color;
+
+		return $this;
+	}
+
+	/**
+	 * @return DisplayFont
+	 */
+	public function getFont() {
+		return $this->font;
+	}
+
+	/**
+	 * @param DisplayFont $font
+	 * @return Display
+	 */
+	public function setFont($font) {
+		$this->font = $font;
 
 		return $this;
 	}

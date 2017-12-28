@@ -11,6 +11,7 @@ namespace App\Command;
 
 use App\Entity\Display;
 use App\Entity\DisplayColor;
+use App\Entity\DisplayFont;
 use App\Entity\DisplayPosition;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
@@ -54,9 +55,9 @@ class DisplayCommand extends AbstractCommand {
 		$text = $helper->ask($input, $output, $question);
 
 		$this->display_manager->sendDisplay([
-			new Display($text, new DisplayPosition(0, 0), DisplayColor::red()),
-			new Display($text, new DisplayPosition(36, 36), DisplayColor::green()),
-			new Display($text, new DisplayPosition(72, 72), DisplayColor::blue()),
+			new Display($text, new DisplayFont(36), new DisplayPosition(0, 0), DisplayColor::red()),
+			new Display($text, new DisplayFont(36), new DisplayPosition(36, 36), DisplayColor::green()),
+			new Display($text, new DisplayFont(36), new DisplayPosition(72, 72), DisplayColor::blue()),
 		]);
 	}
 
