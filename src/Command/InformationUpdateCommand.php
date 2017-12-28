@@ -61,10 +61,11 @@ class InformationUpdateCommand extends AbstractCommand {
 					'humidity' => $data->getHumidity(),
 				]);
 				$this->display_manager->sendDisplay([
-					new Display(date('d/M/Y H:i:s'), new DisplayFont(12), new DisplayPosition(250, 0), DisplayColor::white()),
+					new Display(date('d/m/Y H:i:s'), new DisplayFont(18), new DisplayPosition(280, 0), DisplayColor::white()),
 
-					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(70, 100), DisplayColor::white()),
-					new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(240, 100), DisplayColor::red())
+					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100), DisplayColor::white()),
+					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100), DisplayColor::white()),
+					new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(260, 100), DisplayColor::red())
 				]);
 			}
 
