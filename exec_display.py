@@ -22,7 +22,7 @@ fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
 
 SCREEN_WIDTH = 320;
 SCREEN_HEIGHT = 480;
-SCREEN_ROTATION = 90;
+DEFAULT_SCREEN_ROTATION = 90;
 
 IP = sys.argv[1]
 
@@ -133,7 +133,7 @@ tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tcpsock.bind(("",1111))
 
-draw_lines([])
+draw_lines([], DEFAULT_SCREEN_ROTATION)
 
 while True:
     tcpsock.listen(10)
