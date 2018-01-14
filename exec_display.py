@@ -20,7 +20,9 @@ fonts = {}
 fonts[36] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 36)
 fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
 
-SCREEN_ROTATION = 90
+SCREEN_WIDTH = 320;
+SCREEN_HEIGHT = 480;
+SCREEN_ROTATION = 90;
 
 IP = sys.argv[1]
 
