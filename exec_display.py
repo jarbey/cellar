@@ -22,7 +22,7 @@ fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
 
 SCREEN_WIDTH = 320;
 SCREEN_HEIGHT = 480;
-SCREEN_ROTATION = 270;
+SCREEN_ROTATION = 90;
 
 IP = sys.argv[1]
 
@@ -79,16 +79,16 @@ def draw_rotated_text(image, text, x, y, angle, font, fill=(255,255,255)):
     # Paste the text into the image, using it as a mask for transparency.
     image.paste(rotated, position, rotated)
 
-def draw_lines(lines):
+def draw_lines(lines, screen_rotation):
     disp.clear()
     i = 1
     for line in lines:
         # Check if font size already exists
         if line['font']['size'] not in fonts.keys():
             fonts[line['font']['size']] = ImageFont.truetype('/home/pi/cellar/arial.ttf', line['font']['size'])
-        draw_rotated_text(disp.buffer, line['text'], line['position']['x'], line['position']['y'], SCREEN_ROTATION + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
+        draw_rotated_text(disp.buffer, line['text'], line['position']['x'], line['position']['y'], screen_rotation + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
-    draw_rotated_text(disp.buffer, "IP : %s" % IP, 180, 300, SCREEN_ROTATION, fonts[18], fill=(255,255,255))
+    draw_rotated_text(disp.buffer, "IP : %s" % IP, 180, 300, screen_rotation, fonts[18], fill=(255,255,255))
 
     disp.display()
 
@@ -109,7 +109,6 @@ disp.begin()
 
 
 class ClientThread(threading.Thread):
-
     def __init__(self, ip, port, clientsocket):
         threading.Thread.__init__(self)
         self.ip = ip
@@ -127,7 +126,7 @@ class ClientThread(threading.Thread):
                 print "ERROR PARSING JSON"
                 sys.exit(1)
 
-            draw_lines(data['display'])
+            draw_lines(data['display'], data['screen_rotation'])
             self.clientsocket.send("1")
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -142,5 +141,3 @@ while True:
     (clientsocket, (ip, port)) = tcpsock.accept()
     newthread = ClientThread(ip, port, clientsocket)
     newthread.start()
-
-

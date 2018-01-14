@@ -27,6 +27,7 @@ class SensorManager extends AbstractManager {
 
 	/**
 	 * SensorManager constructor.
+	 * @param LoggerInterface $logger
 	 * @param $sensor_script
 	 */
 	public function __construct(LoggerInterface $logger, $sensor_script, $sensor_types, $gpios) {

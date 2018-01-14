@@ -16,12 +16,16 @@ class DisplayManager extends AbstractManager {
 
 	private $_socket;
 
+	private $screen_orientation;
+
 	/**
 	 * DisplayManager constructor.
 	 * @param LoggerInterface $logger
+	 * @param integer $screen_orientation
 	 */
-	public function __construct(LoggerInterface $logger) {
+	public function __construct(LoggerInterface $logger, $screen_orientation) {
 		parent::__construct($logger);
+		$this->screen_orientation = $screen_orientation;
 	}
 
 	private function init() {
@@ -46,7 +50,7 @@ class DisplayManager extends AbstractManager {
 			$this->init();
 		}
 
-		$json = json_encode((object)['display' => $display_list]);
+		$json = json_encode((object)['display' => $display_list, 'screen_rotation' => $this->screen_orientation]);
 
 		$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
 

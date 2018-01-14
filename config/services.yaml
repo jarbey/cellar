@@ -4,6 +4,7 @@ parameters:
     sensor_script: '%env(SENSOR_SCRIPT)%'
     sensor_types: '%env(SENSOR_TYPES)%'
     gpios: '%env(GPIOS)%'
+    screen_orientation: '%env(SCREEN_ORIENTATION)%'
 
 services:
     # default configuration for services in *this* file
@@ -33,3 +34,7 @@ services:
             $sensor_script: '%sensor_script%'
             $sensor_types: '%sensor_types%'
             $gpios: '%gpios%'
+
+    App\Service\DisplayManager:
+        arguments:
+            $screen_orientation: '%screen_orientation%'
