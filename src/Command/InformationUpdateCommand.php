@@ -13,6 +13,7 @@ use App\Entity\Display;
 use App\Entity\DisplayColor;
 use App\Entity\DisplayFont;
 use App\Entity\DisplayPosition;
+use App\Entity\SensorData;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
@@ -54,22 +55,26 @@ class InformationUpdateCommand extends AbstractCommand {
 		while (true) {
 			$datas = $this->sensor_manager->executeSensor();
 
+			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(18), new DisplayPosition(280, 0), DisplayColor::white())];
+
+			$y_offset = 0;
+			/** @var SensorData $data */
 			foreach ($datas as $data) {
 				$this->getLogger()->info('Gpio {gpio} : T {temperature} ; H {humidity}', [
 					'gpio' => $data->getGpio(),
 					'temperature' => $data->getTemperature(),
 					'humidity' => $data->getHumidity(),
 				]);
-				$this->display_manager->sendDisplay([
-					new Display(date('d/m/Y H:i:s'), new DisplayFont(18), new DisplayPosition(280, 0), DisplayColor::white()),
 
-					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100), DisplayColor::white()),
-					new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100), DisplayColor::white()),
-					new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(260, 100), DisplayColor::red())
-				]);
+				$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100 + $y_offset), DisplayColor::white());
+				$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(260, 100 + $y_offset), DisplayColor::red());
+
+				$y_offset += 60;
 			}
 
-			sleep(1);
+			$this->display_manager->sendDisplay($display_data);
+
+			sleep(5);
 		}
 
 	}

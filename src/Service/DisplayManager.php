@@ -31,7 +31,7 @@ class DisplayManager extends AbstractManager {
 			throw new \Exception("Error: socket_create() failed: reason: " . socket_strerror(socket_last_error()));
 		}
 		// Connect to the server running on the 'bot
-		$result = socket_connect($this->_socket, '172.20.10.7', '1111');
+		$result = socket_connect($this->_socket, '127.0.0.1', '1111');
 		if ($result === false) {
 			throw new \Exception("Error: socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($this->_socket)));
 		}
