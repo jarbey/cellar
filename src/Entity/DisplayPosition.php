@@ -17,10 +17,14 @@ class DisplayPosition implements \JsonSerializable {
 	/** @var integer */
 	private $y;
 
+	/** @var integer */
+	private $angle;
+
 	function jsonSerialize() {
 		return (object)[
 			'x' => $this->getX(),
 			'y' => $this->getY(),
+			'angle' => $this->getAngle(),
 		];
 	}
 
@@ -29,9 +33,10 @@ class DisplayPosition implements \JsonSerializable {
 	 * @param int $x
 	 * @param int $y
 	 */
-	public function __construct($x, $y) {
+	public function __construct($x, $y, $angle = 90) {
 		$this->x = $x;
 		$this->y = $y;
+		$this->angle = $angle;
 	}
 
 	/**
@@ -64,6 +69,23 @@ class DisplayPosition implements \JsonSerializable {
 	 */
 	public function setY($y) {
 		$this->y = $y;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getAngle() {
+		return $this->angle;
+	}
+
+	/**
+	 * @param int $angle
+	 * @return DisplayPosition
+	 */
+	public function setAngle($angle) {
+		$this->angle = $angle;
 
 		return $this;
 	}

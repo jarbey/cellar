@@ -7,4 +7,4 @@ do
 done
 /home/pi/cellar/exec_display.py "$ip" &
 
-/usr/bin/php /home/pi/cellar/bin/console bin/console cellar:information:update
+/usr/bin/php /home/pi/cellar/bin/console cellar:information:update
