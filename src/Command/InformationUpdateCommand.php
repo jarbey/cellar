@@ -61,7 +61,7 @@ class InformationUpdateCommand extends AbstractCommand {
 		while (true) {
 			$datas = $this->sensor_manager->executeSensor();
 
-			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(0, 280), DisplayColor::white())];
+			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(0, 300), DisplayColor::white())];
 
 			$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
 			/** @var SensorData $data */

@@ -86,7 +86,7 @@ def draw_lines(lines):
         # Check if font size already exists
         if line['font']['size'] not in fonts.keys():
             fonts[line['font']['size']] = ImageFont.truetype('/home/pi/cellar/arial.ttf', line['font']['size'])
-        draw_rotated_text(disp.buffer, line['text'], line['position']['y'], line['position']['x'], SCREEN_ROTATION + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
+        draw_rotated_text(disp.buffer, line['text'], line['position']['x'], line['position']['y'], SCREEN_ROTATION + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
     draw_rotated_text(disp.buffer, "IP : %s" % IP, 180, 300, SCREEN_ROTATION, fonts[18], fill=(255,255,255))
 
