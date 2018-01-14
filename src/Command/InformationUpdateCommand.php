@@ -63,7 +63,7 @@ class InformationUpdateCommand extends AbstractCommand {
 
 			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(280, 0), DisplayColor::white())];
 
-			$y_offset = (count($datas) - 1) * self::OFFSET_DATA;
+			$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
 			/** @var SensorData $data */
 			foreach ($datas as $data) {
 				$this->getLogger()->info('Gpio {gpio} : T {temperature} ; H {humidity}', [
