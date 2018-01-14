@@ -22,7 +22,7 @@ fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
 
 SCREEN_WIDTH = 320;
 SCREEN_HEIGHT = 480;
-SCREEN_ROTATION = 90;
+SCREEN_ROTATION = 270;
 
 IP = sys.argv[1]
 
@@ -37,7 +37,7 @@ def rotate_screen(cx, cy, angle, width, height):
         nx = SCREEN_WIDTH - cx - width
         ny = SCREEN_HEIGHT - cy - height
     elif angle == 270:
-        ny = cy
+        ny = cx
         nx = SCREEN_WIDTH - cy - height
 
     return (nx, ny)
