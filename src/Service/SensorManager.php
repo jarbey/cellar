@@ -32,8 +32,8 @@ class SensorManager extends AbstractManager {
 	public function __construct(LoggerInterface $logger, $sensor_script, $sensor_types, $gpios) {
 		parent::__construct($logger);
 		$this->sensor_script = $sensor_script;
-		$this->sensor_types = explode(',', $sensor_types);
-		$this->gpios = explode(',', $gpios);
+		$this->sensor_types = explode(';', $sensor_types);
+		$this->gpios = explode(';', $gpios);
 	}
 
 	/**
@@ -44,9 +44,12 @@ class SensorManager extends AbstractManager {
 
 		$datas = [];
 		foreach ($this->gpios as $sensor_index => $gpio) {
-			$this->getLogger()->debug('executeSensor GPIO ' . $gpio);
 			// TODO : Control index ==> Create structure to store sensor type + gpio ...
-			$process = new Process($this->sensor_script . ' ' . $this->sensor_types[$sensor_index] . ' ' . $gpio);
+			$command = $this->sensor_script . ' ' . $this->sensor_types[$sensor_index] . ' ' . $gpio;
+
+			$this->getLogger()->debug('executeSensor GPIO ' . $gpio . ' : ' . $command);
+
+			$process = new Process($command);
 			$process->run();
 
 			// executes after the command finishes
