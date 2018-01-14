@@ -126,7 +126,7 @@ class ClientThread(threading.Thread):
                 print "ERROR PARSING JSON"
                 sys.exit(1)
 
-            draw_lines(data['display'], data['screen_rotation'])
+            draw_lines(data['display'], int(data['screen_rotation']))
             self.clientsocket.send("1")
 
 tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
