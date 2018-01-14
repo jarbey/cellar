@@ -22,6 +22,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class InformationUpdateCommand extends AbstractCommand {
 
+	const FONT_SIZE_DATE = 18;
+	const FONT_SIZE_DATA = 56;
+	const FONT_MARGIN_DATA = 4;
+	const OFFSET_DATA = (self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA) / 2;
+
+
 	/** @var SensorManager */
 	private $sensor_manager;
 
@@ -55,9 +61,9 @@ class InformationUpdateCommand extends AbstractCommand {
 		while (true) {
 			$datas = $this->sensor_manager->executeSensor();
 
-			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(18), new DisplayPosition(280, 0), DisplayColor::white())];
+			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(280, 0), DisplayColor::white())];
 
-			$y_offset = 0;
+			$y_offset = (count($datas) - 1) * self::OFFSET_DATA;
 			/** @var SensorData $data */
 			foreach ($datas as $data) {
 				$this->getLogger()->info('Gpio {gpio} : T {temperature} ; H {humidity}', [
@@ -66,10 +72,10 @@ class InformationUpdateCommand extends AbstractCommand {
 					'humidity' => $data->getHumidity(),
 				]);
 
-				$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(56), new DisplayPosition(30, 100 + $y_offset), DisplayColor::white());
-				$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(56), new DisplayPosition(260, 100 + $y_offset), DisplayColor::red());
+				$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), DisplayColor::white());
+				$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(260, 130 + $y_offset), DisplayColor::red());
 
-				$y_offset += 60;
+				$y_offset += self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA;
 			}
 
 			$this->display_manager->sendDisplay($display_data);
