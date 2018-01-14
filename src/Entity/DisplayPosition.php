@@ -33,7 +33,7 @@ class DisplayPosition implements \JsonSerializable {
 	 * @param int $x
 	 * @param int $y
 	 */
-	public function __construct($x, $y, $angle = 90) {
+	public function __construct($x, $y, $angle = 0) {
 		$this->x = $x;
 		$this->y = $y;
 		$this->angle = $angle;

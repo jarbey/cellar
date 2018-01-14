@@ -13,25 +13,67 @@ import socket
 import threading
 import json
 import sys
+import math
 
 
 fonts = {}
 fonts[36] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 36)
 fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
 
+SCREEN_ROTATION = 90
+
 IP = sys.argv[1]
 
-def draw_rotated_text(image, text, position, angle, font, fill=(255,255,255)):
+def rotate_screen(cx, cy, angle, width, height):
+    nx = cx
+    ny = cy
+
+    if angle == 90:
+        nx = cy
+        ny = SCREEN_HEIGHT - cx - width
+    elif angle == 180:
+        nx = SCREEN_WIDTH - cx - width
+        ny = SCREEN_HEIGHT - cy - height
+    elif angle == 270:
+        ny = cy
+        nx = SCREEN_WIDTH - cy - height
+
+    return (nx, ny)
+
+def rotate_point(cx, cy, angle, width, height):
+    s = math.sin(math.radians(angle));
+    c = math.cos(math.radians(angle));
+
+    # Translate point back to origin:
+    cx -= ((SCREEN_WIDTH - width) / 2);
+    cy -= ((SCREEN_HEIGHT - height) / 2);
+
+    # Rotate point
+    cx = cx * c - cy * s;
+    cy = cx * s + cy * c;
+
+    # Translate point back:
+    cx += ((SCREEN_WIDTH - width) / 2);
+    cy += ((SCREEN_HEIGHT - height) / 2);
+
+    return (int(cx), int(cy));
+
+def draw_rotated_text(image, text, x, y, angle, font, fill=(255,255,255)):
     # Get rendered font width and height.
     draw = ImageDraw.Draw(image)
     width, height = draw.textsize(text, font=font)
+
     # Create a new image with transparent background to store the text.
     textimage = Image.new('RGBA', (width, height), (0,0,0,0))
+
     # Render the text.
     textdraw = ImageDraw.Draw(textimage)
     textdraw.text((0,0), text, font=font, fill=fill)
+
     # Rotate the text image.
     rotated = textimage.rotate(angle, expand=1)
+    position = rotate_screen(x, y, angle, width, height)
+
     # Paste the text into the image, using it as a mask for transparency.
     image.paste(rotated, position, rotated)
 
@@ -42,9 +84,10 @@ def draw_lines(lines):
         # Check if font size already exists
         if line['font']['size'] not in fonts.keys():
             fonts[line['font']['size']] = ImageFont.truetype('/home/pi/cellar/arial.ttf', line['font']['size'])
-        draw_rotated_text(disp.buffer, line['text'], (320 - line['position']['y'] - line['font']['size'], line['position']['x']), 90 + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
+        draw_rotated_text(disp.buffer, line['text'], line['position']['y'], line['position']['x'], SCREEN_ROTATION + line['position']['angle'], fonts[line['font']['size']], fill=(line['color']['r'], line['color']['g'], line['color']['b']))
         i=i+1
-    draw_rotated_text(disp.buffer, "IP : %s" % IP, (300, 180), 90, fonts[18], fill=(255,255,255))
+    draw_rotated_text(disp.buffer, "IP : %s" % IP, 180, 300, SCREEN_ROTATION, fonts[18], fill=(255,255,255))
+
     disp.display()
 
 # Raspberry Pi configuration.
