@@ -42,26 +42,33 @@ class SensorManager extends AbstractManager {
 	public function executeSensor() {
 		$this->getLogger()->debug('ENTER executeSensor for ' . count($this->gpios) . ' GPIOs');
 
-		$datas = [];
+		// CONSTRUCT COMMAND ARGS
+		$cmd_args = [];
 		foreach ($this->gpios as $sensor_index => $gpio) {
 			// TODO : Control index ==> Create structure to store sensor type + gpio ...
-			$command = $this->sensor_script . ' ' . $this->sensor_types[$sensor_index] . ' ' . $gpio;
+			$cmd_args[] = $this->sensor_types[$sensor_index] . ',' . $gpio;
+		}
 
-			$this->getLogger()->debug('executeSensor GPIO ' . $gpio . ' : ' . $command);
+		// EXECUTE COMMAND
+		$command = $this->sensor_script . ' ' . join(' ', $cmd_args);
+		$this->getLogger()->debug('executeSensor GPIO ' . $command);
 
-			$process = new Process($command);
-			$process->run();
+		$process = new Process($command);
+		$process->run();
 
-			// executes after the command finishes
-			if (!$process->isSuccessful()) {
-				throw new ProcessFailedException($process);
-			}
+		// executes after the command finishes
+		if (!$process->isSuccessful()) {
+			throw new ProcessFailedException($process);
+		}
 
-			$output = trim($process->getOutput());
-			$this->getLogger()->debug('Ouput : ' . $output);
-			list($temperature, $humidity) = explode(';', $output);
+		$results = trim($process->getOutput());
+		$this->getLogger()->debug('Results : ' . $results);
 
-			$datas[] = new SensorData(date('U'), $gpio, $temperature, $humidity);
+		// PARSE RESULTS
+		$datas = [];
+		foreach (explode("\n", $results) as $result) {
+			list($temperature, $humidity) = explode(';', $result);
+			$datas[] = new SensorData(date('U'), $this->gpios[count($datas)], $temperature, $humidity);
 		}
 
 		return $datas;

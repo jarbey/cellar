@@ -1,26 +1,25 @@
 #!/usr/bin/python
 
 import sys
-
+import time
 import Adafruit_DHT
+from Adafruit_DHT import Raspberry_Pi_2
+
+def read(sensor, pin, retries=15):
+    for i in range(retries):
+        humidity, temperature = Raspberry_Pi_2.read(sensor, pin)
+        if humidity is not None and temperature is not None:
+            return (humidity, temperature)
+        time.sleep(0.05)
+    return (None, None)
 
 
 # Parse command line parameters.
 sensor_args = { '11': Adafruit_DHT.DHT11,
                 '22': Adafruit_DHT.DHT22,
                 '2302': Adafruit_DHT.AM2302 }
-if len(sys.argv) == 3 and sys.argv[1] in sensor_args:
-    sensor = sensor_args[sys.argv[1]]
-    pin = sys.argv[2]
-else:
-    print('usage: sudo ./dht.py [11|22|2302] GPIOpin#')
-    print('example: sudo ./dht.py 2302 4 - Read from an AM2302 connected to GPIO #4')
-    sys.exit(1)
 
-humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
-
-if humidity is not None and temperature is not None:
+for x in range(1, len(sys.argv)):
+    sensor, pin = sys.argv[x].split(',')
+    humidity, temperature = read(int(sensor), int(pin))
     print('{0:0.1f};{1:0.1f}'.format(temperature, humidity))
-else:
-    print('Failed to get reading. Try again!')
-    sys.exit(1)
