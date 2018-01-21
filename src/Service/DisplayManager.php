@@ -84,7 +84,7 @@ class DisplayManager extends AbstractManager {
 			]);
 
 			$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), $data->getSensor()->getTemperatureLimit()->getColor($data->getTemperature()));
-			$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(260, 130 + $y_offset), $data->getSensor()->getHumidityLimit()->getColor($data->getTemperature()));
+			$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(260, 130 + $y_offset), $data->getSensor()->getHumidityLimit()->getColor($data->getHumidity()));
 
 			$y_offset += self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA;
 		}
