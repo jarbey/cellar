@@ -2,8 +2,6 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     sensor_script: '%env(SENSOR_SCRIPT)%'
-    sensor_types: '%env(SENSOR_TYPES)%'
-    gpios: '%env(GPIOS)%'
     screen_orientation: '%env(SCREEN_ORIENTATION)%'
 
 services:
@@ -32,8 +30,6 @@ services:
     App\Service\SensorManager:
         arguments:
             $sensor_script: '%sensor_script%'
-            $sensor_types: '%sensor_types%'
-            $gpios: '%gpios%'
 
     App\Service\DisplayManager:
         arguments:

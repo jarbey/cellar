@@ -14,8 +14,8 @@ class SensorData {
 	/** @var integer */
 	private $date;
 
-	/** @var integer */
-	private $gpio;
+	/** @var Sensor */
+	private $sensor;
 
 	/** @var float */
 	private $temperature;
@@ -26,13 +26,13 @@ class SensorData {
 	/**
 	 * SensorData constructor.
 	 * @param int $date
-	 * @param int $gpio
+	 * @param Sensor $sensor
 	 * @param float $temperature
 	 * @param float $humidity
 	 */
-	public function __construct($date, $gpio, $temperature, $humidity) {
+	public function __construct($date, Sensor $sensor, $temperature, $humidity) {
 		$this->date = $date;
-		$this->gpio = $gpio;
+		$this->sensor = $sensor;
 		$this->temperature = $temperature;
 		$this->humidity = $humidity;
 	}
@@ -55,21 +55,22 @@ class SensorData {
 	}
 
 	/**
-	 * @return int
+	 * @return Sensor
 	 */
-	public function getGpio() {
-		return $this->gpio;
+	public function getSensor() {
+		return $this->sensor;
 	}
 
 	/**
-	 * @param int $gpio
+	 * @param Sensor $sensor
 	 * @return SensorData
 	 */
-	public function setGpio($gpio) {
-		$this->gpio = $gpio;
+	public function setSensor($sensor) {
+		$this->sensor = $sensor;
 
 		return $this;
 	}
+
 
 	/**
 	 * @return float

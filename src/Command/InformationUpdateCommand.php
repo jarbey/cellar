@@ -8,12 +8,6 @@
 
 namespace App\Command;
 
-
-use App\Entity\Display;
-use App\Entity\DisplayColor;
-use App\Entity\DisplayFont;
-use App\Entity\DisplayPosition;
-use App\Entity\SensorData;
 use App\Service\DisplayManager;
 use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
@@ -21,12 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InformationUpdateCommand extends AbstractCommand {
-
-	const FONT_SIZE_DATE = 18;
-	const FONT_SIZE_DATA = 56;
-	const FONT_MARGIN_DATA = 4;
-	const OFFSET_DATA = (self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA) / 2;
-
 
 	/** @var SensorManager */
 	private $sensor_manager;
@@ -59,26 +47,16 @@ class InformationUpdateCommand extends AbstractCommand {
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		while (true) {
-			$datas = $this->sensor_manager->executeSensor();
+			try {
+				$this->getLogger()->info('Execute info update');
 
-			$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(300, 0), DisplayColor::white())];
+				$data = $this->sensor_manager->executeSensor();
+				$this->getLogger()->info('Data : {data}', [ 'data' => $data ]);
 
-			$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
-			/** @var SensorData $data */
-			foreach ($datas as $data) {
-				$this->getLogger()->info('Gpio {gpio} : T {temperature} ; H {humidity}', [
-					'gpio' => $data->getGpio(),
-					'temperature' => $data->getTemperature(),
-					'humidity' => $data->getHumidity(),
-				]);
-
-				$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), DisplayColor::white());
-				$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(260, 130 + $y_offset), DisplayColor::red());
-
-				$y_offset += self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA;
+				$this->display_manager->displaySensorData($data);
+			} catch (\Exception $e) {
+				$this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
 			}
-
-			$this->display_manager->sendDisplay($display_data);
 
 			sleep(5);
 		}

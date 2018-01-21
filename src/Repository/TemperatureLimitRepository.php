@@ -2,15 +2,14 @@
 
 namespace App\Repository;
 
-use App\Entity\Sensor;
+use App\Entity\SensorLimit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class SensorRepository extends ServiceEntityRepository
+class TemperatureLimitRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Sensor::class);
+        parent::__construct($registry, SensorLimit::class);
     }
-
 }

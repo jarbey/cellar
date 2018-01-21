@@ -10,9 +10,17 @@ namespace App\Service;
 
 
 use App\Entity\Display;
+use App\Entity\DisplayColor;
+use App\Entity\DisplayFont;
+use App\Entity\DisplayPosition;
+use App\Entity\SensorData;
 use Psr\Log\LoggerInterface;
 
 class DisplayManager extends AbstractManager {
+	const FONT_SIZE_DATE = 18;
+	const FONT_SIZE_DATA = 56;
+	const FONT_MARGIN_DATA = 4;
+	const OFFSET_DATA = (self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA) / 2;
 
 	private $_socket;
 
@@ -56,6 +64,30 @@ class DisplayManager extends AbstractManager {
 
 		socket_write($this->_socket, $json);
 		return socket_read($this->_socket, 1);
+	}
+
+	/**
+	 * @param SensorData[] $datas
+	 */
+	public function displaySensorData($datas = []) {
+		$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(300, 0), DisplayColor::white())];
+
+		$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
+		/** @var SensorData $data */
+		foreach ($datas as $data) {
+			$this->getLogger()->debug('Gpio {gpio} : T {temperature} ; H {humidity}', [
+				'gpio' => $data->getSensor()->getGpio(),
+				'temperature' => $data->getTemperature(),
+				'humidity' => $data->getHumidity(),
+			]);
+
+			$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), $data->getSensor()->getTemperatureLimit()->getColor($data->getTemperature()));
+			$display_data[] = new Display($data->getHumidity() . " %", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(260, 130 + $y_offset), $data->getSensor()->getHumidityLimit()->getColor($data->getTemperature()));
+
+			$y_offset += self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA;
+		}
+
+		$this->sendDisplay($display_data);
 	}
 
 	function __destruct() {
