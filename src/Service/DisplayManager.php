@@ -75,10 +75,12 @@ class DisplayManager extends AbstractManager {
 		$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
 		/** @var SensorData $data */
 		foreach ($datas as $data) {
-			$this->getLogger()->debug('Gpio {gpio} : T {temperature} ; H {humidity}', [
+			$this->getLogger()->debug('Gpio {gpio} : T {temperature} ; H {humidity} ; Tlim {t_limit} ; Hlim {h_limit}', [
 				'gpio' => $data->getSensor()->getGpio(),
 				'temperature' => $data->getTemperature(),
 				'humidity' => $data->getHumidity(),
+				't_limit' => $data->getSensor()->getTemperatureLimit(),
+				'h_limit' => $data->getSensor()->getHumidityLimit(),
 			]);
 
 			$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), $data->getSensor()->getTemperatureLimit()->getColor($data->getTemperature()));

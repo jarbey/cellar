@@ -20,6 +20,12 @@ abstract class AbstractSensorLimit implements SensorLimitInterface {
 			return DisplayColor::red();
 		}
 
-		return DisplayColor::white();
+		return DisplayColor::green();
 	}
+
+	function __toString() {
+		return $this->getLowValue() . ' < X < ' . $this->getHighValue();
+	}
+
+
 }
