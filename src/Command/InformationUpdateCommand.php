@@ -9,6 +9,7 @@
 namespace App\Command;
 
 use App\Service\DisplayManager;
+use App\Service\SensorDataManager;
 use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,6 +20,9 @@ class InformationUpdateCommand extends AbstractCommand {
 	/** @var SensorManager */
 	private $sensor_manager;
 
+	/** @var SensorDataManager */
+	private $sensor_data_manager;
+
 	/** @var DisplayManager */
 	private $display_manager;
 
@@ -26,11 +30,13 @@ class InformationUpdateCommand extends AbstractCommand {
 	 * InformationUpdateCommand constructor.
 	 * @param LoggerInterface $logger
 	 * @param SensorManager $sensor_manager
+	 * @param SensorDataManager $sensor_data_manager
 	 * @param DisplayManager $display_manager
 	 */
-	public function __construct(LoggerInterface $logger, SensorManager $sensor_manager, DisplayManager $display_manager) {
+	public function __construct(LoggerInterface $logger, SensorManager $sensor_manager, SensorDataManager $sensor_data_manager, DisplayManager $display_manager) {
 		parent::__construct($logger);
 		$this->sensor_manager = $sensor_manager;
+		$this->sensor_data_manager = $sensor_data_manager;
 		$this->display_manager = $display_manager;
 	}
 
@@ -50,9 +56,13 @@ class InformationUpdateCommand extends AbstractCommand {
 			try {
 				$this->getLogger()->info('Execute info update');
 
+				// Get data
 				$data = $this->sensor_manager->executeSensor();
-				$this->getLogger()->info('Data : {data}', [ 'data' => $data ]);
 
+				// Buffer data
+				$this->sensor_data_manager->bufferData($data);
+
+				// Display data
 				$this->display_manager->displaySensorData($data);
 			} catch (\Exception $e) {
 				$this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
