@@ -69,9 +69,10 @@ class SensorManager extends AbstractManager {
 		// PARSE RESULTS
 		$sensor_data = [];
 		$i = 0;
+		$date = time();
 		foreach (explode("\n", $results) as $result) {
 			list($temperature, $humidity) = explode(';', $result);
-			$sensor_data[] = new SensorData(date('U'), $sensors[$i], $temperature, $humidity);
+			$sensor_data[] = new SensorData($date, $sensors[$i], $temperature, $humidity);
 
 			$i++;
 		}

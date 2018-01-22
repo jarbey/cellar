@@ -37,12 +37,16 @@ class DisplayManager extends AbstractManager {
 	}
 
 	private function init() {
+		// Create a TCP/IP socket
 		$this->_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		// Create a TCP/IP socket.
 		if ($this->_socket === false) {
 			throw new \Exception("Error: socket_create() failed: reason: " . socket_strerror(socket_last_error()));
 		}
-		// Connect to the server running on the 'bot
+
+		// Set timeout
+		socket_set_option($this->_socket, SOL_SOCKET, SO_RCVTIMEO, [ "sec" => 2, "usec" => 0 ]);
+
+		// Connect to the server
 		$result = socket_connect($this->_socket, '127.0.0.1', '1111');
 		if ($result === false) {
 			throw new \Exception("Error: socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($this->_socket)));
@@ -53,15 +57,16 @@ class DisplayManager extends AbstractManager {
 	 * @param Display[] $display_list
 	 * @return string
 	 */
-	public function sendDisplay($display_list = array()) {
+	public function sendDisplay($display_list = []) {
 		if (!$this->_socket) {
 			$this->init();
 		}
 
+		// Create object
 		$json = json_encode((object)['display' => $display_list, 'screen_rotation' => $this->screen_orientation]);
-
 		$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
 
+		// Send to disaply server and read result
 		socket_write($this->_socket, $json);
 		return socket_read($this->_socket, 1);
 	}
@@ -70,8 +75,10 @@ class DisplayManager extends AbstractManager {
 	 * @param SensorData[] $datas
 	 */
 	public function displaySensorData($datas = []) {
+		// Date top-right
 		$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(300, 0), DisplayColor::white())];
 
+		// Data for each SensorData
 		$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
 		/** @var SensorData $data */
 		foreach ($datas as $data) {
@@ -89,6 +96,7 @@ class DisplayManager extends AbstractManager {
 			$y_offset += self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA;
 		}
 
+		// Send to display
 		$this->sendDisplay($display_data);
 	}
 

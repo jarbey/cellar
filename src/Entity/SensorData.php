@@ -8,19 +8,42 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\SensorDataRepository")
+ */
 class SensorData {
 
-	/** @var integer */
+	/**
+	 * @var integer
+	 *
+	 * @ORM\Id
+	 * @ORM\Column(type="integer")
+	 */
 	private $date;
 
-	/** @var Sensor */
+	/**
+	 * @var Sensor
+	 *
+	 * @ORM\Id
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Sensor", inversedBy="sensor_data")
+	 * @ORM\JoinColumn(name="sensor", referencedColumnName="id")
+	 */
 	private $sensor;
 
-	/** @var float */
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
 	private $temperature;
 
-	/** @var float */
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
 	private $humidity;
 
 	/**
