@@ -9,4 +9,5 @@ done
 
 sleep 2
 
-/usr/bin/php /home/pi/cellar/bin/console cellar:information:update -vv 2>&1 >> /home/pi/cellar/info_update.log
+/usr/bin/php /home/pi/cellar/bin/console cellar:information:update -vv 2>&1 >> /home/pi/cellar/information_update.log
+/usr/bin/php /home/pi/cellar/bin/console cellar:data:send -vv 2>&1 >> /home/pi/cellar/data_send.log
