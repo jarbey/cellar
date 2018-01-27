@@ -18,6 +18,9 @@ use Symfony\Component\Process\Process;
 
 class SensorManager extends AbstractManager {
 
+	/** @var Process */
+	private $process;
+
 	/** @var string */
 	private $sensor_script;
 
@@ -34,6 +37,8 @@ class SensorManager extends AbstractManager {
 		parent::__construct($logger);
 		$this->sensor_script = $sensor_script;
 		$this->sensor_repository = $sensor_repository;
+
+		$this->process = new Process('');
 	}
 
 	/**
@@ -55,15 +60,15 @@ class SensorManager extends AbstractManager {
 		$command = $this->sensor_script . ' ' . join(' ', $cmd_args);
 		$this->getLogger()->debug('executeSensor GPIO ' . $command);
 
-		$process = new Process($command);
-		$process->run();
+		$this->process->setCommandLine($command);
+		$this->process->run();
 
 		// executes after the command finishes
-		if (!$process->isSuccessful()) {
-			throw new ProcessFailedException($process);
+		if (!$this->process->isSuccessful()) {
+			throw new ProcessFailedException($this->process);
 		}
 
-		$results = trim($process->getOutput());
+		$results = trim($this->process->getOutput());
 		$this->getLogger()->debug('Results : ' . $results);
 
 		// PARSE RESULTS
@@ -76,6 +81,9 @@ class SensorManager extends AbstractManager {
 
 			$i++;
 		}
+
+		$this->process->clearOutput();
+		$this->process->clearErrorOutput();
 
 		return $sensor_data;
 	}

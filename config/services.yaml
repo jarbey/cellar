@@ -3,6 +3,8 @@
 parameters:
     sensor_script: '%env(SENSOR_SCRIPT)%'
     screen_orientation: '%env(SCREEN_ORIENTATION)%'
+    server_url: '%env(SERVER_URL)%'
+    server_db: '%env(SERVER_DB)%'
 
 services:
     # default configuration for services in *this* file
@@ -34,3 +36,8 @@ services:
     App\Service\DisplayManager:
         arguments:
             $screen_orientation: '%screen_orientation%'
+
+    App\Service\SensorDataManager:
+        arguments:
+            $client: 'eight_points_guzzle.client.api_crm'
+            $server_db: '%server_db%'

@@ -22,14 +22,25 @@ class SensorDataManager extends AbstractManager {
 	/** @var SensorDataRepository */
 	private $sensor_data_repository;
 
+	/** @var \GuzzleHttp\Client $client */
+	private $client;
+
+	/** @var string */
+	private $server_db;
+
 	/**
 	 * SensorManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SensorDataRepository $sensor_data_repository
 	 */
-	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository) {
+	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, $client, $server_db) {
 		parent::__construct($logger);
 		$this->sensor_data_repository = $sensor_data_repository;
+
+		/** @var \GuzzleHttp\Client $client */
+		$this->client = $client;
+
+		$this->server_db = $server_db;
 	}
 
 	/**
@@ -63,10 +74,8 @@ class SensorDataManager extends AbstractManager {
 				$payload_parts[] = join(',', [$sensor_data->getSensor()->getId(), $sensor_data->getTemperature(), $sensor_data->getHumidity()]);
 			}
 
-			$payload = join(';', $payload_parts);
-
 			// Server call
-			if ($this->updateDataServer($payload)) {
+			if ($this->updateDataServer($payload_parts)) {
 				$this->sensor_data_repository->remove($data_list);
 				$nb_sent += count($data_list);
 			}
@@ -75,10 +84,14 @@ class SensorDataManager extends AbstractManager {
 		return $nb_sent;
 	}
 
-	private function updateDataServer($payload) {
-		$this->getLogger()->debug("Update server data : {payload}", [ 'payload' => $payload ]);
+	private function updateDataServer($payload_parts) {
+		$this->getLogger()->debug("Update server data : {payload}", [ 'payload' => $payload_parts ]);
 
-		return true;
+		$response = $this->client->get('', [
+			'query' => ['data' => join(';', $payload_parts)]
+		]);
+
+		return (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
 	}
 
 }

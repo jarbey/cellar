@@ -1,0 +1,13 @@
+eight_points_guzzle:
+    clients:
+        cellar_server:
+            # Write here the host where to do requests
+            base_url: '%env(SERVER_URL)%'
+
+            options:
+                timeout: 30
+
+                headers:
+                    User-Agent: 'cellar device'
+
+            plugin: ~
