@@ -39,5 +39,5 @@ services:
 
     App\Service\SensorDataManager:
         arguments:
-            $client: 'eight_points_guzzle.client.api_crm'
+            $client: '@eight_points_guzzle.client.cellar_server'
             $server_db: '%server_db%'

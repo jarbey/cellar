@@ -47,7 +47,7 @@ class SendDataCommand extends AbstractCommand {
 				$nb = $this->sensor_data_manager->serverSend();
 				$this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
 			} catch (\Exception $e) {
-				$this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getTraceAsString() ]);
+				$this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getMessage() ]);
 			}
 
 			sleep(5);

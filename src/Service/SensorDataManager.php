@@ -75,7 +75,7 @@ class SensorDataManager extends AbstractManager {
 			}
 
 			// Server call
-			if ($this->updateDataServer($payload_parts)) {
+			if ($this->updateDataServer($date, $payload_parts)) {
 				$this->sensor_data_repository->remove($data_list);
 				$nb_sent += count($data_list);
 			}
@@ -84,11 +84,11 @@ class SensorDataManager extends AbstractManager {
 		return $nb_sent;
 	}
 
-	private function updateDataServer($payload_parts) {
-		$this->getLogger()->debug("Update server data : {payload}", [ 'payload' => $payload_parts ]);
+	private function updateDataServer($date, $data = []) {
+		$this->getLogger()->debug("Update server data : {date} => {data}", [ 'date' => $date, 'data' => $data ]);
 
 		$response = $this->client->get('', [
-			'query' => ['data' => join(';', $payload_parts)]
+			'query' => ['date' => $date, 'data' => join(';', $data)]
 		]);
 
 		return (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
