@@ -88,7 +88,7 @@ class SensorDataManager extends AbstractManager {
 		$this->getLogger()->debug("Update server data : {date} => {data}", [ 'date' => $date, 'data' => $data ]);
 
 		$response = $this->client->get('', [
-			'query' => ['date' => $date, 'data' => join(';', $data)]
+			'query' => ['db' => $this->server_db, 'date' => $date, 'data' => join(';', $data)]
 		]);
 
 		return (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
