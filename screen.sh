@@ -13,5 +13,5 @@ while true
 do
     /usr/bin/php /home/pi/cellar/bin/console cellar:information:update -vv 2>&1 >> /home/pi/cellar/information_update.log &
     /usr/bin/php /home/pi/cellar/bin/console cellar:data:send -vv 2>&1 >> /home/pi/cellar/data_send.log &
-sleep 5
+sleep 15
 done
