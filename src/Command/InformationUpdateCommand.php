@@ -52,25 +52,20 @@ class InformationUpdateCommand extends AbstractCommand {
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		while (true) {
-			try {
-				$this->getLogger()->info('Execute info update');
+		try {
+			$this->getLogger()->info('Execute info update');
 
-				// Get data
-				$data = $this->sensor_manager->executeSensor();
+			// Get data
+			$data = $this->sensor_manager->executeSensor();
 
-				// Buffer data
-				$this->sensor_data_manager->bufferData($data);
+			// Buffer data
+			$this->sensor_data_manager->bufferData($data);
 
-				// Display data
-				$this->display_manager->displaySensorData($data);
-			} catch (\Exception $e) {
-				$this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
-			}
-
-			sleep(5);
+			// Display data
+			$this->display_manager->displaySensorData($data);
+		} catch (\Exception $e) {
+			$this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
 		}
-
 	}
 
 
