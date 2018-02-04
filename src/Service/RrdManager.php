@@ -127,13 +127,14 @@ class RrdManager extends AbstractManager {
 		// executes after the command finishes
 		if (!$this->process->isSuccessful()) {
 
+			$this->getLogger()->debug('Error {error}', ['error' => $this->process->getErrorOutput()]);
 			// Check and analyse error
 			if (!(
 				(strpos($this->process->getErrorOutput(), 'illegal attempt to update using time') !== false) &&
 				(strpos($this->process->getErrorOutput(), 'when last update time') !== false) &&
 				(strpos($this->process->getErrorOutput(), 'minimum one second step') !== false)
 			)) {
-				throw new ProcessFailedException($this->process);
+				//throw new ProcessFailedException($this->process);
 			}
 
 		}

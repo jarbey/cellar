@@ -13,11 +13,13 @@ use App\Repository\SensorRepository;
 use App\Service\RrdManager;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
+use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ApiController
@@ -69,12 +71,11 @@ class ApiController extends FOSRestController {
 	 * @param Db $db
 	 * @param int $date
 	 * @param SensorDataGroup $sensor_data_group
-	 * @return ApiResult
+	 * @return Response
 	 * @throws SensorNotFoundException
 	 */
 	public function updateSensorDataAction(Db $db, $date, SensorDataGroup $sensor_data_group) {
 		// TODO : Add Validator for values RequestParam
-		print_r($sensor_data_group);
 
 		// Check sensor values
 		foreach ($sensor_data_group->getSensorData() as $sensor_data) {
@@ -88,10 +89,12 @@ class ApiController extends FOSRestController {
 
 		try {
 			$this->rrd_manager->updateArchive($db, $sensor_data_group, $date);
-			return new ApiResult(ApiResult::OK, '');
+
+			$view = $this->view(new ApiResult(ApiResult::OK, ''), 200);
 		} catch (Exception $e) {
-			return new ApiResult(ApiResult::KO, $e->getMessage());
+			$view = $this->view(new ApiResult(ApiResult::KO, $e->getMessage()), 500);
 		}
+		return $this->handleView($view);
 	}
 
 }

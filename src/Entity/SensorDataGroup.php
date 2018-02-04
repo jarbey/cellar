@@ -34,7 +34,7 @@ class SensorDataGroup {
 	/**
 	 * @return \DateTime
 	 */
-	public function getDate(): \DateTime {
+	public function getDate() {
 		return $this->date;
 	}
 
@@ -42,7 +42,7 @@ class SensorDataGroup {
 	 * @param \DateTime $date
 	 * @return SensorDataGroup
 	 */
-	public function setDate(\DateTime $date): SensorDataGroup {
+	public function setDate(\DateTime $date) {
 		$this->date = $date;
 
 		return $this;
@@ -51,7 +51,7 @@ class SensorDataGroup {
 	/**
 	 * @return SensorData[]
 	 */
-	public function getSensorData(): array {
+	public function getSensorData() {
 		return $this->sensor_data;
 	}
 
@@ -59,7 +59,7 @@ class SensorDataGroup {
 	 * @param SensorData[] $sensor_data
 	 * @return SensorDataGroup
 	 */
-	public function setSensorData($sensor_data): SensorDataGroup {
+	public function setSensorData($sensor_data) {
 		$this->sensor_data = $sensor_data;
 
 		return $this;
