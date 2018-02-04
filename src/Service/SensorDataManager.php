@@ -76,6 +76,7 @@ class SensorDataManager extends AbstractManager {
 		}
 
 		// Send by date
+		ksort($grouped_sensor_data);
 		foreach ($grouped_sensor_data as $date => $sensor_data_list) {
 			$sensor_data_group = new SensorDataGroup(new \DateTime('@' . $date), $sensor_data_list);
 
