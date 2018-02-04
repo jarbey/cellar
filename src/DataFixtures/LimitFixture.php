@@ -17,16 +17,16 @@ class LimitFixture extends Fixture implements OrderedFixtureInterface
 {
 	public function load(ObjectManager $manager)
 	{
-		$cellar_temperature_limit = new TemperatureLimit('cellar', 10, 14);
+		$cellar_temperature_limit = new TemperatureLimit('cellar', 8, 16, 10, 14);
 		$manager->persist($cellar_temperature_limit);
 
-		$cellar_humidity_limit = new HumidityLimit('cellar', 50, 80);
+		$cellar_humidity_limit = new HumidityLimit('cellar', 60, 85, 65, 78);
 		$manager->persist($cellar_humidity_limit);
 
-		$outside_temperature_limit = new TemperatureLimit('outside', 12, 18);
+		$outside_temperature_limit = new TemperatureLimit('outside', 8, 20, 12, 18);
 		$manager->persist($outside_temperature_limit);
 
-		$outside_humidity_limit = new HumidityLimit('outside', 35, 70);
+		$outside_humidity_limit = new HumidityLimit('outside', 45, 80, 55, 70);
 		$manager->persist($outside_humidity_limit);
 
 		$manager->flush();

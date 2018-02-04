@@ -16,15 +16,17 @@ abstract class AbstractSensorLimit implements SensorLimitInterface {
 	 * @return DisplayColor
 	 */
 	public function getColor($value) {
-		if (($value > $this->getHighValue()) || ($value < $this->getLowValue())) {
+		if (($value > $this->getHighAlertValue()) || ($value < $this->getLowAlertValue())) {
 			return DisplayColor::red();
+		} else if (($value > $this->getHighWarningValue()) || ($value < $this->getLowWarningValue())) {
+			return DisplayColor::orange();
 		}
-
+		// Default
 		return DisplayColor::green();
 	}
 
 	function __toString() {
-		return $this->getLowValue() . ' < X < ' . $this->getHighValue();
+		return $this->getLowAlertValue() . ' < ' . $this->getLowWarningValue() . ' < X < ' . $this->getHighWarningValue() . ' < ' . $this->getHighAlertValue();
 	}
 
 

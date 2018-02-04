@@ -2,12 +2,14 @@ eight_points_guzzle:
     clients:
         cellar_server:
             # Write here the host where to do requests
-            base_url: '%env(SERVER_URL)%'
+            base_url: '%env(SERVER_API_ENDPOINT)%'
 
             options:
                 timeout: 30
 
                 headers:
                     User-Agent: 'cellar device'
+                    Content-Type: 'application/json'
+                    Accept: 'application/json'
 
             plugin: ~

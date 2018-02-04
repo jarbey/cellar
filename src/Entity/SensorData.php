@@ -9,6 +9,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SensorDataRepository")
@@ -20,6 +21,7 @@ class SensorData {
 	 *
 	 * @ORM\Id
 	 * @ORM\Column(type="integer")
+	 * @Groups({"updateSensorData"})
 	 */
 	private $date;
 
@@ -29,6 +31,7 @@ class SensorData {
 	 * @ORM\Id
 	 * @ORM\ManyToOne(targetEntity="App\Entity\Sensor", inversedBy="sensor_data")
 	 * @ORM\JoinColumn(name="sensor", referencedColumnName="id")
+	 * @Groups({"updateSensorData"})
 	 */
 	private $sensor;
 
@@ -36,6 +39,7 @@ class SensorData {
 	 * @var float
 	 *
 	 * @ORM\Column(type="float")
+	 * @Groups({"updateSensorData"})
 	 */
 	private $temperature;
 
@@ -43,6 +47,7 @@ class SensorData {
 	 * @var float
 	 *
 	 * @ORM\Column(type="float")
+	 * @Groups({"updateSensorData"})
 	 */
 	private $humidity;
 

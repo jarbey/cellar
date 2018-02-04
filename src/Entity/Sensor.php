@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SensorRepository")
@@ -15,6 +16,7 @@ class Sensor
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+	 * @Groups({"updateSensorData"})
      */
     private $id;
 
@@ -31,6 +33,14 @@ class Sensor
 	 * @ORM\Column(type="smallint")
 	 */
 	private $gpio;
+
+	/**
+	 * @var Db
+	 *
+	 * @ORM\ManyToOne(targetEntity="App\Entity\Db", inversedBy="db")
+	 * @ORM\JoinColumn(name="db_id", referencedColumnName="id")
+	 */
+	private $db;
 
 	/**
 	 * @var TemperatureLimit
@@ -129,6 +139,23 @@ class Sensor
 	 */
 	public function setHumidityLimit($humidity_limit) {
 		$this->humidity_limit = $humidity_limit;
+
+		return $this;
+	}
+
+	/**
+	 * @return Db
+	 */
+	public function getDb() {
+		return $this->db;
+	}
+
+	/**
+	 * @param Db $db
+	 * @return Sensor
+	 */
+	public function setDb($db) {
+		$this->db = $db;
 
 		return $this;
 	}

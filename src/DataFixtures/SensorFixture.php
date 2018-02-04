@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DataFixtures;
+use App\Entity\Db;
 use App\Entity\HumidityLimit;
 use App\Entity\Sensor;
 use App\Entity\TemperatureLimit;
@@ -33,31 +34,30 @@ class SensorFixture extends Fixture implements OrderedFixtureInterface
 		$sensor1->setGpio(5);
 		$sensor1->setTemperatureLimit($cellar_temperature_limit);
 		$sensor1->setHumidityLimit($cellar_humidity_limit);
-		$manager->persist($sensor1);
 
 		$sensor2 = new Sensor();
 		$sensor2->setType('11');
 		$sensor2->setGpio(6);
 		$sensor2->setTemperatureLimit($outside_temperature_limit);
 		$sensor2->setHumidityLimit($outside_humidity_limit);
-		$manager->persist($sensor2);
 
 		$sensor3 = new Sensor();
 		$sensor3->setType('22');
 		$sensor3->setGpio(12);
 		$sensor3->setTemperatureLimit($cellar_temperature_limit);
 		$sensor3->setHumidityLimit($cellar_humidity_limit);
-		$manager->persist($sensor3);
 
 		$sensor4 = new Sensor();
 		$sensor4->setType('22');
 		$sensor4->setGpio(13);
 		$sensor4->setTemperatureLimit($cellar_temperature_limit);
 		$sensor4->setHumidityLimit($cellar_humidity_limit);
-		$manager->persist($sensor4);
 
+		$db = new Db('home', [$sensor1, $sensor2, $sensor3, $sensor4]);
+		$manager->persist($db);
 		$manager->flush();
 
+		$this->addReference('db', $db);
 		$this->addReference('sensor1', $sensor1);
 		$this->addReference('sensor2', $sensor2);
 		$this->addReference('sensor3', $sensor3);

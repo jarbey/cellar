@@ -31,14 +31,28 @@ class HumidityLimit extends AbstractSensorLimit
 	 *
 	 * @ORM\Column(type="float")
 	 */
-	private $low_value;
+	private $low_alert_value;
 
 	/**
 	 * @var float
 	 *
 	 * @ORM\Column(type="float")
 	 */
-	private $high_value;
+	private $high_alert_value;
+
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
+	private $low_warning_value;
+
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
+	private $high_warning_value;
 
 
 	/**
@@ -51,13 +65,17 @@ class HumidityLimit extends AbstractSensorLimit
 	/**
 	 * HumidityLimit constructor.
 	 * @param string $name
-	 * @param float $low_value
-	 * @param float $high_value
+	 * @param float $low_alert_value
+	 * @param float $high_alert_value
+	 * @param float $low_warning_value
+	 * @param float $high_warning_value
 	 */
-	public function __construct($name, $low_value, $high_value) {
+	public function __construct($name, $low_alert_value, $high_alert_value, $low_warning_value, $high_warning_value) {
 		$this->name = $name;
-		$this->low_value = $low_value;
-		$this->high_value = $high_value;
+		$this->low_alert_value = $low_alert_value;
+		$this->high_alert_value = $high_alert_value;
+		$this->low_warning_value = $low_warning_value;
+		$this->high_warning_value = $high_warning_value;
 	}
 
 	/**
@@ -97,16 +115,16 @@ class HumidityLimit extends AbstractSensorLimit
 	/**
 	 * @return float
 	 */
-	public function getLowValue() {
-		return $this->low_value;
+	public function getLowAlertValue(): float {
+		return $this->low_alert_value;
 	}
 
 	/**
-	 * @param float $low_value
+	 * @param float $low_alert_value
 	 * @return HumidityLimit
 	 */
-	public function setLowValue($low_value) {
-		$this->low_value = $low_value;
+	public function setLowAlertValue(float $low_alert_value): HumidityLimit {
+		$this->low_alert_value = $low_alert_value;
 
 		return $this;
 	}
@@ -114,16 +132,50 @@ class HumidityLimit extends AbstractSensorLimit
 	/**
 	 * @return float
 	 */
-	public function getHighValue() {
-		return $this->high_value;
+	public function getHighAlertValue(): float {
+		return $this->high_alert_value;
 	}
 
 	/**
-	 * @param float $high_value
+	 * @param float $high_alert_value
 	 * @return HumidityLimit
 	 */
-	public function setHighValue($high_value) {
-		$this->high_value = $high_value;
+	public function setHighAlertValue(float $high_alert_value): HumidityLimit {
+		$this->high_alert_value = $high_alert_value;
+
+		return $this;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getLowWarningValue(): float {
+		return $this->low_warning_value;
+	}
+
+	/**
+	 * @param float $low_warning_value
+	 * @return HumidityLimit
+	 */
+	public function setLowWarningValue(float $low_warning_value): HumidityLimit {
+		$this->low_warning_value = $low_warning_value;
+
+		return $this;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getHighWarningValue(): float {
+		return $this->high_warning_value;
+	}
+
+	/**
+	 * @param float $high_warning_value
+	 * @return HumidityLimit
+	 */
+	public function setHighWarningValue(float $high_warning_value): HumidityLimit {
+		$this->high_warning_value = $high_warning_value;
 
 		return $this;
 	}

@@ -30,14 +30,28 @@ class TemperatureLimit extends AbstractSensorLimit
 	 *
 	 * @ORM\Column(type="float")
 	 */
-	private $low_value;
+	private $low_alert_value;
 
 	/**
 	 * @var float
 	 *
 	 * @ORM\Column(type="float")
 	 */
-	private $high_value;
+	private $high_alert_value;
+
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
+	private $low_warning_value;
+
+	/**
+	 * @var float
+	 *
+	 * @ORM\Column(type="float")
+	 */
+	private $high_warning_value;
 
 
 	/**
@@ -50,13 +64,17 @@ class TemperatureLimit extends AbstractSensorLimit
 	/**
 	 * TemperatureLimit constructor.
 	 * @param string $name
-	 * @param float $low_value
-	 * @param float $high_value
+	 * @param float $low_alert_value
+	 * @param float $high_alert_value
+	 * @param float $low_warning_value
+	 * @param float $high_warning_value
 	 */
-	public function __construct($name, $low_value, $high_value) {
+	public function __construct($name, $low_alert_value, $high_alert_value, $low_warning_value, $high_warning_value) {
 		$this->name = $name;
-		$this->low_value = $low_value;
-		$this->high_value = $high_value;
+		$this->low_alert_value = $low_alert_value;
+		$this->high_alert_value = $high_alert_value;
+		$this->low_warning_value = $low_warning_value;
+		$this->high_warning_value = $high_warning_value;
 	}
 
 	/**
@@ -96,16 +114,16 @@ class TemperatureLimit extends AbstractSensorLimit
 	/**
 	 * @return float
 	 */
-	public function getLowValue() {
-		return $this->low_value;
+	public function getLowAlertValue() {
+		return $this->low_alert_value;
 	}
 
 	/**
-	 * @param float $low_value
+	 * @param float $low_alert_value
 	 * @return TemperatureLimit
 	 */
-	public function setLowValue($low_value) {
-		$this->low_value = $low_value;
+	public function setLowAlertValue($low_alert_value) {
+		$this->low_alert_value = $low_alert_value;
 
 		return $this;
 	}
@@ -113,16 +131,50 @@ class TemperatureLimit extends AbstractSensorLimit
 	/**
 	 * @return float
 	 */
-	public function getHighValue() {
-		return $this->high_value;
+	public function getHighAlertValue() {
+		return $this->high_alert_value;
 	}
 
 	/**
-	 * @param float $high_value
+	 * @param float $high_alert_value
 	 * @return TemperatureLimit
 	 */
-	public function setHighValue($high_value) {
-		$this->high_value = $high_value;
+	public function setHighAlertValue($high_alert_value) {
+		$this->high_alert_value = $high_alert_value;
+
+		return $this;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getLowWarningValue() {
+		return $this->low_warning_value;
+	}
+
+	/**
+	 * @param float $low_warning_value
+	 * @return TemperatureLimit
+	 */
+	public function setLowWarningValue($low_warning_value) {
+		$this->low_warning_value = $low_warning_value;
+
+		return $this;
+	}
+
+	/**
+	 * @return float
+	 */
+	public function getHighWarningValue() {
+		return $this->high_warning_value;
+	}
+
+	/**
+	 * @param float $high_warning_value
+	 * @return TemperatureLimit
+	 */
+	public function setHighWarningValue($high_warning_value) {
+		$this->high_warning_value = $high_warning_value;
 
 		return $this;
 	}

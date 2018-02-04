@@ -9,10 +9,10 @@
 namespace App\Service;
 
 
-use App\Entity\Display;
-use App\Entity\DisplayColor;
-use App\Entity\DisplayFont;
-use App\Entity\DisplayPosition;
+use App\Entity\Display\Display;
+use App\Entity\Display\DisplayColor;
+use App\Entity\Display\DisplayFont;
+use App\Entity\Display\DisplayPosition;
 use App\Entity\SensorData;
 use Psr\Log\LoggerInterface;
 

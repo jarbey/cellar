@@ -8,39 +8,44 @@
 
 namespace App\Service;
 
-
-use App\Entity\Sensor;
 use App\Entity\SensorData;
+use App\Entity\SensorDataGroup;
+use App\Exception\ServerException;
 use App\Repository\SensorDataRepository;
-use App\Repository\SensorRepository;
+use GuzzleHttp\Exception\RequestException;
+use JMS\Serializer\SerializationContext;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use JMS\Serializer\SerializerInterface;
+use GuzzleHttp\Psr7;
 
 class SensorDataManager extends AbstractManager {
 
 	/** @var SensorDataRepository */
 	private $sensor_data_repository;
 
+	/** @var SerializerInterface */
+	private $serializer;
+
 	/** @var \GuzzleHttp\Client $client */
 	private $client;
 
 	/** @var string */
-	private $server_db;
+	private $db_id;
 
 	/**
 	 * SensorManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SensorDataRepository $sensor_data_repository
 	 */
-	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, $client, $server_db) {
+	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, SerializerInterface $serializer, $client, $db_id) {
 		parent::__construct($logger);
 		$this->sensor_data_repository = $sensor_data_repository;
+		$this->serializer = $serializer;
 
 		/** @var \GuzzleHttp\Client $client */
 		$this->client = $client;
 
-		$this->server_db = $server_db;
+		$this->db_id = $db_id;
 	}
 
 	/**
@@ -50,6 +55,10 @@ class SensorDataManager extends AbstractManager {
 		$this->sensor_data_repository->save($data);
 	}
 
+	/**
+	 * @return int
+	 * @throws ServerException
+	 */
 	public function serverSend() {
 		$nb_sent = 0;
 
@@ -67,31 +76,56 @@ class SensorDataManager extends AbstractManager {
 		}
 
 		// Send by date
-		foreach ($grouped_sensor_data as $date => $data_list) {
-			$payload_parts = [];
-			/** @var SensorData $sensor_data */
-			foreach ($data_list as $sensor_data) {
-				$payload_parts[] = join(',', [$sensor_data->getSensor()->getId(), $sensor_data->getTemperature(), $sensor_data->getHumidity()]);
-			}
+		foreach ($grouped_sensor_data as $date => $sensor_data_list) {
+			$sensor_data_group = new SensorDataGroup(new \DateTime('@' . $date), $sensor_data_list);
 
 			// Server call
-			if ($this->updateDataServer($date, $payload_parts)) {
-				$this->sensor_data_repository->remove($data_list);
-				$nb_sent += count($data_list);
+			if (!$this->updateDataServer($sensor_data_group)) {
+				throw new ServerException();
 			}
+
+			// Delete sent data
+			//$this->sensor_data_repository->remove($sensor_data_list);
+			$nb_sent += count($sensor_data_list);
 		}
 
 		return $nb_sent;
 	}
 
-	private function updateDataServer($date, $data = []) {
-		$this->getLogger()->debug("Update server data : {date} => {data}", [ 'date' => $date, 'data' => $data ]);
+	/**
+	 * @param SensorDataGroup $sensor_data_group
+	 * @return bool
+	 */
+	private function updateDataServer(SensorDataGroup $sensor_data_group) {
+		$this->getLogger()->debug("Update server data for date {date}", [ 'date' => $sensor_data_group->getDate() ]);
 
-		$response = $this->client->get('', [
-			'query' => ['db' => $this->server_db, 'date' => $date, 'data' => join(';', $data)]
-		]);
+		$payload = $this->serializer->serialize($sensor_data_group, 'json', SerializationContext::create()->setGroups(['updateSensorData']));
 
-		return (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
+		$this->getLogger()->debug("With data {data}", [ 'data' => $payload ]);
+
+		try {
+			// PUT /{db_id}/{timestamp}
+			$response = $this->client->put($this->db_id . '/' . $sensor_data_group->getDate()->getTimestamp(), [
+				'body' => $payload
+			]);
+
+			$status = (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
+			echo '-> ' . $response->getBody();
+			if ($status) {
+
+			}
+
+			return $status;
+		} catch (RequestException $e) {
+			echo Psr7\str($e->getRequest());
+			if ($e->hasResponse()) {
+				echo Psr7\str($e->getResponse());
+			}
+		} catch (\Exception $e) {
+			echo $e->getMessage();
+		}
+
+
 	}
 
 }

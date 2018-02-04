@@ -6,7 +6,7 @@
  * Time: 22:21
  */
 
-namespace App\Entity;
+namespace App\Entity\Display;
 
 
 class Display implements \JsonSerializable {

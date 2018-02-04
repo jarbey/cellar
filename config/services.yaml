@@ -2,9 +2,11 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     sensor_script: '%env(SENSOR_SCRIPT)%'
+    rrdtool_bin: '%env(RRDTOOL_BIN)%'
     screen_orientation: '%env(SCREEN_ORIENTATION)%'
-    server_url: '%env(SERVER_URL)%'
-    server_db: '%env(SERVER_DB)%'
+    server_api_endpoint: '%env(SERVER_API_ENDPOINT)%'
+    db_id: '%env(DB_ID)%'
+    locale: 'en'
 
 services:
     # default configuration for services in *this* file
@@ -40,4 +42,9 @@ services:
     App\Service\SensorDataManager:
         arguments:
             $client: '@eight_points_guzzle.client.cellar_server'
-            $server_db: '%server_db%'
+            $db_id: '%db_id%'
+
+    App\Service\RrdManager:
+        arguments:
+            $rrdtool_bin: '%rrdtool_bin%'
+            $data_folder: '%kernel.project_dir%/var/'

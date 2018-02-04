@@ -6,7 +6,7 @@
  * Time: 22:21
  */
 
-namespace App\Entity;
+namespace App\Entity\Display;
 
 
 class DisplayColor implements \JsonSerializable {
@@ -95,28 +95,35 @@ class DisplayColor implements \JsonSerializable {
 	 * @return DisplayColor
 	 */
 	public static function red() {
-		return new DisplayColor(255, 0, 0);
+		return new DisplayColor(0xFF, 0x00, 0x00);
+	}
+
+	/**
+	 * @return DisplayColor
+	 */
+	public static function orange() {
+		return new DisplayColor(0xFF, 0x7D, 0x00);
 	}
 
 	/**
 	 * @return DisplayColor
 	 */
 	public static function green() {
-		return new DisplayColor(0, 255, 0);
+		return new DisplayColor(0x35, 0x96, 0x2B);
 	}
 
 	/**
 	 * @return DisplayColor
 	 */
 	public static function blue() {
-		return new DisplayColor(0, 0, 255);
+		return new DisplayColor(0x00, 0x00, 0xFF);
 	}
 
 	/**
 	 * @return DisplayColor
 	 */
 	public static function white() {
-		return new DisplayColor(255, 255, 255);
+		return new DisplayColor(0xFF, 0xFF, 0xFF);
 	}
 
 }

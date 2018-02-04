@@ -14,10 +14,20 @@ interface SensorLimitInterface {
 	/**
 	 * @return float
 	 */
-	public function getLowValue();
+	public function getLowAlertValue();
 
 	/**
 	 * @return float
 	 */
-	public function getHighValue();
+	public function getHighAlertValue();
+
+	/**
+	 * @return float
+	 */
+	public function getLowWarningValue();
+
+	/**
+	 * @return float
+	 */
+	public function getHighWarningValue();
 }
