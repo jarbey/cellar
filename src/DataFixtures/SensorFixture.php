@@ -5,6 +5,7 @@ use App\Entity\Db;
 use App\Entity\HumidityLimit;
 use App\Entity\Sensor;
 use App\Entity\TemperatureLimit;
+use App\Service\RrdManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -17,6 +18,18 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class SensorFixture extends Fixture implements OrderedFixtureInterface
 {
+
+	/** @var RrdManager */
+	private $rrd_manager;
+
+	/**
+	 * SensorFixture constructor.
+	 * @param RrdManager $rrd_manager
+	 */
+	public function __construct(RrdManager $rrd_manager) {
+		$this->rrd_manager = $rrd_manager;
+	}
+
 	public function load(ObjectManager $manager)
 	{
 		/** @var TemperatureLimit $cellar_temperature_limit */
@@ -56,6 +69,9 @@ class SensorFixture extends Fixture implements OrderedFixtureInterface
 		$db = new Db('home', [$sensor1, $sensor2, $sensor3, $sensor4]);
 		$manager->persist($db);
 		$manager->flush();
+
+		// Create RRD database
+		$this->rrd_manager->createArchive($db);
 
 		$this->addReference('db', $db);
 		$this->addReference('sensor1', $sensor1);

@@ -65,14 +65,13 @@ class RrdManager extends AbstractManager {
 	 * Create rrd archive from Sensor array
 	 *
 	 * @param Db $db
-	 * @param Sensor[] $sensors
 	 * @return bool
 	 */
-	public function createArchive(Db $db, $sensors) {
+	public function createArchive(Db $db) {
 		$cmd_parts = [];
 		$cmd_parts[] = $this->rrdtool_bin . ' create ' . $this->data_folder . $db->getName() . '.rrd --step \'30\'';
 		/** @var Sensor $sensor */
-		foreach ($sensors as $sensor) {
+		foreach ($db->getSensors() as $sensor) {
 			$cmd_parts[] = 'DS:' . $sensor->getId() . '_t:GAUGE:60:-20:60\'';
 			$cmd_parts[] = 'DS:' . $sensor->getId() . '_h:GAUGE:60:0:100\'';
 		}
