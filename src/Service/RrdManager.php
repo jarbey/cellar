@@ -58,7 +58,7 @@ class RrdManager extends AbstractManager {
 			$data_parts[] = $data->getTemperature() . ':' . $data->getHumidity();
 		}
 
-		return $this->executeCommand($this->rrdtool_bin . ' update ' . $this->data_folder . $db->getName() . '.rrd -t ' . join(':', $template_parts) . ' ' . $date . ':' . join(':', $data_parts));
+		return $this->executeCommand($this->rrdtool_bin . ' update ' . $this->getRrdPath($db) . ' -t ' . join(':', $template_parts) . ' ' . $date . ':' . join(':', $data_parts));
 	}
 
 	/**
@@ -69,11 +69,11 @@ class RrdManager extends AbstractManager {
 	 */
 	public function createArchive(Db $db) {
 		$cmd_parts = [];
-		$cmd_parts[] = $this->rrdtool_bin . ' create ' . $this->data_folder . $db->getName() . '.rrd --step \'30\'';
+		$cmd_parts[] = $this->rrdtool_bin . ' create ' . $this->getRrdPath($db) . ' --step \'30\'';
 		/** @var Sensor $sensor */
 		foreach ($db->getSensors() as $sensor) {
-			$cmd_parts[] = 'DS:' . $sensor->getId() . '_t:GAUGE:60:-20:60\'';
-			$cmd_parts[] = 'DS:' . $sensor->getId() . '_h:GAUGE:60:0:100\'';
+			$cmd_parts[] = '\'DS:' . $sensor->getId() . '_t:GAUGE:60:-20:60\'';
+			$cmd_parts[] = '\'DS:' . $sensor->getId() . '_h:GAUGE:60:0:100\'';
 		}
 		$cmd_parts[] = '\'RRA:MIN:0.99:1:480\'';
 		$cmd_parts[] = '\'RRA:MIN:0.99:10:576\'';
@@ -94,7 +94,11 @@ class RrdManager extends AbstractManager {
 		$cmd_parts[] = '\'RRA:MAX:0.99:2880:730\'';
 		$cmd_parts[] = '\'RRA:MAX:0.99:20160:1043\'';
 
-		return $this->executeCommand(join('\\', $cmd_parts));
+		return $this->executeCommand(join(' ', $cmd_parts));
+	}
+
+	private function getRrdPath(Db $db) {
+		return $this->data_folder . $db->getId() . '.rrd';
 	}
 
 	/**
