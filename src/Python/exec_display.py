@@ -15,16 +15,16 @@ import json
 import sys
 import math
 
+DIR = sys.argv[1]
+IP = sys.argv[2]
 
 fonts = {}
-fonts[36] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 36)
-fonts[18] = ImageFont.truetype('/home/pi/cellar/arial.ttf', 18)
+fonts[36] = ImageFont.truetype(DIR + 'arial.ttf', 36)
+fonts[18] = ImageFont.truetype(DIR + 'arial.ttf', 18)
 
 SCREEN_WIDTH = 320;
 SCREEN_HEIGHT = 480;
 DEFAULT_SCREEN_ROTATION = 90;
-
-IP = sys.argv[1]
 
 def rotate_screen(cx, cy, angle, width, height):
     nx = cx

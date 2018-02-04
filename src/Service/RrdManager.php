@@ -97,6 +97,10 @@ class RrdManager extends AbstractManager {
 		return $this->executeCommand(join(' ', $cmd_parts));
 	}
 
+	/**
+	 * @param Db $db
+	 * @return string
+	 */
 	private function getRrdPath(Db $db) {
 		return $this->data_folder . $db->getId() . '.rrd';
 	}
