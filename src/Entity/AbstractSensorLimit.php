@@ -8,6 +8,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Display\DisplayColor;
 
 abstract class AbstractSensorLimit implements SensorLimitInterface {
 
