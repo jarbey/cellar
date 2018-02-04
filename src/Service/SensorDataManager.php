@@ -86,7 +86,7 @@ class SensorDataManager extends AbstractManager {
 			}
 
 			// Delete sent data
-			//$this->sensor_data_repository->remove($sensor_data_list);
+			$this->sensor_data_repository->remove($sensor_data_list);
 			$nb_sent += count($sensor_data_list);
 		}
 
