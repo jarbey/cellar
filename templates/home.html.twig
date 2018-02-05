@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<table>
+		{% for sensor in db.sensors %}
+			<tr>
+				<td><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/temperature?t={{ date|date('U') }}" /></td>
+				<td><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/humidity?t={{ date|date('U') }}" /></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

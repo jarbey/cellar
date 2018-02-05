@@ -11,13 +11,17 @@ namespace App\Service;
 use App\Entity\AbstractSensorLimit;
 use App\Entity\Db;
 use App\Entity\Sensor;
-use App\Entity\SensorData;
 use App\Entity\SensorDataGroup;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class RrdManager extends AbstractManager {
+
+	const TEMPERATURE = 'temperature';
+	const HUMIDITY = 'humidity';
+
+
 	/** @var Process */
 	private $process;
 
@@ -99,13 +103,24 @@ class RrdManager extends AbstractManager {
 	}
 
 	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start) {
-		$min_value = 40;
-		$max_value = 100;
-		$title = 'Humidite';
-		$sensor_suffix = 'h';
+		if ($type == self::HUMIDITY) {
+			$min_value = 40;
+			$max_value = 100;
+			$title = 'Humidite';
+			$sensor_suffix = 'h';
 
-		/** @var AbstractSensorLimit $limit */
-		$limit = $sensor->getHumidityLimit();
+			/** @var AbstractSensorLimit $limit */
+			$limit = $sensor->getHumidityLimit();
+		} else {
+			$min_value = 6;
+			$max_value = 18;
+			$title = 'Temperature';
+			$sensor_suffix = 't';
+
+			/** @var AbstractSensorLimit $limit */
+			$limit = $sensor->getTemperatureLimit();
+		}
+
 
 		$options = [
 			'--start ' . $start->getTimestamp(),
