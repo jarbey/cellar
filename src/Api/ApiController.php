@@ -99,6 +99,7 @@ class ApiController extends FOSRestController {
 	 * @FOS\Get("{db_id}/sensors/{sensor_id}/graph/{type}", requirements={"db_id" = "\d+", "sensor_id" = "\d+", "type" = "humidity|temperature"})
 	 * @ParamConverter("db", options={"id" = "db_id"})
 	 * @ParamConverter("sensor", options={"id" = "sensor_id"})
+	 * @FOS\QueryParam(name="timestamp", requirements="\d+", default="", description="Start time of graph")
 	 *
 	 * @SWG\Response(
 	 *     response=200,
@@ -112,17 +113,16 @@ class ApiController extends FOSRestController {
 	 * @return Response
 	 * @throws SensorNotFoundException
 	 */
-	public function graphSensorAction(Db $db, Sensor $sensor, $type) {
-
-		$date = new \DateTime();
-		$date->sub(new \DateInterval('PT1H'));
-
-		// Create graph
-		$content = $this->rrd_manager->graphArchive($db, $sensor, $type, $date);
-
+	public function graphSensorAction(Db $db, Sensor $sensor, $type, $timestamp) {
+		if ($timestamp > 0) {
+			$date = new \DateTime('@' . $timestamp);
+		} else {
+			$date = new \DateTime();
+			$date->sub(new \DateInterval('PT1H'));
+		}
 
 		// Generate response
-		$response = new Response();
+		$response = new Response($this->rrd_manager->graphArchive($db, $sensor, $type, $date));
 
 		// Set headers
 		$response->headers->set('Cache-Control', 'no-cache');
@@ -132,11 +132,6 @@ class ApiController extends FOSRestController {
 			ResponseHeaderBag::DISPOSITION_INLINE,
 			uniqid() . '.png'
 		));
-		$response->headers->set('Content-length', sizeof($content));
-
-		// Send headers before outputting anything
-		$response->sendHeaders();
-		$response->setContent($content);
 
 		return $response;
 	}
