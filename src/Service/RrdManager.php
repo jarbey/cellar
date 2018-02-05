@@ -8,6 +8,7 @@
 
 namespace App\Service;
 
+use App\Entity\AbstractSensorLimit;
 use App\Entity\Db;
 use App\Entity\Sensor;
 use App\Entity\SensorData;
@@ -97,6 +98,63 @@ class RrdManager extends AbstractManager {
 		return $this->executeRrdCommand(join(' ', $cmd_parts));
 	}
 
+	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start) {
+		$min_value = 40;
+		$max_value = 100;
+		$title = 'Humidite';
+		$sensor_suffix = 'h';
+
+		/** @var AbstractSensorLimit $limit */
+		$limit = $sensor->getHumidityLimit();
+
+		$options = array(
+			"--start " . $start->getTimestamp(),
+			"--vertical-label \"' . $title . '\"",
+			"--height 400",
+			"--width 800",
+			"--lower-limit " . $min_value,
+			"--upper-limit " . $max_value,
+			"--rigid",
+			"DEF:a=" . $this->getRrdPath($db) . ":" . $sensor->getId() . "_' . $sensor_suffix . ':AVERAGE");
+
+		$options = array_merge($options, $this->addCDEF(1, 0, $limit->getLowAlertValue()));
+		$options = array_merge($options, $this->addCDEF(3, $limit->getLowAlertValue(), $limit->getLowWarningValue()));
+		$options = array_merge($options, $this->addCDEF(5, $limit->getLowWarningValue(), $limit->getHighWarningValue()));
+		$options = array_merge($options, $this->addCDEF(7, $limit->getHighWarningValue(), $limit->getHighAlertValue()));
+		$options = array_merge($options, $this->addCDEF(9, $limit->getHighAlertValue(), $max_value));
+
+		$options = array_merge($options, array(
+			"AREA:cdef1#FF0000FF:\"\"",
+			"AREA:cdef2#FF000019:\"\":STACK",
+			"AREA:cdef3#FF7D00FF:\"\":STACK",
+			"AREA:cdef4#FF7D0033:\"\":STACK",
+			"AREA:cdef5#35962BFF:\"\":STACK",
+			"AREA:cdef6#00FF0019:\"\":STACK",
+			"AREA:cdef7#FF7D00FF:\"\":STACK",
+			"AREA:cdef8#FF7D0033:\"\":STACK",
+			"AREA:cdef9#FF0000FF:\"\":STACK",
+			"AREA:cdef10#FF000019:\"\":STACK",
+			"COMMENT:\"        \\n\"",
+			"GPRINT:a:LAST:\"      Actuellement\:%6.1lf  \"",
+			"GPRINT:a:AVERAGE:\"Moyenne\:%6.1lf  \"",
+			"GPRINT:a:MAX:\"Maximum\:%6.1lf\\n\"",
+			"LINE2:a#000000FF:\"\"",
+		));
+
+		return $this->executeRrdCommand('graph - ' . join(" \\\n", $options));
+	}
+
+	private function addCDEF($offset, $low_value, $high_value) {
+		$A_DEF = 'a,UN,0,a,IF';
+
+		$options = [];
+
+		$options[] = "CDEF:cdef" . $offset . "=" . $A_DEF . "," . $low_value . "," . ($high_value - 0.00001) . ",LIMIT";
+		$options[] = "CDEF:cdef" . ($offset + 1) . "=" . $A_DEF . "," . $high_value . ",LT," . $A_DEF . "," . $low_value . ",LT," . ($high_value - $low_value) . "," . $high_value . "," . $A_DEF . ",-,IF,0,IF";
+
+		return $options;
+	}
+
 	/**
 	 * @param Db $db
 	 * @return string
@@ -134,7 +192,7 @@ class RrdManager extends AbstractManager {
 				(strpos($this->process->getErrorOutput(), 'when last update time') !== false) &&
 				(strpos($this->process->getErrorOutput(), 'minimum one second step') !== false)
 			)) {
-				//throw new ProcessFailedException($this->process);
+				throw new ProcessFailedException($this->process);
 			}
 
 		}

@@ -4,16 +4,13 @@ namespace App\Api;
 
 use App\Entity\Db;
 use App\Entity\Sensor;
-use App\Entity\SensorData;
 use App\Entity\SensorDataGroup;
 use App\Exception\SensorNotFoundException;
 use App\Model\ApiResult;
 use App\Repository\DbRepository;
 use App\Repository\SensorRepository;
 use App\Service\RrdManager;
-use FOS\RestBundle\Controller\Annotations\Put;
-use FOS\RestBundle\Controller\Annotations\RequestParam;
-use FOS\RestBundle\View\View;
+use FOS\RestBundle\Controller\Annotations AS FOS;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -50,7 +47,7 @@ class ApiController extends FOSRestController {
 
 
 	/**
-	 * @Put("{db_id}/{date}", requirements={"db_id" = "\d+", "date" = "\d+"})
+	 * @FOS\Put("{db_id}/{date}", requirements={"db_id" = "\d+", "date" = "\d+"})
 	 * @ParamConverter("db", options={"id" = "db_id"})
 	 * @ParamConverter("sensor_data_group", class="App\Entity\SensorDataGroup", converter="fos_rest.request_body")
 	 *
@@ -95,6 +92,48 @@ class ApiController extends FOSRestController {
 			$view = $this->view(new ApiResult(ApiResult::KO, $e->getMessage()), 500);
 		}
 		return $this->handleView($view);
+	}
+
+	/**
+	 * @FOS\Get("{db_id}/sensors/{sensor_id}/graph/{type}", requirements={"db_id" = "\d+", "sensor_id" = "\d+", "type" = "humidity|temperature"})
+	 * @ParamConverter("db", options={"id" = "db_id"})
+	 * @ParamConverter("sensor", options={"id" = "sensor_id"})
+	 *
+	 * @SWG\Response(
+	 *     response=200,
+	 *     description="Returns update state",
+	 *     @Model(type=ApiResult::class)
+	 * )
+	 *
+	 * @param Db $db
+	 * @param Sensor $sensor
+	 * @param string $type
+	 * @return Response
+	 * @throws SensorNotFoundException
+	 */
+	public function graphSensorAction(Db $db, Sensor $sensor, $type) {
+
+		$date = new \DateTime();
+		$date->sub(new \DateInterval('PT1H'));
+
+		// Create graph
+		$content = $this->rrd_manager->graphArchive($db, $sensor, $type, $date);
+
+
+		// Generate response
+		$response = new Response();
+
+		// Set headers
+		$response->headers->set('Cache-Control', 'no-cache');
+		$response->headers->set('Content-type', 'image/png');
+		$response->headers->set('Content-Disposition', 'attachment; filename="' . uniqid() . '";');
+		$response->headers->set('Content-length', sizeof($content));
+
+		// Send headers before outputting anything
+		$response->sendHeaders();
+		$response->setContent($content);
+
+		return $response;
 	}
 
 }
