@@ -29,6 +29,7 @@ class IndexController extends Controller {
 			$date = new \DateTime('@' . $t);
 		} else {
 			$date = new \DateTime();
+			$date->sub(new \DateInterval('PT1H'));
 		}
 
 
