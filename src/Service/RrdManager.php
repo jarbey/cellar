@@ -177,7 +177,7 @@ class RrdManager extends AbstractManager {
 
 	/**
 	 * @param $cmd
-	 * @return bool
+	 * @return string
 	 */
 	private function executeCommand($cmd) {
 		$this->process->setCommandLine($cmd);
@@ -198,6 +198,6 @@ class RrdManager extends AbstractManager {
 
 		}
 
-		return true;
+		return $this->process->getOutput();
 	}
 }
