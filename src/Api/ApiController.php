@@ -17,6 +17,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Swagger\Annotations as SWG;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Class ApiController
@@ -126,7 +127,11 @@ class ApiController extends FOSRestController {
 		// Set headers
 		$response->headers->set('Cache-Control', 'no-cache');
 		$response->headers->set('Content-type', 'image/png');
-		$response->headers->set('Content-Disposition', 'attachment; filename="' . uniqid() . '";');
+		// Create the disposition of the file
+		$response->headers->set('Content-Disposition', $response->headers->makeDisposition(
+			ResponseHeaderBag::DISPOSITION_INLINE,
+			uniqid() . '.png'
+		));
 		$response->headers->set('Content-length', sizeof($content));
 
 		// Send headers before outputting anything
