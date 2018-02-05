@@ -99,21 +99,25 @@ class ApiController extends FOSRestController {
 	 * @FOS\Get("{db_id}/sensors/{sensor_id}/graph/{type}", requirements={"db_id" = "\d+", "sensor_id" = "\d+", "type" = "humidity|temperature"})
 	 * @ParamConverter("db", options={"id" = "db_id"})
 	 * @ParamConverter("sensor", options={"id" = "sensor_id"})
-	 * @FOS\QueryParam(name="timestamp", requirements="\d+", default="", description="Start time of graph")
+	 * @FOS\QueryParam(name="timestamp", requirements="\d+", strict=true, nullable=true, description="Start time of graph")
 	 *
 	 * @SWG\Response(
 	 *     response=200,
 	 *     description="Returns update state",
-	 *     @Model(type=ApiResult::class)
+	 *     @SWG\Schema(
+	 *     		type="string",
+	 *  		format="binary",
+	 *     )
 	 * )
 	 *
 	 * @param Db $db
 	 * @param Sensor $sensor
 	 * @param string $type
+	 * @param int $timestamp
 	 * @return Response
 	 * @throws SensorNotFoundException
 	 */
-	public function graphSensorAction(Db $db, Sensor $sensor, $type, $timestamp) {
+	public function graphSensorAction(Db $db, Sensor $sensor, $type, $timestamp = 0) {
 		if ($timestamp > 0) {
 			$date = new \DateTime('@' . $timestamp);
 		} else {
