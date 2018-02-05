@@ -4,7 +4,7 @@ fos_rest:
         enabled: true
         validate: true
         validation_errors_argument: validationErrors
-#    param_fetcher_listener:  true
+    param_fetcher_listener: force
 #    allowed_methods_listener:  true
 #    routing_loader: true
 #    view:

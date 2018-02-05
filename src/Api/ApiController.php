@@ -99,7 +99,7 @@ class ApiController extends FOSRestController {
 	 * @FOS\Get("{db_id}/sensors/{sensor_id}/graph/{type}", requirements={"db_id" = "\d+", "sensor_id" = "\d+", "type" = "humidity|temperature"})
 	 * @ParamConverter("db", options={"id" = "db_id"})
 	 * @ParamConverter("sensor", options={"id" = "sensor_id"})
-	 * @FOS\QueryParam(name="timestamp", requirements="\d+", strict=true, nullable=true, description="Start time of graph")
+	 * @FOS\QueryParam(name="timestamp", requirements="\d+", default="0", description="Start time of graph")
 	 *
 	 * @SWG\Response(
 	 *     response=200,
