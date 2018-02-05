@@ -107,15 +107,16 @@ class RrdManager extends AbstractManager {
 		/** @var AbstractSensorLimit $limit */
 		$limit = $sensor->getHumidityLimit();
 
-		$options = array(
-			"--start " . $start->getTimestamp(),
-			"--vertical-label \"' . $title . '\"",
-			"--height 400",
-			"--width 800",
-			"--lower-limit " . $min_value,
-			"--upper-limit " . $max_value,
-			"--rigid",
-			"DEF:a=" . $this->getRrdPath($db) . ":" . $sensor->getId() . "_' . $sensor_suffix . ':AVERAGE");
+		$options = [
+			'--start ' . $start->getTimestamp(),
+			'--vertical-label "' . $title . '"',
+			'--height 400',
+			'--width 800',
+			'--lower-limit ' . $min_value,
+			'--upper-limit ' . $max_value,
+			'--rigid',
+			'DEF:a=' . $this->getRrdPath($db) . ':' . $sensor->getId() . '_' . $sensor_suffix . ':AVERAGE'
+		];
 
 		$options = array_merge($options, $this->addCDEF(1, 0, $limit->getLowAlertValue()));
 		$options = array_merge($options, $this->addCDEF(3, $limit->getLowAlertValue(), $limit->getLowWarningValue()));
