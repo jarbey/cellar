@@ -61,19 +61,19 @@
 			'use strict';
 
 			var sensors_definition = [];
-			{% foreach sensor in db.sensor %}
+			{% for sensor in db.sensors %}
 				sensors_definition[{{ sensor.id }}] = {
 					temperature_limit: {
-						low_alert_value: {{ sensor.temperature_limit.low_alert_value }},
-						high_alert_value: {{ sensor.temperature_limit.high_alert_value }},
-						low_warning_value: {{ sensor.temperature_limit.low_warning_value }},
-						high_warning_value: {{ sensor.temperature_limit.high_warning_value }}
+						low_alert_value: {{ sensor.temperatureLimit.lowAlertValue }},
+						high_alert_value: {{ sensor.temperatureLimit.highAlertValue }},
+						low_warning_value: {{ sensor.temperatureLimit.lowWarningValue }},
+						high_warning_value: {{ sensor.temperatureLimit.highWarningValue }}
 					},
 					humidity_limit: {
-						low_alert_value: {{ sensor.humidity_limit.low_alert_value }},
-						high_alert_value: {{ sensor.humidity_limit.high_alert_value }},
-						low_warning_value: {{ sensor.humidity_limit.low_warning_value }},
-						high_warning_value: {{ sensor.humidity_limit.high_warning_value }}
+						low_alert_value: {{ sensor.humidityLimit.lowAlertValue }},
+						high_alert_value: {{ sensor.humidityLimit.highAlertValue }},
+						low_warning_value: {{ sensor.humidityLimit.lowWarningValue }},
+						high_warning_value: {{ sensor.humidityLimit.highWarningValue }}
 					}
 				};
 			{% endfor %}
