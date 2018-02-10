@@ -1,33 +1,46 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<div class="container">
-		<h1>AFSY - WebSockets and Symfony</h1>
+		<h1>Cellar - {{ db }} @ {{ date|date('d/m/Y H:i:s') }}</h1>
 		<div id="ws-content-receiver">
 			Connecting...
 		</div>
-	</div>
 
-	<div class="container">
-		<div class="row" id="header">
+		<div class="row">
+			{% for sensor in db.sensors %}
 			<div class="col">
-				<div class="panel panel-warning" id="nb_lcms_not_last_build_state">
+				<div class="panel panel-warning" id="sensor_{{ sensor.id }}_state">
 					<div class="panel-heading">
 						<div class="row">
 							<div class="col-xs-3">
-								<i class="fa fa-code-fork fa-5x"></i>
+								<i class="fa fa-thermometer-quarter fa-5x" id="sensor_{{ sensor.id }}_temperature_icon"></i>
 							</div>
 							<div class="col-xs-9 text-right">
-								<div class="huge" id="nb_lcms_not_last_build">??</div>
-								<div>LCMS non à jour</div>
+								<div class="huge" id="sensor_{{ sensor.id }}_temperature_value">???</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col">Column</div>
-			<div class="col">Column</div>
-			<div class="col">Column</div>
+			{% endfor %}
+		</div>
+		<div class="row">
+			{% for sensor in db.sensors %}
+				<div class="col">
+					<div class="panel panel-warning" id="sensor_{{ sensor.id }}_state">
+						<div class="panel-heading">
+							<div class="row">
+								<div class="col-xs-3">
+									<i class="fa fa-tint fa-5x" id="sensor_{{ sensor.id }}_humidity_icon"></i>
+								</div>
+								<div class="col-xs-9 text-right">
+									<div class="huge" id="sensor_{{ sensor.id }}_humidity_value">???</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
 		</div>
 	{% for sensor in db.sensors %}
 		<div class="row">
@@ -35,7 +48,6 @@
 			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?t={{ date|date('U') }}" /></div>
 		</div>
 	{% endfor %}
-	</div>
 {% endblock %}
 
 {% block javascripts %}
@@ -50,11 +62,17 @@
 			};
 
 			ws.onmessage = function (event) {
-				var sensor_data = JSON.parse(event.data);
-				console.log(sensor_data);
+				try {
+					var sensor_raw_data = JSON.parse(event.data);
+					console.log(sensor_raw_data);
 
-				for(var k in sensor_data.sensor_data) {
-					console.log(k, sensor_data.sensor_data[k]);
+					var header_content = [];
+					for(var k in sensor_raw_data.sensor_data) {
+						$('#sensor_' + sensor_raw_data.sensor_data[k].sensor.id + '_temperature_value').html(sensor_raw_data.sensor_data[k].temperature + '°C');
+						$('#sensor_' + sensor_raw_data.sensor_data[k].sensor.id + '_humidity_value').html(sensor_raw_data.sensor_data[k].humidity + '%');
+					}
+				} catch (error) {
+					console.log(error);
 				}
 			};
 
