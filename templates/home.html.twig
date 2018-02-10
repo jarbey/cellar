@@ -6,50 +6,46 @@
 			Connecting...
 		</div>
 
-	<div class="row">
-		<div class="container">
-			<div class="row">
-				{% for sensor in db.sensors %}
+		<div class="row">
+			{% for sensor in db.sensors %}
+			<div class="col">
+				<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_temperature_state">
+					<div class="card-header">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<i class="fa fa-thermometer-quarter fa-5x" id="sensor_{{ sensor.id }}_temperature_icon"></i>
+								</div>
+								<div class="col text-right">
+									<div class="huge" id="sensor_{{ sensor.id }}_temperature_value">???</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		<div class="row">
+			{% for sensor in db.sensors %}
 				<div class="col">
-					<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_temperature_state">
+					<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_humidity_state">
 						<div class="card-header">
 							<div class="card-body">
 								<div class="row">
 									<div class="col">
-										<i class="fa fa-thermometer-quarter fa-5x" id="sensor_{{ sensor.id }}_temperature_icon"></i>
+										<i class="fa fa-tint fa-5x" id="sensor_{{ sensor.id }}_humidity_icon"></i>
 									</div>
 									<div class="col text-right">
-										<div class="huge" id="sensor_{{ sensor.id }}_temperature_value">???</div>
+										<div class="huge" id="sensor_{{ sensor.id }}_humidity_value">???</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				{% endfor %}
-			</div>
-			<div class="row">
-				{% for sensor in db.sensors %}
-					<div class="col">
-						<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_humidity_state">
-							<div class="card-header">
-								<div class="card-body">
-									<div class="row">
-										<div class="col">
-											<i class="fa fa-tint fa-5x" id="sensor_{{ sensor.id }}_humidity_icon"></i>
-										</div>
-										<div class="col text-right">
-											<div class="huge" id="sensor_{{ sensor.id }}_humidity_value">???</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
+			{% endfor %}
 		</div>
-	</div>
 
 	{% for sensor in db.sensors %}
 		<div class="row">
