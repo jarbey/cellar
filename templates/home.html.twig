@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-		<h1>Cellar - {{ db }} @ {{ date|date('d/m/Y H:i:s') }}</h1>
+		<h1>Cellar - {{ db.name }} @ {{ date|date('d/m/Y H:i:s') }}</h1>
 		<div id="ws-content-receiver">
 			Connecting...
 		</div>
