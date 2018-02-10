@@ -11,6 +11,7 @@ namespace App\Service;
 use App\Entity\SensorData;
 use App\Entity\SensorDataGroup;
 use App\Exception\ServerException;
+use App\Model\ApiResult;
 use App\Repository\SensorDataRepository;
 use GuzzleHttp\Exception\RequestException;
 use JMS\Serializer\SerializationContext;
@@ -33,9 +34,12 @@ class SensorDataManager extends AbstractManager {
 	private $db_id;
 
 	/**
-	 * SensorManager constructor.
+	 * SensorDataManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SensorDataRepository $sensor_data_repository
+	 * @param SerializerInterface $serializer
+	 * @param $client
+	 * @param $db_id
 	 */
 	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, SerializerInterface $serializer, $client, $db_id) {
 		parent::__construct($logger);
@@ -49,10 +53,12 @@ class SensorDataManager extends AbstractManager {
 	}
 
 	/**
-	 * @param SensorData[] $data
+	 * @param SensorDataGroup $sensor_data
 	 */
-	public function bufferData($data = []) {
-		$this->sensor_data_repository->save($data);
+	public function bufferData(SensorDataGroup $sensor_data) {
+		foreach ($sensor_data->getSensorData() as $data) {
+			$this->sensor_data_repository->save($data);
+		}
 	}
 
 	/**
@@ -111,11 +117,10 @@ class SensorDataManager extends AbstractManager {
 			]);
 
 			$status = (($response->getStatusCode() >= 200) && ($response->getStatusCode() < 400));
-			echo '-> ' . $response->getBody();
 			if ($status) {
-
+				$result = json_decode($response->getBody());
+				return ($result->status == ApiResult::OK);
 			}
-
 			return $status;
 		} catch (RequestException $e) {
 			echo Psr7\str($e->getRequest());

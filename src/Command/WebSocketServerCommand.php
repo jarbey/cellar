@@ -22,6 +22,7 @@ class WebSocketServerCommand extends AbstractCommand {
 			8080,
 			'127.0.0.1'
 		);
+
 		$server->run();
 	}
 }

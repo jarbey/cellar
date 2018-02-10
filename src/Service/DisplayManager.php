@@ -14,6 +14,7 @@ use App\Entity\Display\DisplayColor;
 use App\Entity\Display\DisplayFont;
 use App\Entity\Display\DisplayPosition;
 use App\Entity\SensorData;
+use App\Entity\SensorDataGroup;
 use Psr\Log\LoggerInterface;
 
 class DisplayManager extends AbstractManager {
@@ -72,16 +73,16 @@ class DisplayManager extends AbstractManager {
 	}
 
 	/**
-	 * @param SensorData[] $datas
+	 * @param SensorDataGroup $sensor_data
 	 */
-	public function displaySensorData($datas = []) {
+	public function displaySensorData(SensorDataGroup $sensor_data) {
 		// Date top-right
 		$display_data = [new Display(date('d/m/Y H:i:s'), new DisplayFont(self::FONT_SIZE_DATE), new DisplayPosition(300, 0), DisplayColor::white())];
 
 		// Data for each SensorData
-		$y_offset = (count($datas) - 1) * self::OFFSET_DATA * -1;
+		$y_offset = (count($sensor_data->getSensorData()) - 1) * self::OFFSET_DATA * -1;
 		/** @var SensorData $data */
-		foreach ($datas as $data) {
+		foreach ($sensor_data->getSensorData() as $data) {
 			$this->getLogger()->debug('Gpio {gpio} : T {temperature} ; H {humidity} ; Tlim {t_limit} ; Hlim {h_limit}', [
 				'gpio' => $data->getSensor()->getGpio(),
 				'temperature' => $data->getTemperature(),

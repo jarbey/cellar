@@ -11,6 +11,7 @@ namespace App\Service;
 
 use App\Entity\Sensor;
 use App\Entity\SensorData;
+use App\Entity\SensorDataGroup;
 use App\Repository\SensorRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -42,7 +43,7 @@ class SensorManager extends AbstractManager {
 	}
 
 	/**
-	 * @return SensorData[]
+	 * @return SensorDataGroup
 	 */
 	public function executeSensor() {
 		/** @var Sensor[] $sensors */
@@ -85,6 +86,6 @@ class SensorManager extends AbstractManager {
 		$this->process->clearOutput();
 		$this->process->clearErrorOutput();
 
-		return $sensor_data;
+		return new SensorDataGroup(new \DateTime('@' . $date), $sensor_data);
 	}
 }
