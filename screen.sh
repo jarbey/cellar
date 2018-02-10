@@ -1,8 +1,10 @@
 #!/bin/sh
 
-export $(cat .env | grep -v ^# | xargs)
+BASEDIR=$(dirname "$0")
+echo "$BASEDIR"
 
-cd $DIR
+export $(cat $BASEDIR/.env | grep -v ^# | xargs)
+cd $CELLAR_DIR
 
 while [ -z "$ip" ]
 do

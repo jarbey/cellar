@@ -6,7 +6,6 @@ parameters:
     screen_orientation: '%env(SCREEN_ORIENTATION)%'
     server_api_endpoint: '%env(SERVER_API_ENDPOINT)%'
     websocket_host: '%env(WEBSOCKET_SERVER_HOST)%'
-    websocket_port: '%env(WEBSOCKET_SERVER_PORT)%'
     db_id: '%env(DB_ID)%'
     locale: 'en'
 
@@ -49,7 +48,6 @@ services:
     App\Service\WebFrontManager:
         arguments:
             $websocket_host: '%websocket_host%'
-            $websocket_port: '%websocket_port%'
 
     App\Service\RrdManager:
         arguments:

@@ -56,9 +56,7 @@ class SensorDataManager extends AbstractManager {
 	 * @param SensorDataGroup $sensor_data
 	 */
 	public function bufferData(SensorDataGroup $sensor_data) {
-		foreach ($sensor_data->getSensorData() as $data) {
-			$this->sensor_data_repository->save($data);
-		}
+		$this->sensor_data_repository->save($sensor_data->getSensorData());
 	}
 
 	/**
