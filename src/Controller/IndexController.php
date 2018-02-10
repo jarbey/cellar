@@ -35,7 +35,8 @@ class IndexController extends Controller {
 
 		return $this->render('home.html.twig', [
 			'db' => $db,
-			'date' => $date
+			'date' => $date,
+			'ws_url' => 'cellar.arbey.fr/ws',
 		]);
 	}
 }

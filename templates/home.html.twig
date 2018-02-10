@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+	<div class="container">
+		<h1>AFSY - WebSockets and Symfony</h1>
+		<div id="ws-content-receiver">
+			Connecting...
+		</div>
+	</div>
+
 	<table>
 		{% for sensor in db.sensors %}
 			<tr>
@@ -9,4 +16,11 @@
 			</tr>
 		{% endfor %}
 	</table>
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+		var wsUrl = '{{ ws_url }}';
+	</script>
+	<script type="text/javascript" src="{{ asset('/sf-websocket.js') }}"></script>
 {% endblock %}
