@@ -111,9 +111,9 @@
 						var state_sel = $('#sensor_' + sid + '_humidity_state');
 						state_sel.removeClass().addClass('card text-white');
 						limit = sensors_definition[sid].humidity_limit;
-						if ((sensor_data.temperature < limit.low_alert_value) || (sensor_data.temperature > limit.high_alert_value)) {
+						if ((sensor_data.humidity < limit.low_alert_value) || (sensor_data.humidity > limit.high_alert_value)) {
 							state_sel.addClass('bg-danger');
-						} else if ((sensor_data.temperature < limit.low_warning_value) || (sensor_data.temperature > limit.high_warning_value)) {
+						} else if ((sensor_data.humidity < limit.low_warning_value) || (sensor_data.humidity > limit.high_warning_value)) {
 							state_sel.addClass('bg-warning');
 						} else {
 							state_sel.addClass('bg-success');
