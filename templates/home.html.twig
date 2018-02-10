@@ -60,10 +60,29 @@
 		(function () {
 			'use strict';
 
+			var sensors_definition = [];
+			{% foreach sensor in db.sensor %}
+				sensors_definition[{{ sensor.id }}] = {
+					temperature_limit: {
+						low_alert_value: {{ sensor.temperature_limit.low_alert_value }},
+						high_alert_value: {{ sensor.temperature_limit.high_alert_value }},
+						low_warning_value: {{ sensor.temperature_limit.low_warning_value }},
+						high_warning_value: {{ sensor.temperature_limit.high_warning_value }}
+					},
+					humidity_limit: {
+						low_alert_value: {{ sensor.humidity_limit.low_alert_value }},
+						high_alert_value: {{ sensor.humidity_limit.high_alert_value }},
+						low_warning_value: {{ sensor.humidity_limit.low_warning_value }},
+						high_warning_value: {{ sensor.humidity_limit.high_warning_value }}
+					}
+				};
+			{% endfor %}
+
 			var _receiver = document.getElementById('ws-content-receiver');
 			var ws = new WebSocket('ws://{{ ws_url }}');
 
 			ws.onopen = function () {
+				_receiver.innerHTML = 'Connected !';
 			};
 
 			ws.onmessage = function (event) {
@@ -73,8 +92,32 @@
 
 					var header_content = [];
 					for(var k in sensor_raw_data.sensor_data) {
-						$('#sensor_' + sensor_raw_data.sensor_data[k].sensor.id + '_temperature_value').html(sensor_raw_data.sensor_data[k].temperature + '°C');
-						$('#sensor_' + sensor_raw_data.sensor_data[k].sensor.id + '_humidity_value').html(sensor_raw_data.sensor_data[k].humidity + '%');
+						var sensor_data = sensor_raw_data.sensor_data[k];
+						var sid = sensor_data.sensor.id;
+
+						$('#sensor_' + sid + '_temperature_value').html(sensor_data.temperature + '°C');
+						var state_sel = $('#sensor_' + sid + '_temperature_state');
+						state_sel.removeClass().addClass('card text-white');
+						var limit = sensors_definition[sid].temperature_limit;
+						if ((sensor_data.temperature < limit.low_alert_value) || (sensor_data.temperature > limit.high_alert_value)) {
+							state_sel.addClass('bg-danger');
+						} else if ((sensor_data.temperature < limit.low_warning_value) || (sensor_data.temperature > limit.high_warning_value)) {
+							state_sel.addClass('bg-warning');
+						} else {
+							state_sel.addClass('bg-success');
+						}
+
+						$('#sensor_' + sid + '_humidity_value').html(sensor_data.humidity + '%');
+						var state_sel = $('#sensor_' + sid + '_humidity_state');
+						state_sel.removeClass().addClass('card text-white');
+						limit = sensors_definition[sid].humidity_limit;
+						if ((sensor_data.temperature < limit.low_alert_value) || (sensor_data.temperature > limit.high_alert_value)) {
+							state_sel.addClass('bg-danger');
+						} else if ((sensor_data.temperature < limit.low_warning_value) || (sensor_data.temperature > limit.high_warning_value)) {
+							state_sel.addClass('bg-warning');
+						} else {
+							state_sel.addClass('bg-success');
+						}
 					}
 				} catch (error) {
 					console.log(error);
