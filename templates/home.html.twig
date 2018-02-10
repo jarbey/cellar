@@ -8,19 +8,61 @@
 		</div>
 	</div>
 
-	<table>
-		{% for sensor in db.sensors %}
-			<tr>
-				<td><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?t={{ date|date('U') }}" /></td>
-				<td><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?t={{ date|date('U') }}" /></td>
-			</tr>
-		{% endfor %}
-	</table>
+	<div class="container">
+		<div class="row" id="header">
+			<div class="col">
+				<div class="panel panel-warning" id="nb_lcms_not_last_build_state">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-xs-3">
+								<i class="fa fa-code-fork fa-5x"></i>
+							</div>
+							<div class="col-xs-9 text-right">
+								<div class="huge" id="nb_lcms_not_last_build">??</div>
+								<div>LCMS non à jour</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col">Column</div>
+			<div class="col">Column</div>
+			<div class="col">Column</div>
+		</div>
+	{% for sensor in db.sensors %}
+		<div class="row">
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?t={{ date|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?t={{ date|date('U') }}" /></div>
+		</div>
+	{% endfor %}
+	</div>
 {% endblock %}
 
 {% block javascripts %}
 	<script type="text/javascript">
-		var wsUrl = '{{ ws_url }}';
+		(function () {
+			'use strict';
+
+			var _receiver = document.getElementById('ws-content-receiver');
+			var ws = new WebSocket('ws://{{ ws_url }}');
+
+			ws.onopen = function () {
+			};
+
+			ws.onmessage = function (event) {
+				var sensor_data = JSON.parse(event.data);
+				console.log(sensor_data);
+
+				for(var k in sensor_data.sensor_data) {
+					console.log(k, sensor_data.sensor_data[k]);
+				}
+			};
+
+			ws.onclose = function () {
+			};
+
+			ws.onerror = function () {
+			};
+		})();
 	</script>
-	<script type="text/javascript" src="{{ asset('/sf-websocket.js') }}"></script>
 {% endblock %}

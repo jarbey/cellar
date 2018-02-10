@@ -39,6 +39,7 @@ class WebFrontManager extends AbstractManager {
 	public function sendData(SensorDataGroup $sensor_data) {
 		\Ratchet\Client\connect('ws://' . $this->websocket_host)->then(function(\Ratchet\Client\WebSocket $conn) use ($sensor_data) {
 			$conn->send($this->serializer->serialize($sensor_data, 'json', SerializationContext::create()->setGroups(['updateSensorData'])));
+			$conn->close();
 		}, function (\Exception $e) {
 			echo "Could not connect: {$e->getMessage()}\n";
 		});
