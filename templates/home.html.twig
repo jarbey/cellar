@@ -90,7 +90,7 @@
 					var sensor_raw_data = JSON.parse(event.data);
 					console.log(sensor_raw_data);
 
-					$('#date').html(moment(sensor_raw_data.date).format('LLLLTS'));
+					$('#date').html(moment(sensor_raw_data.date).format('LTS'));
 
 					var header_content = [];
 					for(var k in sensor_raw_data.sensor_data) {

@@ -14,7 +14,11 @@ use Ratchet\MessageComponentInterface;
 
 class WebSocketComponent implements MessageComponentInterface
 {
+	/** @var \SplObjectStorage */
 	private $clients;
+
+	/** @var string */
+	private $last_message;
 
 	public function __construct()
 	{
@@ -24,13 +28,12 @@ class WebSocketComponent implements MessageComponentInterface
 	public function onOpen(ConnectionInterface $conn)
 	{
 		$this->clients->attach($conn);
-		$conn->send(sprintf('New connection: Hello #%d', $conn->resourceId));
+		$conn->send($this->last_message);
 	}
 
 	public function onClose(ConnectionInterface $closedConnection)
 	{
 		$this->clients->detach($closedConnection);
-		echo sprintf('Connection #%d has disconnected\n', $closedConnection->resourceId);
 	}
 
 	public function onError(ConnectionInterface $conn, \Exception $e)
@@ -41,14 +44,7 @@ class WebSocketComponent implements MessageComponentInterface
 
 	public function onMessage(ConnectionInterface $from, $message)
 	{
-		$totalClients = count($this->clients) - 1;
-		echo vsprintf(
-			'Connection #%1$d sending message "%2$s" to %3$d other connection%4$s'."\n", [
-			$from->resourceId,
-			$message,
-			$totalClients,
-			$totalClients === 1 ? '' : 's'
-		]);
+		$this->last_message = $message;
 		foreach ($this->clients as $client) {
 			if ($from !== $client) {
 				$client->send($message);
