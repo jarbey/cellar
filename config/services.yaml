@@ -3,6 +3,7 @@
 parameters:
     sensor_script: '%env(SENSOR_SCRIPT)%'
     rrdtool_bin: '%env(RRDTOOL_BIN)%'
+    screen: '%env(SCREEN)%'
     screen_orientation: '%env(SCREEN_ORIENTATION)%'
     server_api_endpoint: '%env(SERVER_API_ENDPOINT)%'
     websocket_host: '%env(WEBSOCKET_SERVER_HOST)%'
@@ -38,6 +39,7 @@ services:
 
     App\Service\DisplayManager:
         arguments:
+            $screen: '%screen%'
             $screen_orientation: '%screen_orientation%'
 
     App\Service\SensorDataManager:

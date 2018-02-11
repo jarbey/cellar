@@ -8,7 +8,6 @@
 
 namespace App\Service;
 
-
 use App\Entity\Display\Display;
 use App\Entity\Display\DisplayColor;
 use App\Entity\Display\DisplayFont;
@@ -23,34 +22,48 @@ class DisplayManager extends AbstractManager {
 	const FONT_MARGIN_DATA = 4;
 	const OFFSET_DATA = (self::FONT_SIZE_DATA + self::FONT_MARGIN_DATA) / 2;
 
+	/** @var resource */
 	private $_socket;
 
+	/** @var bool */
+	private $screen_enable;
+
+	/** @var int */
 	private $screen_orientation;
 
 	/**
 	 * DisplayManager constructor.
 	 * @param LoggerInterface $logger
+	 * @param boolean $screen
 	 * @param integer $screen_orientation
 	 */
-	public function __construct(LoggerInterface $logger, $screen_orientation) {
+	public function __construct(LoggerInterface $logger, $screen, $screen_orientation) {
 		parent::__construct($logger);
+		$this->screen_enable = !!$screen;
 		$this->screen_orientation = $screen_orientation;
 	}
 
+	/**
+	 * Initialize communication with screen
+	 *
+	 * @throws \Exception
+	 */
 	private function init() {
-		// Create a TCP/IP socket
-		$this->_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		if ($this->_socket === false) {
-			throw new \Exception("Error: socket_create() failed: reason: " . socket_strerror(socket_last_error()));
-		}
+		if ($this->screen_enable) {
+			// Create a TCP/IP socket
+			$this->_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+			if ($this->_socket === false) {
+				throw new \Exception("Error: socket_create() failed: reason: " . socket_strerror(socket_last_error()));
+			}
 
-		// Set timeout
-		socket_set_option($this->_socket, SOL_SOCKET, SO_RCVTIMEO, [ "sec" => 2, "usec" => 0 ]);
+			// Set timeout
+			socket_set_option($this->_socket, SOL_SOCKET, SO_RCVTIMEO, ["sec" => 2, "usec" => 0]);
 
-		// Connect to the server
-		$result = socket_connect($this->_socket, '127.0.0.1', '1111');
-		if ($result === false) {
-			throw new \Exception("Error: socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($this->_socket)));
+			// Connect to the server
+			$result = socket_connect($this->_socket, '127.0.0.1', '1111');
+			if ($result === false) {
+				throw new \Exception("Error: socket_connect() failed.\nReason: ($result) " . socket_strerror(socket_last_error($this->_socket)));
+			}
 		}
 	}
 
@@ -59,17 +72,20 @@ class DisplayManager extends AbstractManager {
 	 * @return string
 	 */
 	public function sendDisplay($display_list = []) {
-		if (!$this->_socket) {
-			$this->init();
+		if ($this->screen_enable) {
+			if (!$this->_socket) {
+				$this->init();
+			}
+
+			// Create object
+			$json = json_encode((object)['display' => $display_list, 'screen_rotation' => $this->screen_orientation]);
+			$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
+
+			// Send to disaply server and read result
+			socket_write($this->_socket, $json);
+			return socket_read($this->_socket, 1);
 		}
-
-		// Create object
-		$json = json_encode((object)['display' => $display_list, 'screen_rotation' => $this->screen_orientation]);
-		$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
-
-		// Send to disaply server and read result
-		socket_write($this->_socket, $json);
-		return socket_read($this->_socket, 1);
+		return null;
 	}
 
 	/**
