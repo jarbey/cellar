@@ -28,7 +28,9 @@ class WebSocketComponent implements MessageComponentInterface
 	public function onOpen(ConnectionInterface $conn)
 	{
 		$this->clients->attach($conn);
-		$conn->send($this->last_message);
+		if ($this->last_message != '') {
+			$conn->send($this->last_message);
+		}
 	}
 
 	public function onClose(ConnectionInterface $closedConnection)
