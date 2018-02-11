@@ -17,6 +17,7 @@ sleep 2
 
 while true
 do
+    /usr/bin/php $CELLAR_DIR/bin/console cellar:websocket:server -vv 2>&1 >> $CELLAR_DIR/websocket.log &
     /usr/bin/php $CELLAR_DIR/bin/console cellar:information:update -vv 2>&1 >> $CELLAR_DIR/information_update.log &
     /usr/bin/php $CELLAR_DIR/bin/console cellar:data:send -vv 2>&1 >> $CELLAR_DIR/data_send.log &
 sleep 15
