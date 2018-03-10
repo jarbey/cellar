@@ -6,7 +6,7 @@ echo "$BASEDIR"
 export $(cat $BASEDIR/.env | grep -v ^# | xargs)
 cd $CELLAR_DIR
 
-if [ $SCREEN ]; then
+if [ ""$SCREEN" -eq "1" ]; then
     while [ -z "$ip" ]
     do
             sleep 1
@@ -19,7 +19,6 @@ fi
 
 while true
 do
-    /usr/bin/php $CELLAR_DIR/bin/console cellar:websocket:server -vv 2>&1 >> $CELLAR_DIR/websocket.log &
     /usr/bin/php $CELLAR_DIR/bin/console cellar:information:update -vv 2>&1 >> $CELLAR_DIR/information_update.log &
     /usr/bin/php $CELLAR_DIR/bin/console cellar:data:send -vv 2>&1 >> $CELLAR_DIR/data_send.log &
 sleep 15
