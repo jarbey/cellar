@@ -30,10 +30,10 @@ class LimitFixture extends Fixture implements OrderedFixtureInterface
 		$manager->persist($outside_humidity_limit);
 
 		$fridge_temperature_limit = new TemperatureLimit('fridge', 1, 10, 2, 8);
-		$manager->persist($outside_temperature_limit);
+		$manager->persist($fridge_temperature_limit);
 
 		$fridge_humidity_limit = new HumidityLimit('fridge', 45, 80, 55, 70);
-		$manager->persist($outside_humidity_limit);
+		$manager->persist($fridge_humidity_limit);
 
 		$manager->flush();
 
