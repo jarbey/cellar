@@ -120,8 +120,8 @@ class RrdManager extends AbstractManager {
 
 		$offset = ($limit->getHighAlertValue() - $limit->getLowAlertValue()) / 4;
 
-		$min_value = $limit->getLowAlertValue() - $offset;
-		$max_value = $limit->getHighAlertValue() + $offset;
+		$min_value = max(0, $limit->getLowAlertValue() - $offset);
+		$max_value = max($limit->getHighAlertValue() + $offset, 100);
 
 		$options = [
 			'--start ' . $start->getTimestamp(),
@@ -134,11 +134,11 @@ class RrdManager extends AbstractManager {
 			'DEF:a=' . $this->getRrdPath($db) . ':' . $sensor->getId() . '_' . $sensor_suffix . ':AVERAGE'
 		];
 
-		$options = array_merge($options, $this->addCDEF(1, 0, $limit->getLowAlertValue()));
+		$options = array_merge($options, $this->addCDEF(1, -999, $limit->getLowAlertValue()));
 		$options = array_merge($options, $this->addCDEF(3, $limit->getLowAlertValue(), $limit->getLowWarningValue()));
 		$options = array_merge($options, $this->addCDEF(5, $limit->getLowWarningValue(), $limit->getHighWarningValue()));
 		$options = array_merge($options, $this->addCDEF(7, $limit->getHighWarningValue(), $limit->getHighAlertValue()));
-		$options = array_merge($options, $this->addCDEF(9, $limit->getHighAlertValue(), $max_value));
+		$options = array_merge($options, $this->addCDEF(9, $limit->getHighAlertValue(), 999));
 
 		$options = array_merge($options, array(
 			"AREA:cdef1#FF0000FF:\"\"",
