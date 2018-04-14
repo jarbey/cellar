@@ -67,17 +67,12 @@ class SensorFixture extends Fixture implements OrderedFixtureInterface
 		$sensor4->setHumidityLimit($cellar_humidity_limit);
 
 		$db = new Db('home', [$sensor1, $sensor2, $sensor3, $sensor4]);
+		$db->setId(1);
 		$manager->persist($db);
 		$manager->flush();
 
 		// Create RRD database
 		$this->rrd_manager->createArchive($db);
-
-		$this->addReference('db', $db);
-		$this->addReference('sensor1', $sensor1);
-		$this->addReference('sensor2', $sensor2);
-		$this->addReference('sensor3', $sensor3);
-		$this->addReference('sensor4', $sensor4);
 	}
 
 	public function getOrder()

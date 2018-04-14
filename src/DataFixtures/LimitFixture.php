@@ -29,6 +29,12 @@ class LimitFixture extends Fixture implements OrderedFixtureInterface
 		$outside_humidity_limit = new HumidityLimit('outside', 45, 80, 55, 70);
 		$manager->persist($outside_humidity_limit);
 
+		$fridge_temperature_limit = new TemperatureLimit('fridge', 1, 10, 2, 8);
+		$manager->persist($outside_temperature_limit);
+
+		$fridge_humidity_limit = new HumidityLimit('fridge', 45, 80, 55, 70);
+		$manager->persist($outside_humidity_limit);
+
 		$manager->flush();
 
 		$this->addReference('cellar_temperature_limit', $cellar_temperature_limit);
@@ -36,6 +42,9 @@ class LimitFixture extends Fixture implements OrderedFixtureInterface
 
 		$this->addReference('outside_temperature_limit', $outside_temperature_limit);
 		$this->addReference('outside_humidity_limit', $outside_humidity_limit);
+
+		$this->addReference('fridge_temperature_limit', $fridge_temperature_limit);
+		$this->addReference('fridge_humidity_limit', $fridge_humidity_limit);
 	}
 
 	public function getOrder()

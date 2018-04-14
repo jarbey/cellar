@@ -99,7 +99,10 @@ class RrdManager extends AbstractManager {
 		$cmd_parts[] = '\'RRA:MAX:0.99:2880:730\'';
 		$cmd_parts[] = '\'RRA:MAX:0.99:20160:1043\'';
 
-		return $this->executeRrdCommand(join(' ', $cmd_parts));
+		if (!file_exists($this->getRrdPath($db))) {
+			return $this->executeRrdCommand(join(' ', $cmd_parts));
+		}
+		return false;
 	}
 
 	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start) {
