@@ -106,24 +106,22 @@ class RrdManager extends AbstractManager {
 	}
 
 	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start) {
+		/** @var AbstractSensorLimit $limit */
+		$limit = $sensor->getTemperatureLimit();
 		if ($type == self::HUMIDITY) {
-			$min_value = 40;
-			$max_value = 100;
+			$limit = $sensor->getHumidityLimit();
+
 			$title = 'Humidite';
 			$sensor_suffix = 'h';
-
-			/** @var AbstractSensorLimit $limit */
-			$limit = $sensor->getHumidityLimit();
 		} else {
-			$min_value = 6;
-			$max_value = 18;
 			$title = 'Temperature';
 			$sensor_suffix = 't';
-
-			/** @var AbstractSensorLimit $limit */
-			$limit = $sensor->getTemperatureLimit();
 		}
 
+		$offset = ($limit->getHighAlertValue() - $limit->getLowAlertValue()) / 4;
+
+		$min_value = $limit->getLowAlertValue() - $offset;
+		$max_value = $limit->getHighAlertValue() + $offset;
 
 		$options = [
 			'--start ' . $start->getTimestamp(),
