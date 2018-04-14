@@ -121,7 +121,7 @@ class RrdManager extends AbstractManager {
 		$offset = ($limit->getHighAlertValue() - $limit->getLowAlertValue()) / 4;
 
 		$min_value = max(0, $limit->getLowAlertValue() - $offset);
-		$max_value = max($limit->getHighAlertValue() + $offset, 100);
+		$max_value = min($limit->getHighAlertValue() + $offset, 100);
 
 		$options = [
 			'--start ' . $start->getTimestamp(),
