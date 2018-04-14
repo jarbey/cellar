@@ -56,8 +56,14 @@
             "ref": "c1431086fec31f17fbcfe6d6d7e92059458facc1"
         }
     },
+    "doctrine/inflector": {
+        "version": "v1.3.0"
+    },
     "doctrine/instantiator": {
         "version": "1.1.0"
+    },
+    "doctrine/lexer": {
+        "version": "v1.0.1"
     },
     "doctrine/migrations": {
         "version": "v1.6.2"
@@ -98,6 +104,9 @@
     "guzzlehttp/psr7": {
         "version": "1.4.2"
     },
+    "jarbey/chromecast": {
+        "version": "dev-master"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -130,6 +139,12 @@
             "version": "3.0",
             "ref": "d76d09603a98c2e2b78ef038ef8a961f51b86da0"
         }
+    },
+    "ocramius/package-versions": {
+        "version": "1.2.0"
+    },
+    "ocramius/proxy-manager": {
+        "version": "2.1.1"
     },
     "phpcollection/phpcollection": {
         "version": "0.5.0"
@@ -196,6 +211,9 @@
             "version": "4.0",
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
+    },
+    "stefw/chromecast": {
+        "version": "dev-master"
     },
     "symfony/asset": {
         "version": "v4.0.4"
@@ -320,6 +338,9 @@
     "symfony/templating": {
         "version": "v4.0.4"
     },
+    "symfony/thanks": {
+        "version": "v1.0.5"
+    },
     "symfony/translation": {
         "version": "3.3",
         "recipe": {
@@ -367,6 +388,12 @@
     },
     "willdurand/negotiation": {
         "version": "v2.3.1"
+    },
+    "zendframework/zend-code": {
+        "version": "3.3.0"
+    },
+    "zendframework/zend-eventmanager": {
+        "version": "3.2.0"
     },
     "zircote/swagger-php": {
         "version": "2.0.13"

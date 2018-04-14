@@ -8,6 +8,8 @@ parameters:
     server_api_endpoint: '%env(SERVER_API_ENDPOINT)%'
     websocket_host: '%env(WEBSOCKET_SERVER_HOST)%'
     db_id: '%env(DB_ID)%'
+    chromecast.ip: '%env(CHROMECAST_IP)%'
+    chromecast.port: '%env(CHROMECAST_PORT)%'
     locale: 'en'
 
 services:
@@ -55,3 +57,8 @@ services:
         arguments:
             $rrdtool_bin: '%rrdtool_bin%'
             $data_folder: '%kernel.project_dir%/var/'
+
+    App\Service\ChromecastManager:
+        arguments:
+            $ip: '%chromecast.ip%'
+            $port: '%chromecast.port%'

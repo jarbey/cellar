@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "55754a0148112349da2bcdc828025c0e",
+    "content-hash": "937fb37af999057f4a7db3d38d283b4a",
     "packages": [
         {
             "name": "cboden/ratchet",
@@ -1126,12 +1126,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "c7fd5d6fb78e445159c8314e44c0fd0a76dc90cf"
+                "reference": "64ef743cb90a9c239ad1c45172678ca39b942ee1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/c7fd5d6fb78e445159c8314e44c0fd0a76dc90cf",
-                "reference": "c7fd5d6fb78e445159c8314e44c0fd0a76dc90cf",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/64ef743cb90a9c239ad1c45172678ca39b942ee1",
+                "reference": "64ef743cb90a9c239ad1c45172678ca39b942ee1",
                 "shasum": ""
             },
             "require": {
@@ -1220,7 +1220,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2018-01-18T10:25:36+00:00"
+            "time": "2018-03-08T06:53:56+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1402,6 +1402,36 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "jarbey/chromecast",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jarbey/chromecast.git",
+                "reference": "93b3fa327042162b3744a5b229894c5af709d843"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jarbey/chromecast/zipball/93b3fa327042162b3744a5b229894c5af709d843",
+                "reference": "93b3fa327042162b3744a5b229894c5af709d843",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5 || ^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StefW\\ChromeCast\\": "src"
+                }
+            },
+            "description": "ChrisRidings chromecast player, a bit modified by StefW and Julien ARBEY",
+            "homepage": "https://github.com/jarbey/chromecast",
+            "support": {
+                "source": "https://github.com/jarbey/chromecast/tree/master"
+            },
+            "time": "2018-04-08T09:20:05+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -3984,12 +4014,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/lts.git",
-                "reference": "396c5fca8d73d01186df37d7031321a3c0c2bf92"
+                "reference": "6de50b244bad631a71544b3cc3c8e206c0e5f991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/lts/zipball/396c5fca8d73d01186df37d7031321a3c0c2bf92",
-                "reference": "396c5fca8d73d01186df37d7031321a3c0c2bf92",
+                "url": "https://api.github.com/repos/symfony/lts/zipball/6de50b244bad631a71544b3cc3c8e206c0e5f991",
+                "reference": "6de50b244bad631a71544b3cc3c8e206c0e5f991",
                 "shasum": ""
             },
             "conflict": {
@@ -4018,6 +4048,7 @@
                 "symfony/intl": ">=5",
                 "symfony/ldap": ">=5",
                 "symfony/lock": ">=5",
+                "symfony/messenger": ">=5",
                 "symfony/monolog-bridge": ">=5",
                 "symfony/options-resolver": ">=5",
                 "symfony/process": ">=5",
@@ -4068,7 +4099,7 @@
             ],
             "description": "Enforces Long Term Supported versions of Symfony components",
             "homepage": "https://symfony.com",
-            "time": "2017-10-19T02:16:32+00:00"
+            "time": "2018-04-03T05:04:16+00:00"
         },
         {
             "name": "symfony/monolog-bridge",
@@ -5754,6 +5785,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/rest-bundle": 20,
+        "jarbey/chromecast": 20,
         "symfony/lts": 20
     },
     "prefer-stable": false,

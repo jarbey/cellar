@@ -6,7 +6,7 @@ echo "$BASEDIR"
 export $(cat $BASEDIR/.env | grep -v ^# | xargs)
 cd $CELLAR_DIR
 
-if [ ""$SCREEN" -eq "1" ]; then
+if [ "$SCREEN" -eq "1" ]; then
     while [ -z "$ip" ]
     do
             sleep 1
