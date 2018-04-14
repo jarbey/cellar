@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Db;
 use App\Repository\DbRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,12 +18,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends Controller {
 
 	/**
-	 * @Route("/", name="home")
+	 * @Route("/{id}", name="home")
 	 */
-	public function home(Request $request, DbRepository $db_repository) {
+	public function home($id, Request $request, DbRepository $db_repository) {
 		/** @var Db $db */
-		$db = $db_repository->find(1);
-
+		$db = $db_repository->find($id);
+		if ($db == null) {
+			throw new EntityNotFoundException();
+		}
 
 		$t = $request->query->get('t', 0);
 		if ($t > 0) {
