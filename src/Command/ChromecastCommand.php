@@ -13,7 +13,7 @@ class ChromecastCommand extends AbstractCommand {
     private $chromecastManager;
 
     /**
-     * InformationUpdateCommand constructor.
+     * ChromecastCommand constructor.
      * @param LoggerInterface $logger
      * @param ChromecastManager $chromecastManager
      */

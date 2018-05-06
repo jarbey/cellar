@@ -1,0 +1,4 @@
+parameters:
+    doctrine.orm.entity_manager.class: steevanb\DoctrineStats\Doctrine\ORM\EntityManager
+
+doctrine_stats:

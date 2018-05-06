@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Bottle;
 use App\Entity\Db;
 use App\Repository\DbRepository;
+use App\Service\WineManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexController extends Controller {
 
 	/**
-	 * @Route("/{id}", name="home")
+	 * @Route("/{id}", name="home", requirements={"id" = "\d+"})
 	 */
 	public function home($id, Request $request, DbRepository $db_repository) {
 		/** @var Db $db */
@@ -35,11 +37,19 @@ class IndexController extends Controller {
 			$date->sub(new \DateInterval('PT1H'));
 		}
 
-
 		return $this->render('home.html.twig', [
 			'db' => $db,
 			'date' => $date,
 			'ws_url' => 'cellar.arbey.fr/ws',
 		]);
+	}
+
+	/**
+	 * @Route("/test", name="test")
+	 */
+	public function test(WineManager $wine_manager) {
+		$wine_manager->importCSV(file('C:\Users\Julien\Downloads\cavusvinifera-export.xls'));
+
+		return $this->render('test.html.twig', []);
 	}
 }

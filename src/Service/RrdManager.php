@@ -185,7 +185,7 @@ class RrdManager extends AbstractManager {
 	 * @return bool
 	 */
 	private function executeRrdCommand($cmd) {
-		if ($this->rrdtool_bin != null) {
+		if (($this->rrdtool_bin != null) && (file_exists($this->rrdtool_bin))) {
 			return $this->executeCommand($this->rrdtool_bin . ' ' . $cmd);
 		}
 		return false;
