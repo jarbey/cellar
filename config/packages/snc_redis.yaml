@@ -3,7 +3,7 @@ snc_redis:
         default:
             type: predis
             alias: cache
-            dsn: "redis://XmTYDsw8QHAbLjqx@localhost"
+            dsn: "%env(REDIS_URL)%"
             logging: "%kernel.debug%"
     doctrine:
         second_level_cache:
