@@ -48,7 +48,7 @@ class IndexController extends Controller {
 	 * @Route("/test", name="test")
 	 */
 	public function test(WineManager $wine_manager) {
-		$wine_manager->importCSV(file('C:\Users\Julien\Downloads\cavusvinifera-export.xls'));
+		$wine_manager->importCSV(file(__DIR__ . '/../../cavusvinifera-export.csv'));
 
 		return $this->render('test.html.twig', []);
 	}

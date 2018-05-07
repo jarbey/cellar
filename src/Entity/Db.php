@@ -31,6 +31,7 @@ class Db
 	 * @var Sensor[]
 	 *
 	 * @ORM\OneToMany(targetEntity="App\Entity\Sensor", mappedBy="db", cascade={"persist"})
+	 * @ORM\Cache(usage="READ_ONLY")
 	 */
 	private $sensors;
 

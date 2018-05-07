@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Cache(usage="READ_ONLY")
- * @ORM\Entity(repositoryClass="App\Repository\BottleRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\BottleSizeRepository")
  */
-class Bottle
+class BottleSize
 {
     /**
      * @var int
@@ -29,6 +30,12 @@ class Bottle
      * @ORM\Column(type="float", nullable=false)
      */
     private $capacity;
+
+    /**
+     * @var Collection|WineBottle[]
+     * @ORM\OneToMany(targetEntity="App\Entity\WineBottle", mappedBy="area", orphanRemoval=true)
+     */
+    private $bottles;
 
     /**
      * BottleSize constructor.
@@ -85,6 +92,42 @@ class Bottle
      */
     public function setCapacity($capacity) {
         $this->capacity = $capacity;
+        return $this;
+    }
+
+    /**
+     * @return Collection|WineBottle[]
+     */
+    public function getBottles() {
+        return $this->bottles;
+    }
+
+    /**
+     * @param WineBottle $bottle
+     * @return $this
+     */
+    public function addBottle(WineBottle $bottle) {
+        if (!$this->bottles->contains($bottle)) {
+            $this->bottles[] = $bottle;
+            $bottle->setArea($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param WineBottle $bottle
+     * @return $this
+     */
+    public function removeBottle(WineBottle $bottle) {
+        if ($this->bottles->contains($bottle)) {
+            $this->bottles->removeElement($bottle);
+            // set the owning side to null (unless already changed)
+            if ($bottle->getArea() === $this) {
+                $bottle->setArea(null);
+            }
+        }
+
         return $this;
     }
 }

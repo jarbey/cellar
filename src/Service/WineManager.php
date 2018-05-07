@@ -8,15 +8,10 @@
 
 namespace App\Service;
 
-
-use App\Entity\Bottle;
-use App\Entity\Sensor;
-use App\Entity\SensorData;
-use App\Entity\SensorDataGroup;
+use App\Entity\BottleSize;
 use App\Entity\WineArea;
 use App\Entity\WineColor;
-use App\Repository\BottleRepository;
-use App\Repository\SensorRepository;
+use App\Repository\BottleSizeRepository;
 use App\Repository\WineAreaRepository;
 use App\Repository\WineBottleRepository;
 use App\Repository\WineColorRepository;
@@ -27,8 +22,8 @@ use Symfony\Component\Process\Process;
 
 class WineManager extends AbstractManager {
 
-    /** @var BottleRepository */
-    private $bottle_repository;
+    /** @var BottleSizeRepository */
+    private $bottle_size_repository;
 
 	/** @var WineColorRepository */
 	private $wine_color_repository;
@@ -45,15 +40,15 @@ class WineManager extends AbstractManager {
 	/**
 	 * WineManager constructor.
 	 * @param LoggerInterface $logger
-     * @param BottleRepository $bottle_repository
+     * @param BottleSizeRepository $bottle_size_repository
 	 * @param WineColorRepository $wine_color_repository
 	 * @param WineAreaRepository $wine_area_repository
 	 * @param WineBottleRepository $wine_bottle_repository
 	 * @param WineStockRepository $wine_stock_repository
 	 */
-	public function __construct(LoggerInterface $logger, BottleRepository $bottle_repository, WineColorRepository $wine_color_repository, WineAreaRepository $wine_area_repository, WineBottleRepository $wine_bottle_repository, WineStockRepository $wine_stock_repository) {
+	public function __construct(LoggerInterface $logger, BottleSizeRepository $bottle_size_repository, WineColorRepository $wine_color_repository, WineAreaRepository $wine_area_repository, WineBottleRepository $wine_bottle_repository, WineStockRepository $wine_stock_repository) {
 		parent::__construct($logger);
-        $this->bottle_repository = $bottle_repository;
+        $this->bottle_size_repository = $bottle_size_repository;
 		$this->wine_color_repository = $wine_color_repository;
 		$this->wine_area_repository = $wine_area_repository;
 		$this->wine_bottle_repository = $wine_bottle_repository;
@@ -89,7 +84,7 @@ class WineManager extends AbstractManager {
             }
 
             // Bottle
-            $bottle = $this->getBottle($volume);
+            $bottle_size = $this->getBottleSize($volume);
 
             // Color
             $wine_color = $this->getWineColor($stock['label']);
@@ -103,15 +98,27 @@ class WineManager extends AbstractManager {
                 $wine_area = $this->wine_area_repository->create($stock['country_label'], $stock['subregion_label'], $stock['area_label']);
             }
 
+            // Wine bottle
+            $wine_bottle = $this->getWineBottle($stock['nomCru'], $wine_area, $wine_color, $bottle_size, $stock['millesime']);
+            if (!$wine_bottle) {
+                $wine_bottle = $this->wine_bottle_repository->create($stock['nomCru'], $wine_area, $wine_color, $bottle_size, $stock['millesime'], $stock['garde_min'], $stock['garde_max'], $stock['garde_optimum']);
+            }
+
+            // Stock
+            $this->wine_stock_repository->create($wine_bottle,
+                new \DateTime($stock['date_achat']), $stock['prix'],
+                $stock['quantite_courante'], $stock['quantite_achat'],
+                $stock['comment'], $stock['lieu_achat'], $stock['canal_vente']
+            );
         }
     }
 
     /**
      * @param $capacity
-     * @return Bottle|null
+     * @return BottleSize|null
      */
-    public function getBottle($capacity) {
-        return $this->bottle_repository->getBottleByCapacity($capacity);
+    public function getBottleSize($capacity) {
+        return $this->bottle_size_repository->getBottleSizeByCapacity($capacity);
     }
 
     /**
@@ -130,6 +137,18 @@ class WineManager extends AbstractManager {
      */
     public function getWineArea($country, $region, $area) {
         return $this->wine_area_repository->getWineArea($country, $region, $area);
+    }
+
+    /**
+     * @param $name
+     * @param WineArea $wine_area
+     * @param WineColor $wine_color
+     * @param BottleSize $bottle_size
+     * @param $vintage
+     * @return \App\Entity\WineBottle|null
+     */
+    public function getWineBottle($name, WineArea $wine_area, WineColor $wine_color, BottleSize $bottle_size, $vintage) {
+        return $this->wine_bottle_repository->getWineBottle($name, $wine_area, $wine_color, $bottle_size, $vintage);
     }
 
 

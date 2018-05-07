@@ -41,6 +41,13 @@ class WineBottle
     private $color;
 
     /**
+     * @var BottleSize
+     * @ORM\ManyToOne(targetEntity="App\Entity\BottleSize", inversedBy="bottles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $bottle_size;
+
+    /**
      * @var int
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -69,9 +76,27 @@ class WineBottle
      */
     private $stocks;
 
-    public function __construct()
-    {
+    /**
+     * WineBottle constructor.
+     * @param string $name
+     * @param WineArea $area
+     * @param WineColor $color
+     * @param BottleSize $bottle_size
+     * @param int $vintage
+     * @param int $drinkability_start_year
+     * @param int $drinkability_end_year
+     * @param int $drinkability_optimum
+     */
+    public function __construct($name, WineArea $area, WineColor $color, BottleSize $bottle_size, $vintage, $drinkability_start_year, $drinkability_end_year, $drinkability_optimum) {
         $this->stocks = new ArrayCollection();
+        $this->name = $name;
+        $this->area = $area;
+        $this->color = $color;
+        $this->bottle_size = $bottle_size;
+        $this->vintage = $vintage;
+        $this->drinkability_start_year = $drinkability_start_year;
+        $this->drinkability_end_year = $drinkability_end_year;
+        $this->drinkability_optimum = $drinkability_optimum;
     }
 
     /**
@@ -83,7 +108,7 @@ class WineBottle
 
     /**
      * @param int $id
-     * @return Bottle
+     * @return WineBottle
      */
     public function setId($id) {
         $this->id = $id;
@@ -142,6 +167,22 @@ class WineBottle
     }
 
     /**
+     * @return BottleSize
+     */
+    public function getBottleSize() {
+        return $this->bottle_size;
+    }
+
+    /**
+     * @param BottleSize $bottle_size
+     * @return WineBottle
+     */
+    public function setBottleSize($bottle_size) {
+        $this->bottle_size = $bottle_size;
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getVintage() {
@@ -150,7 +191,7 @@ class WineBottle
 
     /**
      * @param int $vintage
-     * @return Bottle
+     * @return WineBottle
      */
     public function setVintage($vintage) {
         $this->vintage = $vintage;

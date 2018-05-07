@@ -48,6 +48,7 @@ class Sensor
 	 *
 	 * @ORM\ManyToOne(targetEntity="App\Entity\TemperatureLimit", inversedBy="sensors")
 	 * @ORM\JoinColumn(name="temperature_limit_id", referencedColumnName="id")
+	 * @ORM\Cache(usage="READ_ONLY")
 	 */
 	private $temperature_limit;
 
@@ -56,6 +57,7 @@ class Sensor
 	 *
 	 * @ORM\ManyToOne(targetEntity="App\Entity\HumidityLimit", inversedBy="sensors")
 	 * @ORM\JoinColumn(name="humidity_limit_id", referencedColumnName="id")
+	 * @ORM\Cache(usage="READ_ONLY")
 	 */
 	private $humidity_limit;
 

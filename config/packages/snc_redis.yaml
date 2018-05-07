@@ -6,6 +6,16 @@ snc_redis:
             dsn: "%env(REDIS_URL)%"
             logging: "%kernel.debug%"
     doctrine:
+        metadata_cache:
+            client: cache
+            entity_manager: default          # the name of your entity_manager connection
+            document_manager: default        # the name of your document_manager connection
+        result_cache:
+            client: cache
+            entity_manager: [default, read]  # you may specify multiple entity_managers
+        query_cache:
+            client: cache
+            entity_manager: default
         second_level_cache:
             client: cache
             entity_manager: default

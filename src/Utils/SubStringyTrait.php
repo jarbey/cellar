@@ -19,7 +19,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return Stringy
+     * @return self
      */
     public function substringAfterFirst($separator) {
         if (($offset = $this->indexOf($separator)) === false) {
@@ -34,7 +34,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return Stringy
+     * @return self
      */
     public function substringAfterLast($separator) {
         if (($offset = $this->indexOfLast($separator)) === false) {
@@ -49,7 +49,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return Stringy
+     * @return self
      */
     public function substringBeforeFirst($separator) {
         if (($offset = $this->indexOf($separator)) === false) {
@@ -64,7 +64,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return Stringy
+     * @return self
      */
     public function substringBeforeLast($separator) {
         if (($offset = $this->indexOfLast($separator)) === false) {
@@ -77,8 +77,8 @@ trait SubStringyTrait {
     /**
      * Extracts a string from between two substrings present on the current string
      * @param  string $start
-     * @param  staing $end
-     * @return Stringy
+     * @param  string $end
+     * @return self
      */
     public function substringBetween($start, $end) {
         $ini = mb_stripos($this->str, $start, 0, $this->encoding);

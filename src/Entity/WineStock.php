@@ -65,6 +65,29 @@ class WineStock
      */
     private $comment_buy;
 
+    /**
+     * WineStock constructor.
+     * @param WineBottle $bottle
+     * @param \DateTimeInterface $date_buy
+     * @param float $price_buy
+     * @param int $quantity_current
+     * @param int $quantity_buy
+     * @param string $location_buy
+     * @param string $location_type_buy
+     * @param string $comment_buy
+     */
+    public function __construct(WineBottle $bottle, \DateTimeInterface $date_buy, $price_buy, $quantity_current, $quantity_buy, $location_buy, $location_type_buy, $comment_buy) {
+        $this->bottle = $bottle;
+        $this->date_buy = $date_buy;
+        $this->price_buy = $price_buy;
+        $this->quantity_current = $quantity_current;
+        $this->quantity_buy = $quantity_buy;
+        $this->location_buy = $location_buy;
+        $this->location_type_buy = $location_type_buy;
+        $this->comment_buy = $comment_buy;
+    }
+
+
     public function getId()
     {
         return $this->id;
