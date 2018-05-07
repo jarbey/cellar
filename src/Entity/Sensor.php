@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 
 /**
+ * @ORM\Cache(usage="READ_ONLY")
  * @ORM\Entity(repositoryClass="App\Repository\SensorRepository")
  */
 class Sensor

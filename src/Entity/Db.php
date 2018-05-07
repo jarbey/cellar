@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Cache(usage="READ_ONLY")
  * @ORM\Entity(repositoryClass="App\Repository\DbRepository")
  */
 class Db

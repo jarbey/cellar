@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Cache(usage="READ_ONLY")
  * @ORM\Entity(repositoryClass="App\Repository\TemperatureLimitRepository")
  */
 class TemperatureLimit extends AbstractSensorLimit
