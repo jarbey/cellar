@@ -37,14 +37,14 @@ class IndexController extends Controller {
 		}
 
 		if ($request->query->get('from', 0) > 0) {
-			$from = new \DateTime('@' . $request->query->get('from', 0));
+			$from = new \DateTime('@' . $request->query->get('from', 0), new \DateTimeZone('Europe/Paris'));
 		} else {
 			$from = new \DateTime();
 			$from->sub(new \DateInterval('P1D'));
 		}
 
 		if ($request->query->get('to', 0) > 0) {
-			$to = new \DateTime('@' . $request->query->get('to', 0));
+			$to = new \DateTime('@' . $request->query->get('to', 0), new \DateTimeZone('Europe/Paris'));
 		} else {
 			$to = new \DateTime();
 		}
