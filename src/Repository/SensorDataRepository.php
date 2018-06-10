@@ -20,7 +20,9 @@ class SensorDataRepository extends ServiceEntityRepository
     }
 
 	/**
-	 * @param SensorData[] $data
+	 * @param array $data
+	 * @throws \Doctrine\ORM\ORMException
+	 * @throws \Doctrine\ORM\OptimisticLockException
 	 */
     public function save($data = []) {
     	/** @var SensorData $sensor_data */
@@ -32,7 +34,9 @@ class SensorDataRepository extends ServiceEntityRepository
 	}
 
 	/**
-	 * @param SensorData[] $data
+	 * @param array $data
+	 * @throws \Doctrine\ORM\ORMException
+	 * @throws \Doctrine\ORM\OptimisticLockException
 	 */
 	public function remove($data = []) {
 		/** @var SensorData $sensor_data */
