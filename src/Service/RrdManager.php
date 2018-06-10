@@ -105,7 +105,15 @@ class RrdManager extends AbstractManager {
 		return false;
 	}
 
-	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start) {
+	/**
+	 * @param Db $db
+	 * @param Sensor $sensor
+	 * @param $type
+	 * @param \DateTime $start
+	 * @param \DateTime $end
+	 * @return bool
+	 */
+	public function graphArchive(Db $db, Sensor $sensor, $type, \DateTime $start, \DateTime $end) {
 		/** @var AbstractSensorLimit $limit */
 		$limit = $sensor->getTemperatureLimit();
 		if ($type == self::HUMIDITY) {
@@ -125,6 +133,7 @@ class RrdManager extends AbstractManager {
 
 		$options = [
 			'--start ' . $start->getTimestamp(),
+			'--end ' . $end->getTimestamp(),
 			'--vertical-label "' . $title . '"',
 			'--height 400',
 			'--width 800',

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>Cellar - {{ db.name }} @ <span id="date">{{ date|date('d/m/Y H:i:s') }}</span></h1>
+	<h1>Cellar - {{ db.name }} - <span id="date"> - Du <input type="datetime" id="from" value="{{ from|date('Y-m-d\TH:i:sP') }}"> Au <input type="datetime" id="to" value="{{ to|date('Y-m-d\TH:i:sP') }}"></span></h1>
 	<div id="ws-content-receiver">
 		Connecting...
 	</div>
@@ -49,8 +49,8 @@
 
 	{% for sensor in db.sensors %}
 		<div class="row">
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?t={{ date|date('U') }}" /></div>
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?t={{ date|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
 		</div>
 	{% endfor %}
 {% endblock %}

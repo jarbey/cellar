@@ -21,6 +21,13 @@ class IndexController extends Controller {
 
 	/**
 	 * @Route("/{id}", name="home", requirements={"id" = "\d+"})
+	 *
+	 * @param $id
+	 * @param Request $request
+	 * @param DbRepository $db_repository
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws EntityNotFoundException
+	 * @throws \Exception
 	 */
 	public function home($id, Request $request, DbRepository $db_repository) {
 		/** @var Db $db */
@@ -29,17 +36,23 @@ class IndexController extends Controller {
 			throw new EntityNotFoundException();
 		}
 
-		$t = $request->query->get('t', 0);
-		if ($t > 0) {
-			$date = new \DateTime('@' . $t);
+		if ($request->query->get('from', 0) > 0) {
+			$from = new \DateTime('@' . $request->query->get('from', 0));
 		} else {
-			$date = new \DateTime();
-			$date->sub(new \DateInterval('PT1H'));
+			$from = new \DateTime();
+			$from->sub(new \DateInterval('P1D'));
+		}
+
+		if ($request->query->get('to', 0) > 0) {
+			$to = new \DateTime('@' . $request->query->get('to', 0));
+		} else {
+			$to = new \DateTime();
 		}
 
 		return $this->render('home.html.twig', [
 			'db' => $db,
-			'date' => $date,
+			'from' => $from,
+			'to' => $to,
 			'ws_url' => 'cellar.arbey.fr/ws',
 		]);
 	}
