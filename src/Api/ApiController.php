@@ -122,14 +122,14 @@ class ApiController extends FOSRestController {
 	 */
 	public function graphSensorAction(Db $db, Sensor $sensor, $type, $from = 0, $to = 0) {
 		if ($from > 0) {
-			$from = new \DateTime('@' . $from, new \DateTimeZone('Europe/Paris'));
+			$from = new \DateTime('@' . $from, \DateTimeZone::UTC);
 		} else {
 			$from = new \DateTime();
 			$from->sub(new \DateInterval('P1D'));
 		}
 
 		if ($to > 0) {
-			$to = new \DateTime('@' . $to, new \DateTimeZone('Europe/Paris'));
+			$to = new \DateTime('@' . $to, \DateTimeZone::UTC);
 		} else {
 			$to = new \DateTime();
 		}
