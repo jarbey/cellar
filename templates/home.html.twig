@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>Cellar - {{ db.name }} @ <span id="date">{{ date|date('d/m/Y H:i:s') }}</span></h1>
+	<h1>Cellar - {{ db.name }} - <span id="date">Du <input type="date" id="from" value="{{ from|date('Y-m-d') }}"> Au <input type="date" id="to" value="{{ to|date('Y-m-d') }}"></span></h1>
 	<div id="ws-content-receiver">
 		Connecting...
 	</div>
@@ -49,8 +49,8 @@
 
 	{% for sensor in db.sensors %}
 		<div class="row">
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?t={{ date|date('U') }}" /></div>
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?t={{ date|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
 		</div>
 	{% endfor %}
 {% endblock %}
@@ -59,6 +59,20 @@
 	<script type="text/javascript">
 		(function () {
 			'use strict';
+
+			var url = new URL(window.location.href);
+			var from = url.searchParams.get('from');
+			var to = url.searchParams.get('to');
+
+			$('#from').change(function () {
+				var from_timestamp = (new Date($(this).val())).getTime() / 1000;
+				window.location = '/{{ db.id }}?from=' + from_timestamp + ((to != null) ? '&to=' + to : '');
+			});
+
+			$('#to').change(function () {
+				var to_timestamp = ((new Date($(this).val())).getTime() / 1000) + 24*3600 - 1;
+				window.location = '/{{ db.id }}?to=' + to_timestamp + ((from != null) ? '&from=' + from : '');
+			});
 
 			var sensors_definition = [];
 			{% for sensor in db.sensors %}
@@ -89,8 +103,6 @@
 				try {
 					var sensor_raw_data = JSON.parse(event.data);
 					console.log(sensor_raw_data);
-
-					$('#date').html(moment(sensor_raw_data.date).format('LTS'));
 
 					var header_content = [];
 					for(var k in sensor_raw_data.sensor_data) {

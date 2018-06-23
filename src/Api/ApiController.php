@@ -99,7 +99,8 @@ class ApiController extends FOSRestController {
 	 * @FOS\Get("{db_id}/sensors/{sensor_id}/graph/{type}", requirements={"db_id" = "\d+", "sensor_id" = "\d+", "type" = "humidity|temperature"})
 	 * @ParamConverter("db", options={"id" = "db_id"})
 	 * @ParamConverter("sensor", options={"id" = "sensor_id"})
-	 * @FOS\QueryParam(name="t", requirements="\d+", default="0", description="Start time of graph")
+	 * @FOS\QueryParam(name="from", requirements="\d+", default="0", description="Start time of graph")
+	 * @FOS\QueryParam(name="to", requirements="\d+", default="0", description="End time of graph")
 	 *
 	 * @SWG\Response(
 	 *     response=200,
@@ -113,20 +114,28 @@ class ApiController extends FOSRestController {
 	 * @param Db $db
 	 * @param Sensor $sensor
 	 * @param string $type
-	 * @param int $t
+	 * @param int $from
+	 * @param int $to
 	 * @return Response
 	 * @throws SensorNotFoundException
+	 * @throws \Exception
 	 */
-	public function graphSensorAction(Db $db, Sensor $sensor, $type, $t = 0) {
-		if ($t > 0) {
-			$date = new \DateTime('@' . $t);
+	public function graphSensorAction(Db $db, Sensor $sensor, $type, $from = 0, $to = 0) {
+		if ($from > 0) {
+			$from = new \DateTime('@' . $from, new \DateTimeZone('UTC'));
 		} else {
-			$date = new \DateTime();
-			$date->sub(new \DateInterval('PT1H'));
+			$from = new \DateTime();
+			$from->sub(new \DateInterval('P1D'));
+		}
+
+		if ($to > 0) {
+			$to = new \DateTime('@' . $to, new \DateTimeZone('UTC'));
+		} else {
+			$to = new \DateTime();
 		}
 
 		// Generate response
-		$response = new Response($this->rrd_manager->graphArchive($db, $sensor, $type, $date));
+		$response = new Response($this->rrd_manager->graphArchive($db, $sensor, $type, $from, $to));
 
 		// Set headers
 		$response->headers->set('Cache-Control', 'no-cache');

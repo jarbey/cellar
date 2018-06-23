@@ -69,6 +69,8 @@ class SensorDataManager extends AbstractManager {
 		/** @var SensorData[] $sensor_data_list */
 		$sensor_data_list = $this->sensor_data_repository->findBy([], [ 'date' => 'ASC' ]);
 
+		$this->getLogger()->info('{nb} items to send', [ 'nb' => count($sensor_data_list) ]);
+
 		// Group sensor data by date
 		$grouped_sensor_data = [];
 		foreach ($sensor_data_list as $sensor_data) {
@@ -80,18 +82,32 @@ class SensorDataManager extends AbstractManager {
 		}
 
 		// Send by date
+		$to_remove = [];
 		ksort($grouped_sensor_data);
 		foreach ($grouped_sensor_data as $date => $sensor_data_list) {
+			$this->getLogger()->debug('Create new SensorDataGroup');
 			$sensor_data_group = new SensorDataGroup(new \DateTime('@' . $date), $sensor_data_list);
 
 			// Server call
+			$this->getLogger()->debug('Call updateDataServer');
 			if (!$this->updateDataServer($sensor_data_group)) {
 				throw new ServerException();
 			}
 
-			// Delete sent data
-			$this->sensor_data_repository->remove($sensor_data_list);
 			$nb_sent += count($sensor_data_list);
+
+			// Delete sent data
+			$to_remove = array_merge($to_remove, $sensor_data_list);
+			if (count($to_remove) > 250) {
+				$this->getLogger()->info('Remove from bdd (nb : {nb})', [ 'nb' => count($to_remove) ]);
+				$this->sensor_data_repository->remove($to_remove);
+				$to_remove = [];
+			}
+		}
+
+		if (count($to_remove) > 0) {
+			$this->getLogger()->info('Remove from bdd (nb : {nb})', [ 'nb' => count($to_remove) ]);
+			$this->sensor_data_repository->remove($to_remove);
 		}
 
 		return $nb_sent;
@@ -102,11 +118,11 @@ class SensorDataManager extends AbstractManager {
 	 * @return bool
 	 */
 	private function updateDataServer(SensorDataGroup $sensor_data_group) {
-		$this->getLogger()->debug("Update server data for date {date}", [ 'date' => $sensor_data_group->getDate() ]);
+		$this->getLogger()->debug('Update server data for date {date}', [ 'date' => $sensor_data_group->getDate() ]);
 
 		$payload = $this->serializer->serialize($sensor_data_group, 'json', SerializationContext::create()->setGroups(['updateSensorData']));
 
-		$this->getLogger()->debug("With data {data}", [ 'data' => $payload ]);
+		$this->getLogger()->debug('With data {data}', [ 'data' => $payload ]);
 
 		try {
 			// PUT /{db_id}/{timestamp}
