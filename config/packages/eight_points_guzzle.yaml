@@ -3,26 +3,40 @@ eight_points_guzzle:
         cellar_server:
             # Write here the host where to do requests
             base_url: '%env(SERVER_API_ENDPOINT)%'
-
             options:
                 timeout: 30
-
                 headers:
                     User-Agent: 'cellar device'
                     Content-Type: 'application/json'
                     Accept: 'application/json'
-
             plugin: ~
         idealwine:
-            # Write here the host where to do requests
             base_url: 'https://www.idealwine.com/'
-
             options:
                 cookies: true
                 timeout: 30
-
                 headers:
+                    User-Agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'
                     Content-Type: 'application/json'
                     Accept: 'application/json'
-
+            plugin: ~
+        winedecider:
+            base_url: 'http://www.winedecider.com/'
+            options:
+                cookies: true
+                timeout: 30
+                headers:
+                    User-Agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'
+                    Content-Type: 'application/json'
+                    Accept: 'application/json'
+            plugin: ~
+        platsnetvins:
+            base_url: 'https://www.platsnetvins.com'
+            options:
+                cookies: true
+                timeout: 30
+                headers:
+                    User-Agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36'
+                    Content-Type: 'application/json'
+                    Accept: 'application/json'
             plugin: ~

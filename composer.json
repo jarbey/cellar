@@ -29,7 +29,8 @@
         "symfony/translation": "^4.0",
         "symfony/twig-bundle": "^4.0",
         "symfony/validator": "^4.0",
-        "symfony/yaml": "^4.0"
+        "symfony/yaml": "^4.0",
+        "wa72/htmlpagedom": "^1.3"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
@@ -115,6 +116,10 @@
         {
             "type": "vcs",
             "url": "git@github.com:jarbey/chromecast.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:to0oner/pquery.git"
         }
     ]
 }

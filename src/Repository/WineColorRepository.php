@@ -24,7 +24,7 @@ class WineColorRepository extends ServiceEntityRepository
      * @return WineColor|null
      */
     public function getWineColorByName($name) {
-        return $this->findOneBy(['name' => $name]);
+        return $this->findOneBy(['name' => strtolower($name)]);
     }
 
     /**
@@ -32,7 +32,7 @@ class WineColorRepository extends ServiceEntityRepository
      * @return WineColor
      */
     public function create($name) {
-        $wine_color = new WineColor($name);
+        $wine_color = new WineColor(strtolower($name));
         $this->_em->persist($wine_color);
         $this->_em->flush($wine_color);
 

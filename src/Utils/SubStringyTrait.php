@@ -19,7 +19,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return self
+     * @return StringUtils
      */
     public function substringAfterFirst($separator) {
         if (($offset = $this->indexOf($separator)) === false) {
@@ -34,7 +34,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return self
+     * @return StringUtils
      */
     public function substringAfterLast($separator) {
         if (($offset = $this->indexOfLast($separator)) === false) {
@@ -49,7 +49,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return self
+     * @return StringUtils
      */
     public function substringBeforeFirst($separator) {
         if (($offset = $this->indexOf($separator)) === false) {
@@ -64,7 +64,7 @@ trait SubStringyTrait {
      * If no match is found returns false.
      *
      * @param string $separator
-     * @return self
+     * @return StringUtils
      */
     public function substringBeforeLast($separator) {
         if (($offset = $this->indexOfLast($separator)) === false) {
@@ -78,7 +78,7 @@ trait SubStringyTrait {
      * Extracts a string from between two substrings present on the current string
      * @param  string $start
      * @param  string $end
-     * @return self
+     * @return StringUtils
      */
     public function substringBetween($start, $end) {
         $ini = mb_stripos($this->str, $start, 0, $this->encoding);
@@ -100,5 +100,12 @@ trait SubStringyTrait {
      */
     public function substringCount($substr) {
         return mb_substr_count($this->str, $substr, $this->encoding);
+    }
+
+    /**
+     * @return StringUtils
+     */
+    function stripAccents() {
+        return static::create(strtr(utf8_decode($this->str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY'));
     }
 }

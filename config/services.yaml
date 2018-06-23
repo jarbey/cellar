@@ -66,3 +66,11 @@ services:
     App\Service\IDealWineManager:
         arguments:
             $client: '@eight_points_guzzle.client.idealwine'
+
+    App\Service\WineDeciderManager:
+        arguments:
+            $client: '@eight_points_guzzle.client.winedecider'
+
+    App\Service\PlatsnetvinsManager:
+        arguments:
+            $client: '@eight_points_guzzle.client.platsnetvins'

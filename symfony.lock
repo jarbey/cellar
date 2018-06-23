@@ -257,6 +257,9 @@
             "ref": "9f94d3ea453cd8a3b95db7f82592d7344fe3a76a"
         }
     },
+    "symfony/css-selector": {
+        "version": "v4.0.9"
+    },
     "symfony/debug": {
         "version": "v4.0.2"
     },
@@ -265,6 +268,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v4.0.2"
+    },
+    "symfony/dom-crawler": {
+        "version": "v4.0.9"
     },
     "symfony/dotenv": {
         "version": "v4.0.2"
@@ -424,6 +430,9 @@
     },
     "twig/twig": {
         "version": "v2.4.4"
+    },
+    "wa72/htmlpagedom": {
+        "version": "v1.3.1"
     },
     "webmozart/assert": {
         "version": "1.3.0"
