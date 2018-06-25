@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Cellar - Bottle list</h1>
+
+	{% for wine_bottle in wine_bottles %}
+		{{ wine_bottle.area.areaName }}<br />
+	{% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

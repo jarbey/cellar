@@ -56,22 +56,27 @@ class WineManager extends AbstractManager {
 	}
 
     /**
-     * @param $csvFile
+     * @param array $lines
      */
-    public function importCSV($csvFile) {
+    public function importCSV($lines) {
         $data = [];
         $first_line = [];
         $is_first = true;
-        foreach ($csvFile as $line) {
+        $nb_cols = 0;
+        foreach ($lines as $line) {
             if ($is_first) {
                 $is_first = false;
                 $first_line = str_getcsv($line, "\t");
+                $nb_cols = count($first_line);
             } else {
                 $line_data = [];
-                foreach (str_getcsv($line, "\t") as $key => $value) {
-                    $line_data[$first_line[$key]] = $value;
+                $raw_line_data = str_getcsv($line, "\t");
+                if (count($raw_line_data) == $nb_cols) {
+                    foreach ($raw_line_data as $key => $value) {
+                        $line_data[$first_line[$key]] = $value;
+                    }
+                    $data[] = $line_data;
                 }
-                $data[] = $line_data;
             }
         }
 
@@ -149,6 +154,13 @@ class WineManager extends AbstractManager {
      */
     public function getWineBottle($name, WineArea $wine_area, WineColor $wine_color, BottleSize $bottle_size, $vintage) {
         return $this->wine_bottle_repository->getWineBottle($name, $wine_area, $wine_color, $bottle_size, $vintage);
+    }
+
+    /**
+     * @return WineBottleRepository
+     */
+    public function getWineBottleRepository() {
+        return $this->wine_bottle_repository;
     }
 
 

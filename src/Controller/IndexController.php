@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Bottle;
 use App\Entity\Db;
 use App\Repository\DbRepository;
+use App\Service\CavusviniferaManager;
 use App\Service\WineManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -58,11 +59,25 @@ class IndexController extends Controller {
 	}
 
 	/**
-	 * @Route("/test", name="test")
+	 * @Route("/{id}/list", name="cellar_list", requirements={"id" = "\d+"})
+	 *
+	 * @param $id
+	 * @param WineManager $wineManager
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws EntityNotFoundException
+	 * @throws \Exception
 	 */
-	public function test(WineManager $wine_manager) {
-		$wine_manager->importCSV(file(__DIR__ . '/../../cavusvinifera-export.csv'));
+	public function cellarList($id, WineManager $wineManager) {
+		$wine_bottles = $wineManager->getWineBottleRepository()->findAll();
 
-		return $this->render('test.html.twig', []);
+		return $this->render('cellar/list.html.twig', ['wine_bottles' => $wine_bottles]);
+	}
+
+	/**
+	 * @Route("/import", name="import")
+	 */
+	public function import(CavusviniferaManager $cavusvinifera_manager) {
+		$cavusvinifera_manager->import();
+		return $this->render('import.html.twig', []);
 	}
 }
