@@ -161,13 +161,7 @@
 
             const CUSTOM_CHANNEL = 'urn:x-cast:fr.cellar.arbey.cast';
             context.addCustomMessageListener(CUSTOM_CHANNEL, function (event) {
-                console.log(event);
-                var msg = JSON.parse(event.data);
-                if (msg.force) {
-                    return loadPage(msg.url);
-                }
-                loadFrame(msg.url, (msg.reload) ? parseInt(msg.reload_time, 10) : 0);
-
+                loadFrame(event.data.url);
                 window.messageBus.send(event.senderId, event.data);
             });
 
