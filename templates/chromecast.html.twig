@@ -107,9 +107,9 @@
 
             if1.onload = function (e) {
                 setStatus('');
-            }
+            };
 
-            function loadFrame(url, reload_time) {
+            function loadFrame(url) {
                 setStatus('Loading: ' + url);
                 if1.src = url;
             }
@@ -123,8 +123,10 @@
 
             const CUSTOM_CHANNEL = 'urn:x-cast:fr.cellar.arbey.cast';
             context.addCustomMessageListener(CUSTOM_CHANNEL, function (event) {
-                loadFrame(event.data.url);
-                window.messageBus.send(event.senderId, event.data);
+                url = event.data.url;
+                setStatus('Loading: ' + url);
+                if1.src = url;
+                context.sendCustomMessage(CUSTOM_CHANNEL, event.senderId, event.data);
             });
 
             context.start({statusText: 'Application is starting'});
