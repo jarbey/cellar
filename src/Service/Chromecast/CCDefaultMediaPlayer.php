@@ -18,27 +18,18 @@ class CCDefaultMediaPlayer {
 		$this->chromecast = $hostchromecast;
 	}
 	
-	public function play($url, $streamType = 'BUFFERED', $contentType = 'video/mp4', $autoPlay = true, $currentTime = 0) {
-	    // Start a playing
-		// First ensure there's an instance of the DMP running
+	public function play($url) {
 		$this->launch();
 
 		$message = [
-		    'requestId' => $this->chromecast->requestId,
-            'type' => 'LOAD',
-            'autoPlay' => true,
-            'currentTime' => 0,
-            'media' => [
-                'contentId' => $url,
-                'streamType' => $streamType,
-                'contentType' => $contentType
-            ]
+		    'url' => $url
         ];
 		$json = json_encode($message);
-		$this->chromecast->sendMessage("urn:x-cast:com.google.cast.media", $json);
+		$this->chromecast->sendMessage('urn:x-cast:fr.cellar.arbey.cast', $json);
 		$r = '';
 		while (!(preg_match('/"playerState":"PLAYING"/', $r) || preg_match('/"playerState":"IDLE"/', $r))) {
 			$r = $this->chromecast->getCastMessage();
+			echo '-> ' . $r;
 			sleep(1);
 		}
 		// Grab the mediaSessionId
