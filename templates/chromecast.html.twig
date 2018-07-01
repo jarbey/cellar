@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DashCast</title>
+    <title>Cellar</title>
     <style type="text/css">
         html {
             height: 100%;
@@ -14,18 +14,18 @@
             height: 100%;
             padding: 0;
             margin: 0;
-            background: black url("logo.png") no-repeat 50% 50%;
+            background: black url("/logo.png") no-repeat 50% 50%;
         }
 
         #main {
             height: 100%;
-            background: black url("logo.png") no-repeat 50% 50%;
+            background: black url("/logo.png") no-repeat 50% 50%;
             opacity: 0;
             transition: opacity 4s ease;
         }
 
         #main, iframe {
-            background: black url("logo.png") no-repeat 50% 50%;
+            background: black url("/logo.png") no-repeat 50% 50%;
         }
 
         #main.show {
@@ -80,53 +80,54 @@
 <div id="status" class="empty">
 </div>
 
+<script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
 <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 <script type="text/javascript">
     var reload_time = 0;
     var timer_id = null;
 
     window.onload = function () {
-        var main = document.getElementById("main");
-        var status = document.getElementById("status");
+        var main = document.getElementById('main');
+        var status = document.getElementById('status');
 
-        var if1 = document.getElementById("if1");
-        var if2 = document.getElementById("if2");
+        var if1 = document.getElementById('if1');
+        var if2 = document.getElementById('if2');
         var current = if2;
         var candidate = if1;
 
-        main.classList.add("show");
+        main.classList.add('show');
 
         function setStatus(msg) {
             if (msg) {
-                status.classList.remove("empty");
+                status.classList.remove('empty');
             }
             else {
-                status.classList.add("empty");
+                status.classList.add('empty');
             }
             status.textContent = msg;
         }
 
         if2.onload = if1.onload = function (e) {
             var the_if = this;
-            if (the_if.src.indexOf("dashcast_is_error_page_zz") > 0) {
-                the_if.src = the_if.getAttribute("target-src");
+            if (the_if.src.indexOf('dashcast_is_error_page_zz') > 0) {
+                the_if.src = the_if.getAttribute('target-src');
                 return;
             }
             if (the_if === candidate) {
                 if (timer_id) {
                     window.clearTimeout(timer_id);
                 }
-                setStatus("");
+                setStatus('');
                 current.style.zIndex = 2;
                 candidate.style.zIndex = 3;
-                candidate.classList.add("show");
+                candidate.classList.add('show');
                 var temp = current;
                 current = candidate;
                 candidate = temp;
                 if (reload_time) {
-                    console.log("GOT RELOAD", reload_time)
+                    console.log('GOT RELOAD', reload_time)
                     timer_id = setTimeout(function () {
-                        console.log("RELOADING");
+                        console.log('RELOADING');
                         loadFrame(the_if.src, reload_time);
                     }, reload_time);
                 }
@@ -134,45 +135,40 @@
         }
 
         function loadFrame(url, reload_time) {
-            setStatus("Loading: " + url);
+            setStatus('Loading: ' + url);
             window.reload_time = reload_time;
-            candidate.src = "error.html?dashcast_is_error_page_zz";
-            candidate.setAttribute("target-src", url);
-            candidate.classList.remove("show");
+            candidate.src = 'error.html?dashcast_is_error_page_zz';
+            candidate.setAttribute('target-src', url);
+            candidate.classList.remove('show');
             //candidate.src = url;
         }
 
         function loadPage(url) {
-            setStatus("Force loading: " + url);
+            setStatus('Force loading: ' + url);
             window.setTimeout(function () {
                 window.location = url;
             }, 1000);
         }
 
-        cast.receiver.logger.setLevelValue(0);
-        window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-        castReceiverManager.onReady = function (event) {
-            window.castReceiverManager.setApplicationState("Application ready");
-            setStatus("Waiting for address")
-        };
+        const context = cast.framework.CastReceiverContext.getInstance();
+        const playerManager = context.getPlayerManager();
 
-        // create a CastMessageBus to handle messages for a custom namespace
-        window.messageBus = window.castReceiverManager.getCastMessageBus('urn:x-cast:fr.cellar.arbey.cast');
+        playerManager.addEventListener(cast.framework.events.EventType.ALL, function (event) {
+            console.log(event);
+        });
 
-        // handler for the CastMessageBus message event
-        window.messageBus.onMessage = function (event) {
+        const CUSTOM_CHANNEL = 'urn:x-cast:fr.cellar.arbey.cast';
+        context.addCustomMessageListener(CUSTOM_CHANNEL, function (customEvent) {
             var msg = JSON.parse(event.data);
             if (msg.force) {
                 return loadPage(msg.url);
             }
             loadFrame(msg.url, (msg.reload) ? parseInt(msg.reload_time, 10) : 0);
-            // inform all senders on the CastMessageBus of the incoming message event
-            // sender message listener will be invoked
-            window.messageBus.send(event.senderId, event.data);
-        }
 
-        // initialize the CastReceiverManager with an application status message
-        window.castReceiverManager.start({statusText: "Application is starting"});
+            window.messageBus.send(event.senderId, event.data);
+        });
+
+        context.start({statusText: 'Application is starting'});
     };
 
 </script>

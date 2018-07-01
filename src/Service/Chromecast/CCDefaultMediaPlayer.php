@@ -26,15 +26,6 @@ class CCDefaultMediaPlayer {
         ];
 		$json = json_encode($message);
 		$this->chromecast->sendMessage('urn:x-cast:fr.cellar.arbey.cast', $json);
-		$r = '';
-		while (!(preg_match('/"playerState":"PLAYING"/', $r) || preg_match('/"playerState":"IDLE"/', $r))) {
-			$r = $this->chromecast->getCastMessage();
-			echo '-> ' . $r;
-			sleep(1);
-		}
-		// Grab the mediaSessionId
-		preg_match('/"mediaSessionId":([^\,]*)/', $r, $m);
-		$this->mediaid = $m[1];
 	}
 
 	public function launch() {
@@ -47,9 +38,9 @@ class CCDefaultMediaPlayer {
 		preg_match('/"appId":"([^"]*)/', $s, $m);
 		$appId = $m[1];
 		if ($appId == $this->appId) {
-			// Default Media Receiver is live
+			// Receiver is live
 			$this->chromecast->connect();
-			$this->getStatus();
+			//$this->getStatus();
 		} else {
 			// Default Media Receiver is not currently live, start it.
 			$this->chromecast->launch($this->appId);
@@ -57,7 +48,7 @@ class CCDefaultMediaPlayer {
 			$r = '';
 			while (!preg_match('/"appId":"' . $this->appId . '"/', $r) && !preg_match('/"statusText":"' . $this->appStatusText . '"/', $r)) {
 				$r = $this->chromecast->getStatus();
-				echo $r;
+				echo '-> ' . $r;
 				sleep(1);
 			}
 			$this->chromecast->connect();
