@@ -81,7 +81,6 @@
 </div>
 
 <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-<script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 <script type="text/javascript">
     var reload_time = 0;
     var timer_id = null;
@@ -168,7 +167,7 @@
             window.messageBus.send(event.senderId, event.data);
         });
 
-        context.start({statusText: 'Application is starting'});
+        context.start();
     };
 
 </script>
