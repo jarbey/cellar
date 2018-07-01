@@ -80,4 +80,16 @@ class IndexController extends Controller {
 		$cavusvinifera_manager->import();
 		return $this->render('import.html.twig', []);
 	}
+
+	/**
+	 * @Route("/{id}/chromecast", name="chromecast", requirements={"id" = "\d+"})
+	 *
+	 * @param $id
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws EntityNotFoundException
+	 * @throws \Exception
+	 */
+	public function chromecast($id) {
+		return $this->render('chromecast.html.twig', []);
+	}
 }

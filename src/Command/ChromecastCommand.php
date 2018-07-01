@@ -34,8 +34,14 @@ class ChromecastCommand extends AbstractCommand {
         $output->writeln('<info>Start Chromecast</info>');
 
         //$this->chromecastManager->DMP->play('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', 'BUFFERED', 'video/mp4', true, 0);
-        $this->chromecastManager->DMP->play('https://votre-cave-a-vin.fr/wp-content/uploads/2017/09/tarif-cave-a-vin.jpg', 'NONE', 'image/jpeg');
-        sleep(20);
+        $this->chromecastManager->DMP->play('http://cellar.arbey.fr/api/1/sensors/1/graph/temperature?from=1530292240&to=1530378640', 'NONE', 'image/jpeg');
+        sleep(5);
+        $this->chromecastManager->DMP->play('http://cellar.arbey.fr/api/1/sensors/2/graph/temperature?from=1530292240&to=1530378640', 'NONE', 'image/jpeg');
+        sleep(5);
+        $this->chromecastManager->DMP->play('http://cellar.arbey.fr/api/1/sensors/3/graph/temperature?from=1530292240&to=1530378640', 'NONE', 'image/jpeg');
+        sleep(5);
+        $this->chromecastManager->DMP->play('http://cellar.arbey.fr/api/1/sensors/4/graph/temperature?from=1530292240&to=1530378640', 'NONE', 'image/jpeg');
+        sleep(5);
         $this->chromecastManager->DMP->stop();
         $this->chromecastManager->stop();
     }
