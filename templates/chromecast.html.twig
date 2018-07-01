@@ -126,6 +126,8 @@
                 url = event.data.url;
                 setStatus('Loading: ' + url);
                 if1.src = url;
+                if1.style.zIndex = 3;
+                if1.classList.add('show');
                 context.sendCustomMessage(CUSTOM_CHANNEL, event.senderId, event.data);
             });
 
