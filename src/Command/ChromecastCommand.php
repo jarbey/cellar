@@ -32,8 +32,6 @@ class ChromecastCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln('<info>Start Chromecast</info>');
-
         $this->chromecastManager->DMP->play('http://cellar.arbey.fr/1');
-        sleep(60);
     }
 }

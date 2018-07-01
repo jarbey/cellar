@@ -77,7 +77,6 @@
 
     <div id="main" class="fade">
         <iframe id="if1"></iframe>
-        <iframe id="if2"></iframe>
     </div>
     <div id="status" class="empty">
     </div>
@@ -93,9 +92,6 @@
             var status = document.getElementById('status');
 
             var if1 = document.getElementById('if1');
-            var if2 = document.getElementById('if2');
-            var current = if2;
-            var candidate = if1;
 
             main.classList.add('show');
 
@@ -109,47 +105,13 @@
                 status.textContent = msg;
             }
 
-            if2.onload = if1.onload = function (e) {
-                var the_if = this;
-                if (the_if.src.indexOf('dashcast_is_error_page_zz') > 0) {
-                    the_if.src = the_if.getAttribute('target-src');
-                    return;
-                }
-                if (the_if === candidate) {
-                    if (timer_id) {
-                        window.clearTimeout(timer_id);
-                    }
-                    setStatus('');
-                    current.style.zIndex = 2;
-                    candidate.style.zIndex = 3;
-                    candidate.classList.add('show');
-                    var temp = current;
-                    current = candidate;
-                    candidate = temp;
-                    if (reload_time) {
-                        console.log('GOT RELOAD', reload_time)
-                        timer_id = setTimeout(function () {
-                            console.log('RELOADING');
-                            loadFrame(the_if.src, reload_time);
-                        }, reload_time);
-                    }
-                }
+            if1.onload = function (e) {
+                setStatus('');
             }
 
             function loadFrame(url, reload_time) {
                 setStatus('Loading: ' + url);
-                window.reload_time = reload_time;
-                candidate.src = 'error.html?dashcast_is_error_page_zz';
-                candidate.setAttribute('target-src', url);
-                candidate.classList.remove('show');
-                //candidate.src = url;
-            }
-
-            function loadPage(url) {
-                setStatus('Force loading: ' + url);
-                window.setTimeout(function () {
-                    window.location = url;
-                }, 1000);
+                if1.src = url;
             }
 
             const context = cast.framework.CastReceiverContext.getInstance();
