@@ -33,6 +33,9 @@ class ChromecastCommand extends AbstractCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln('<info>Start Chromecast</info>');
 
+        $this->chromecastManager->DMP->launch();
+        sleep(5);
+
         //$this->chromecastManager->DMP->play('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', 'BUFFERED', 'video/mp4', true, 0);
         $this->chromecastManager->DMP->play('http://cellar.arbey.fr/api/1/sensors/1/graph/temperature?from=1530292240&to=1530378640', 'NONE', 'image/jpeg');
         sleep(5);

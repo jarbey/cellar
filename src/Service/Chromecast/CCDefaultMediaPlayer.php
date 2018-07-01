@@ -5,7 +5,10 @@ namespace App\Service\Chromecast;
 use App\Service\ChromecastManager;
 
 class CCDefaultMediaPlayer {
-	public $appid = 'CC1AD845';
+	public $appId = '892551FD';
+	//public $appId = 'CC1AD845';
+	public $appStatusText = 'Cellar';
+	//public $appStatusText = 'Default Media Receiver';
 	public $mediaid;
 
 	/** @var ChromecastManager */
@@ -19,6 +22,7 @@ class CCDefaultMediaPlayer {
 	    // Start a playing
 		// First ensure there's an instance of the DMP running
 		$this->launch();
+
 		$message = [
 		    'requestId' => $this->chromecast->requestId,
             'type' => 'LOAD',
@@ -48,20 +52,21 @@ class CCDefaultMediaPlayer {
 		$this->chromecast->transportid = '';
 		$this->chromecast->cc_connect();
 		$s = $this->chromecast->getStatus();
-		// Grab the appid
+		// Grab the appId
 		preg_match('/"appId":"([^"]*)/', $s, $m);
-		$appid = $m[1];
-		if ($appid == $this->appid) {
+		$appId = $m[1];
+		if ($appId == $this->appId) {
 			// Default Media Receiver is live
 			$this->chromecast->connect();
 			$this->getStatus();
 		} else {
 			// Default Media Receiver is not currently live, start it.
-			$this->chromecast->launch($this->appid);
-			$this->chromecast->transportid = "";
-			$r = "";
-			while (!preg_match("/Ready to Cast/", $r) && !preg_match("/Default Media Receiver/", $r)) {
+			$this->chromecast->launch($this->appId);
+			$this->chromecast->transportid = '';
+			$r = '';
+			while (!preg_match('/"appId":"' . $this->appId . '"/', $r) && !preg_match('/"statusText":"' . $this->appStatusText . '"/', $r)) {
 				$r = $this->chromecast->getStatus();
+				echo $r;
 				sleep(1);
 			}
 			$this->chromecast->connect();
