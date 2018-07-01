@@ -157,6 +157,13 @@ class WineManager extends AbstractManager {
     }
 
     /**
+     * @return WineColorRepository
+     */
+    public function getWineColorRepository() {
+        return $this->wine_color_repository;
+    }
+
+    /**
      * @return WineBottleRepository
      */
     public function getWineBottleRepository() {

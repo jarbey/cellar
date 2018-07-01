@@ -26,11 +26,12 @@ class IndexController extends Controller {
 	 * @param $id
 	 * @param Request $request
 	 * @param DbRepository $db_repository
+	 * @param WineManager $wineManager
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @throws EntityNotFoundException
 	 * @throws \Exception
 	 */
-	public function home($id, Request $request, DbRepository $db_repository) {
+	public function home($id, Request $request, DbRepository $db_repository, WineManager $wineManager) {
 		/** @var Db $db */
 		$db = $db_repository->find($id);
 		if ($db == null) {
@@ -50,11 +51,17 @@ class IndexController extends Controller {
 			$to = new \DateTime();
 		}
 
+		$stats_color = [];
+		foreach ($wineManager->getWineColorRepository()->findAll() as $wine_color) {
+			$stats_color[$wine_color->getName()] = $wineManager->getWineBottleRepository()->getNbWineBottleColor($wine_color);
+		}
+
 		return $this->render('home.html.twig', [
 			'db' => $db,
 			'from' => $from,
 			'to' => $to,
 			'ws_url' => 'cellar.arbey.fr/ws',
+			'stats_color' => $stats_color,
 		]);
 	}
 

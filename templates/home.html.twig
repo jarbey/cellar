@@ -2,49 +2,31 @@
 
 {% block body %}
 	<h1>Cellar - {{ db.name }} - <span id="date">Du <input type="date" id="from" value="{{ from|date('Y-m-d') }}"> Au <input type="date" id="to" value="{{ to|date('Y-m-d') }}"></span></h1>
-	<div id="ws-content-receiver">
-		Connecting...
-	</div>
 
-	<div class="row">
+	<div id="topcorner">
+		<div class="container">
 		{% for sensor in db.sensors %}
-		<div class="col">
-			<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_temperature_state">
-				<div class="card-header">
-					<div class="card-body">
-						<div class="row">
-							<div class="col">
-								<i class="fa fa-thermometer-quarter fa-5x" id="sensor_{{ sensor.id }}_temperature_icon"></i>
-							</div>
-							<div class="col text-right">
-								<div class="huge" id="sensor_{{ sensor.id }}_temperature_value">???</div>
-							</div>
-						</div>
-					</div>
+			<div class="row text-white bg-success" style="display: flex; height: 5em; width: 350px" id="sensor_{{ sensor.id }}_temperature_state">
+				<div class="col" style="display: flex; margin: auto">
+					{{ sensor.name }} :
+				</div>
+				<div class="col" style="display: flex; margin: auto">
+					<div style="margin: auto"><i class="fa fa-thermometer-quarter" id="sensor_{{ sensor.id }}_temperature_icon"></i></div>
+					<div id="sensor_{{ sensor.id }}_temperature_value">???</div>
+				</div>
+				<div class="col" style="display: flex; margin: auto">
+					<div style="margin: auto"><i class="fa fa-tint" id="sensor_{{ sensor.id }}_humidity_icon"></i></div>
+					<div id="sensor_{{ sensor.id }}_humidity_value">???</div>
 				</div>
 			</div>
+		{% endfor %}
+		{% for color, nb in stats_color %}
+			<div class="row text-black" style="display: flex; width: 350px">
+				<div class="col" style="display: flex; margin: auto">{{ color }} :</div>
+				<div class="col" style="display: flex; margin: auto">{{ nb }}</div>
+			</div>
+		{% endfor %}
 		</div>
-		{% endfor %}
-	</div>
-	<div class="row">
-		{% for sensor in db.sensors %}
-			<div class="col">
-				<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_humidity_state">
-					<div class="card-header">
-						<div class="card-body">
-							<div class="row">
-								<div class="col">
-									<i class="fa fa-tint fa-5x" id="sensor_{{ sensor.id }}_humidity_icon"></i>
-								</div>
-								<div class="col text-right">
-									<div class="huge" id="sensor_{{ sensor.id }}_humidity_value">???</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		{% endfor %}
 	</div>
 
 	{% for sensor in db.sensors %}
@@ -92,12 +74,8 @@
 				};
 			{% endfor %}
 
-			var _receiver = document.getElementById('ws-content-receiver');
+			var _receiver = document.getElementById('ws_status');
 			var ws = new WebSocket('wss://{{ ws_url }}');
-
-			ws.onopen = function () {
-				_receiver.innerHTML = 'Connected !';
-			};
 
 			ws.onmessage = function (event) {
 				try {
@@ -111,7 +89,7 @@
 
 						$('#sensor_' + sid + '_temperature_value').html(sensor_data.temperature + '°C');
 						var state_sel = $('#sensor_' + sid + '_temperature_state');
-						state_sel.removeClass().addClass('card text-white');
+						state_sel.removeClass().addClass('row text-white');
 						var limit = sensors_definition[sid].temperature_limit;
 						if ((sensor_data.temperature < limit.low_alert_value) || (sensor_data.temperature > limit.high_alert_value)) {
 							state_sel.addClass('bg-danger');
@@ -123,7 +101,7 @@
 
 						$('#sensor_' + sid + '_humidity_value').html(sensor_data.humidity + '%');
 						var state_sel = $('#sensor_' + sid + '_humidity_state');
-						state_sel.removeClass().addClass('card text-white');
+						state_sel.removeClass().addClass('row text-white');
 						limit = sensors_definition[sid].humidity_limit;
 						if ((sensor_data.humidity < limit.low_alert_value) || (sensor_data.humidity > limit.high_alert_value)) {
 							state_sel.addClass('bg-danger');

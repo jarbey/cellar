@@ -38,12 +38,14 @@ class PharmacieFixture extends Fixture implements OrderedFixtureInterface
 		$fridge_humidity_limit = $this->getReference('fridge_humidity_limit');
 
 		$sensor1 = new Sensor();
+		$sensor1->setName('Frigo');
 		$sensor1->setType('22');
 		$sensor1->setGpio(5);
 		$sensor1->setTemperatureLimit($fridge_temperature_limit);
 		$sensor1->setHumidityLimit($fridge_humidity_limit);
 
 		$sensor2 = new Sensor();
+		$sensor2->setName('Frigo');
 		$sensor2->setType('22');
 		$sensor2->setGpio(6);
 		$sensor2->setTemperatureLimit($fridge_temperature_limit);

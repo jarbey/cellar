@@ -26,6 +26,13 @@ class Sensor
 	 *
 	 * @ORM\Column(type="text")
 	 */
+	private $name;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="text")
+	 */
 	private $type;
 
 	/**
@@ -75,6 +82,22 @@ class Sensor
 	public function setId($id) {
 		$this->id = $id;
 
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 * @return Sensor
+	 */
+	public function setName($name) {
+		$this->name = $name;
 		return $this;
 	}
 

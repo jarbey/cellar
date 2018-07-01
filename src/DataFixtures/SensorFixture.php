@@ -43,24 +43,28 @@ class SensorFixture extends Fixture implements OrderedFixtureInterface
 		$outside_humidity_limit = $this->getReference('outside_humidity_limit');
 
 		$sensor1 = new Sensor();
+		$sensor1->setName('Armoire droite');
 		$sensor1->setType('22');
 		$sensor1->setGpio(5);
 		$sensor1->setTemperatureLimit($cellar_temperature_limit);
 		$sensor1->setHumidityLimit($cellar_humidity_limit);
 
 		$sensor2 = new Sensor();
+		$sensor2->setName('Pièce');
 		$sensor2->setType('11');
 		$sensor2->setGpio(6);
 		$sensor2->setTemperatureLimit($outside_temperature_limit);
 		$sensor2->setHumidityLimit($outside_humidity_limit);
 
 		$sensor3 = new Sensor();
+		$sensor3->setName('Armoire gauche');
 		$sensor3->setType('22');
 		$sensor3->setGpio(12);
 		$sensor3->setTemperatureLimit($cellar_temperature_limit);
 		$sensor3->setHumidityLimit($cellar_humidity_limit);
 
 		$sensor4 = new Sensor();
+		$sensor4->setName('Armoire gauche');
 		$sensor4->setType('22');
 		$sensor4->setGpio(13);
 		$sensor4->setTemperatureLimit($cellar_temperature_limit);

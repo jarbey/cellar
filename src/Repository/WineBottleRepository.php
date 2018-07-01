@@ -22,6 +22,21 @@ class WineBottleRepository extends ServiceEntityRepository
         parent::__construct($registry, WineBottle::class);
     }
 
+
+    /**
+     * @param WineColor $wine_color
+     * @return int
+     */
+    public function getNbWineBottleColor(WineColor $wine_color) {
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('SUM(stocks.quantity_current) AS nb');
+        $qb->join('t.stocks', 'stocks');
+        $qb->where('t.color = :color');
+        $qb->setParameter('color', $wine_color);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
     /**
      * @param $name
      * @param WineArea $wine_area
