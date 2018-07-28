@@ -1,15 +1,27 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>Cellar - {{ db.name }}{# - <span id="date">Du <input type="date" id="from" value="{{ from|date('Y-m-d') }}"> Au <input type="date" id="to" value="{{ to|date('Y-m-d') }}"></span>#}</h1>
-
-	<div id="topcorner">
+<div class="row" style="display: flex; width: 100%">
+	<div class="col" style="display: flex; margin: 0 auto">
 		<div class="container">
-			<div class="row text-white bg-success" style="display: flex; height: 2em; width: 350px">
-				<div class="col" style="display: flex; margin: auto">Actuellement</div>
+			<h1 style="text-align: center;">Cellar - {{ db.name }}{# - <span id="date">Du <input type="date" id="from" value="{{ from|date('Y-m-d') }}"> Au <input type="date" id="to" value="{{ to|date('Y-m-d') }}"></span>#}</h1>
+			<div class="row">
+				{% for color, nb in stats_color %}
+					<div class="row text-black" style="display: flex; width: 350px">
+						<div class="col" style="display: flex; margin: auto">{{ color }} :</div>
+						<div class="col" style="display: flex; margin: auto">{{ nb }}</div>
+					</div>
+				{% endfor %}
 			</div>
-		{% for sensor in db.sensors %}
-			<div class="row text-white bg-success" style="display: flex; height: 5em; width: 350px" id="sensor_{{ sensor.id }}_temperature_state">
+		</div>
+	</div>
+	<div class="col" style="flex: 0">
+		<div class="container border border-dark" style="width: 350px">
+			<div class="row text-white bg-dark" style="display: flex; height: 2em">
+				<div class="col text-center" style="margin: auto">Actuellement</div>
+			</div>
+			{% for sensor in db.sensors %}
+			<div class="row text-white bg-success" style="display: flex; height: 5em" id="sensor_{{ sensor.id }}_temperature_state">
 				<div class="col" style="display: flex; margin: auto">
 					{{ sensor.name }} :
 				</div>
@@ -22,27 +34,11 @@
 					<div id="sensor_{{ sensor.id }}_humidity_value">???</div>
 				</div>
 			</div>
-		{% endfor %}
+			{% endfor %}
+
 		</div>
 	</div>
-
-	<div class="row">
-		{% for color, nb in stats_color %}
-			<div class="row text-black" style="display: flex; width: 350px">
-				<div class="col" style="display: flex; margin: auto">{{ color }} : </div>
-				<div class="col" style="display: flex; margin: auto">{{ nb }}</div>
-			</div>
-		{% endfor %}
-	</div>
-
-	{#
-	{% for sensor in db.sensors %}
-		<div class="row">
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
-		</div>
-	{% endfor %}
-	#}
+</div>
 {% endblock %}
 
 {% block javascripts %}

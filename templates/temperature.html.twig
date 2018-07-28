@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>Cellar - {{ db.name }} - <span id="date">Du <input type="date" id="from" value="{{ from|date('Y-m-d') }}"> Au <input type="date" id="to" value="{{ to|date('Y-m-d') }}"></span></h1>
+	<div id="ws-content-receiver">
+		Connecting...
+	</div>
+
+	<div class="row">
+        {% for sensor in db.sensors %}
+			<div class="col">
+				<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_temperature_state">
+					<div class="card-header">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<i class="fa fa-thermometer-quarter fa-5x" id="sensor_{{ sensor.id }}_temperature_icon"></i>
+								</div>
+								<div class="col text-right">
+									<div class="huge" id="sensor_{{ sensor.id }}_temperature_value">???</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        {% endfor %}
+	</div>
+	<div class="row">
+        {% for sensor in db.sensors %}
+			<div class="col">
+				<div class="card text-white bg-success" id="sensor_{{ sensor.id }}_humidity_state">
+					<div class="card-header">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<i class="fa fa-tint fa-5x" id="sensor_{{ sensor.id }}_humidity_icon"></i>
+								</div>
+								<div class="col text-right">
+									<div class="huge" id="sensor_{{ sensor.id }}_humidity_value">???</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        {% endfor %}
+	</div>
+
+    {% for sensor in db.sensors %}
+		<div class="row">
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
+		</div>
+    {% endfor %}
+{% endblock %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+        (function () {
+            'use strict';
+
+            var url = new URL(window.location.href);
+            var from = url.searchParams.get('from');
+            var to = url.searchParams.get('to');
+
+            $('#from').change(function () {
+                var from_timestamp = (new Date($(this).val())).getTime() / 1000;
+                window.location = '/{{ db.id }}?from=' + from_timestamp + ((to != null) ? '&to=' + to : '');
+            });
+
+            $('#to').change(function () {
+                var to_timestamp = ((new Date($(this).val())).getTime() / 1000) + 24*3600 - 1;
+                window.location = '/{{ db.id }}?to=' + to_timestamp + ((from != null) ? '&from=' + from : '');
+            });
+
+            var sensors_definition = [];
+            {% for sensor in db.sensors %}
+            sensors_definition[{{ sensor.id }}] = {
+                temperature_limit: {
+                    low_alert_value: {{ sensor.temperatureLimit.lowAlertValue }},
+                    high_alert_value: {{ sensor.temperatureLimit.highAlertValue }},
+                    low_warning_value: {{ sensor.temperatureLimit.lowWarningValue }},
+                    high_warning_value: {{ sensor.temperatureLimit.highWarningValue }}
+                },
+                humidity_limit: {
+                    low_alert_value: {{ sensor.humidityLimit.lowAlertValue }},
+                    high_alert_value: {{ sensor.humidityLimit.highAlertValue }},
+                    low_warning_value: {{ sensor.humidityLimit.lowWarningValue }},
+                    high_warning_value: {{ sensor.humidityLimit.highWarningValue }}
+                }
+            };
+            {% endfor %}
+
+            var _receiver = document.getElementById('ws-content-receiver');
+            var ws = new WebSocket('ws://{{ ws_url }}');
+
+            ws.onopen = function () {
+                _receiver.innerHTML = 'Connected !';
+            };
+
+            ws.onmessage = function (event) {
+                try {
+                    var sensor_raw_data = JSON.parse(event.data);
+                    console.log(sensor_raw_data);
+
+                    var header_content = [];
+                    for(var k in sensor_raw_data.sensor_data) {
+                        var sensor_data = sensor_raw_data.sensor_data[k];
+                        var sid = sensor_data.sensor.id;
+
+                        $('#sensor_' + sid + '_temperature_value').html(sensor_data.temperature + '°C');
+                        var state_sel = $('#sensor_' + sid + '_temperature_state');
+                        state_sel.removeClass().addClass('card text-white');
+                        var limit = sensors_definition[sid].temperature_limit;
+                        if ((sensor_data.temperature < limit.low_alert_value) || (sensor_data.temperature > limit.high_alert_value)) {
+                            state_sel.addClass('bg-danger');
+                        } else if ((sensor_data.temperature < limit.low_warning_value) || (sensor_data.temperature > limit.high_warning_value)) {
+                            state_sel.addClass('bg-warning');
+                        } else {
+                            state_sel.addClass('bg-success');
+                        }
+
+                        $('#sensor_' + sid + '_humidity_value').html(sensor_data.humidity + '%');
+                        var state_sel = $('#sensor_' + sid + '_humidity_state');
+                        state_sel.removeClass().addClass('card text-white');
+                        limit = sensors_definition[sid].humidity_limit;
+                        if ((sensor_data.humidity < limit.low_alert_value) || (sensor_data.humidity > limit.high_alert_value)) {
+                            state_sel.addClass('bg-danger');
+                        } else if ((sensor_data.humidity < limit.low_warning_value) || (sensor_data.humidity > limit.high_warning_value)) {
+                            state_sel.addClass('bg-warning');
+                        } else {
+                            state_sel.addClass('bg-success');
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+
+            ws.onclose = function () {
+            };
+
+            ws.onerror = function () {
+            };
+        })();
+	</script>
+{% endblock %}
