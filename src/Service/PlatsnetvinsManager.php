@@ -69,21 +69,21 @@ class PlatsnetvinsManager extends AbstractWinePairingManager {
 					// New food
 					$result->setFood(trim(HtmlPageCrawler::create($this->getInnerHtml($card))->filter('.lgnresucrit')->text()));
 				} else if (in_array('cardresuA', $classes)) {
-					if (StringUtils::create($this->getInnerHtml($card))->contains('ACC1') || StringUtils::create($this->getInnerHtml($card))->contains('ACC2')) {
-						$wine_color = $this->wine_color_repository->getWineColorByName(trim(HtmlPageCrawler::create($this->getInnerHtml($card))->filter('.c3_of_7_resu')->text()));
-						$area = $this->wine_area_repository->findOneBy(['area_name' => trim(HtmlPageCrawler::create($this->getInnerHtml($card))->filter('.c1_of_7_resu .lgnresu')->text())]);
-						if ($wine_color && $area) {
-							$wine_pair_result = new WinePairingResult();
-							$wine_pair_result->setWineColor($wine_color);
-							$wine_pair_result->setWineArea($area);
+                    $wine_color = $this->wine_color_repository->getWineColorByName(trim(HtmlPageCrawler::create($this->getInnerHtml($card))->filter('.c3_of_7_resu')->text()));
+                    $area = $this->wine_area_repository->findOneBy(['area_name' => trim(HtmlPageCrawler::create($this->getInnerHtml($card))->filter('.c1_of_7_resu .lgnresu')->text())]);
+                    if ($wine_color && $area) {
+                        $wine_pair_result = new WinePairingResult();
+                        $wine_pair_result->setWineColor($wine_color);
+                        $wine_pair_result->setWineArea($area);
 
-							if (StringUtils::create($this->getInnerHtml($card))->contains('ACC1')) {
-								$result->addWineBest($wine_pair_result);
-							} else {
-								$result->addWineGood($wine_pair_result);
-							}
-						}
-					}
+                        if (StringUtils::create($this->getInnerHtml($card))->contains('ACC1')) {
+                            $result->addWineBest($wine_pair_result);
+                        } elseif (StringUtils::create($this->getInnerHtml($card))->contains('ACC2')) {
+                            $result->addWineGood($wine_pair_result);
+                        } else {
+                            $result->addWine($wine_pair_result);
+                        }
+                    }
 				}
 			}
 

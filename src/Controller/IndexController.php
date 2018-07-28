@@ -150,6 +150,23 @@ class IndexController extends Controller {
                 }
             }
         }
+        $raw_result .= 'OTHERS' . "\n";
+        foreach ($result->getWines() as $wine_best) {
+            $raw_result .= '-> ' . $wine_best->getWineColor()->getName() . ' : ' .
+                $wine_best->getWineArea()->getAreaName() . ' - ' .
+                $wine_best->getWineArea()->getRegion() . ' => ' .
+                count($wine_best->getWineArea()->getBottles()) . "\n";
+
+            foreach ($wine_best->getWineArea()->getBottles() as $bottle) {
+                if ($bottle->getStocks()) {
+                    foreach ($bottle->getStocks() as $stock) {
+                        if ($stock->getQuantityCurrent() > 0) {
+                            $raw_result .= '  => ' . $stock->getQuantityCurrent() . 'x ' . $bottle->getVintage() . ' - ' . $bottle->getName() . ' : (' . $bottle->getBottleSize()->getCapacity() . ' cl)' . "\n";
+                        }
+                    }
+                }
+            }
+        }
 
         return $this->render('pairing.html.twig', [
             'db' => $db,

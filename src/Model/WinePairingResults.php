@@ -21,12 +21,16 @@ class WinePairingResults {
     /** @var WinePairingResult[] */
     private $wines_good;
 
+    /** @var WinePairingResult[] */
+    private $wines;
+
     /**
      * WinePairingResult constructor.
      */
     public function __construct() {
         $this->wines_best = [];
         $this->wines_good = [];
+        $this->wines = [];
     }
 
     /**
@@ -78,6 +82,24 @@ class WinePairingResults {
     }
 
     /**
+     * @return WinePairingResult[]
+     */
+    public function getWines()
+    {
+        return $this->wines;
+    }
+
+    /**
+     * @param WinePairingResult[] $wines
+     * @return WinePairingResults
+     */
+    public function setWines(array $wines)
+    {
+        $this->wines = $wines;
+        return $this;
+    }
+
+    /**
      * @param WinePairingResult $wine
      */
     public function addWineBest(WinePairingResult $wine) {
@@ -90,4 +112,12 @@ class WinePairingResults {
     public function addWineGood(WinePairingResult $wine) {
         $this->wines_good[] = $wine;
     }
+
+    /**
+     * @param WinePairingResult $wine
+     */
+    public function addWine(WinePairingResult $wine) {
+        $this->wines[] = $wine;
+    }
+
 }
