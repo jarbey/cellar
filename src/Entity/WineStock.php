@@ -88,6 +88,14 @@ class WineStock
     }
 
 
+    /**
+     * @return string
+     */
+    public function getQuantity() {
+        return $this->getQuantityCurrent() . ' / ' . $this->getQuantityBuy();
+    }
+
+
     public function getId()
     {
         return $this->id;

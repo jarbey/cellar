@@ -8,6 +8,7 @@ use App\Repository\DbRepository;
 use App\Service\CavusviniferaManager;
 use App\Service\PlatsnetvinsManager;
 use App\Service\WineManager;
+use App\Service\WinePairingManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +102,7 @@ class IndexController extends Controller {
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function pairing($id, Request $request, DbRepository $db_repository, PlatsnetvinsManager $platsnetvins_manager) {
+    public function pairing($id, Request $request, DbRepository $db_repository, WinePairingManager $wine_pairing_manager) {
         /** @var Db $db */
         $db = $db_repository->find($id);
         if ($db == null) {
@@ -113,60 +114,7 @@ class IndexController extends Controller {
             throw new EntityNotFoundException();
         }
 
-        $result = $platsnetvins_manager->getWineBottlesPair($search);
-        $raw_result = $result->getFood() . "\n";
-        $raw_result .= 'BEST' . "\n";
-        foreach ($result->getWinesBest() as $wine_best) {
-            $raw_result .= '-> ' . $wine_best->getWineColor()->getName() . ' : ' .
-                $wine_best->getWineArea()->getAreaName() . ' - ' .
-                $wine_best->getWineArea()->getRegion() . ' => ' .
-                count($wine_best->getWineArea()->getBottles()) . "\n";
-
-            foreach ($wine_best->getWineArea()->getBottles() as $bottle) {
-                if ($bottle->getStocks()) {
-                    foreach ($bottle->getStocks() as $stock) {
-                        if ($stock->getQuantityCurrent() > 0) {
-                            $raw_result .= '  => ' . $stock->getQuantityCurrent() . 'x ' . $bottle->getVintage() . ' - ' . $bottle->getName() . ' : (' . $bottle->getBottleSize()->getCapacity() . ' cl)' . "\n";
-                        }
-                    }
-                }
-            }
-
-        }
-        $raw_result .= 'GOOD' . "\n";
-        foreach ($result->getWinesGood() as $wine_best) {
-            $raw_result .= '-> ' . $wine_best->getWineColor()->getName() . ' : ' .
-                $wine_best->getWineArea()->getAreaName() . ' - ' .
-                $wine_best->getWineArea()->getRegion() . ' => ' .
-                count($wine_best->getWineArea()->getBottles()) . "\n";
-
-            foreach ($wine_best->getWineArea()->getBottles() as $bottle) {
-                if ($bottle->getStocks()) {
-                    foreach ($bottle->getStocks() as $stock) {
-                        if ($stock->getQuantityCurrent() > 0) {
-                            $raw_result .= '  => ' . $stock->getQuantityCurrent() . 'x ' . $bottle->getVintage() . ' - ' . $bottle->getName() . ' : (' . $bottle->getBottleSize()->getCapacity() . ' cl)' . "\n";
-                        }
-                    }
-                }
-            }
-        }
-        $raw_result .= 'OTHERS' . "\n";
-        foreach ($result->getWines() as $wine_best) {
-            $raw_result .= '-> ' . $wine_best->getWineColor()->getName() . ' : ' .
-                $wine_best->getWineArea()->getAreaName() . ' - ' .
-                $wine_best->getWineArea()->getRegion() . ' => ' .
-                count($wine_best->getWineArea()->getBottles()) . "\n";
-
-            foreach ($wine_best->getWineArea()->getBottles() as $bottle) {
-                if ($bottle->getStocks()) {
-                    foreach ($bottle->getStocks() as $stock) {
-                        if ($stock->getQuantityCurrent() > 0) {
-                            $raw_result .= '  => ' . $stock->getQuantityCurrent() . 'x ' . $bottle->getVintage() . ' - ' . $bottle->getName() . ' : (' . $bottle->getBottleSize()->getCapacity() . ' cl)' . "\n";
-                        }
-                    }
-                }
-            }
-        }
+        $raw_result = $wine_pairing_manager->getWinePairing($search);
 
         return $this->render('pairing.html.twig', [
             'db' => $db,

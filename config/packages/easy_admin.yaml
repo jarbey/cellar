@@ -1,0 +1,21 @@
+easy_admin:
+    entities:
+        WineStock:
+            class: App\Entity\WineStock
+            list:
+                fields:
+                    - id
+                    - { property: 'bottle.name', label: 'Nom' }
+                    - { property: 'bottle.area.area', label: 'Appelation' }
+                    - { property: 'bottle.color.name', label: 'Couleur' }
+                    - { property: 'bottle.vintage', label: 'Millesime' }
+                    - { property: 'quantity', label: 'Quantité' }
+                    - { property: 'price_buy', label: 'Prix achat' }
+            search:
+                fields: ['bottle.name', 'bottle.area.area_name', 'bottle.area.region', 'bottle.color.name', 'bottle.vintage']
+        Sensor:
+            class: App\Entity\Sensor
+        WineBottle:
+            class: App\Entity\WineBottle
+        WineArea:
+            class: App\Entity\WineArea

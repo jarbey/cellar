@@ -14,7 +14,7 @@ interface IWinePairingManager {
 
     /**
      * @param string $food
-     * @return WinePairingResults
+     * @return WinePairingResults|null
      */
     public function getWineBottlesPair($food);
 

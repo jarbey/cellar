@@ -53,6 +53,13 @@ class WineArea
     }
 
     /**
+     * @return string
+     */
+    public function getArea() {
+        return $this->getAreaName() . ' (' . $this->region . ' - ' . $this->country . ')';
+    }
+
+    /**
      * @return int
      */
     public function getId() {
