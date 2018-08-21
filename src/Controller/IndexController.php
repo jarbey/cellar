@@ -83,7 +83,7 @@ class IndexController extends Controller {
             $to = new \DateTime();
         }
 
-        return $this->render('home.html.twig', [
+        return $this->render('temperature.html.twig', [
             'db' => $db,
             'from' => $from,
             'to' => $to,

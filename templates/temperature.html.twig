@@ -66,12 +66,12 @@
 
             $('#from').change(function () {
                 var from_timestamp = (new Date($(this).val())).getTime() / 1000;
-                window.location = '/{{ db.id }}?from=' + from_timestamp + ((to != null) ? '&to=' + to : '');
+                window.location = '/{{ db.id }}/temperature?from=' + from_timestamp + ((to != null) ? '&to=' + to : '');
             });
 
             $('#to').change(function () {
                 var to_timestamp = ((new Date($(this).val())).getTime() / 1000) + 24*3600 - 1;
-                window.location = '/{{ db.id }}?to=' + to_timestamp + ((from != null) ? '&from=' + from : '');
+                window.location = '/{{ db.id }}/temperature?to=' + to_timestamp + ((from != null) ? '&from=' + from : '');
             });
 
             var sensors_definition = [];
