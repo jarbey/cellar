@@ -8,9 +8,6 @@
 
 namespace App\Command;
 
-use App\Service\DisplayManager;
-use App\Service\SensorDataManager;
-use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

@@ -8,9 +8,7 @@
 
 namespace App\Command;
 
-use App\Service\DisplayManager;
 use App\Service\SensorDataManager;
-use App\Service\SensorManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,15 +38,18 @@ class SendDataCommand extends AbstractCommand {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		try {
-			$this->getLogger()->info('Execute send buffered data');
+	    while (true) {
+            try {
+                $this->getLogger()->info('Execute send buffered data');
 
-			$nb = $this->sensor_data_manager->serverSend();
-			$this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
-		} catch (\Exception $e) {
-			$this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getMessage() ]);
-		}
+                $nb = $this->sensor_data_manager->serverSend();
+                $this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
+            } catch (\Exception $e) {
+                $this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getMessage() ]);
+            }
 
+            sleep(10);
+        }
 	}
 
 

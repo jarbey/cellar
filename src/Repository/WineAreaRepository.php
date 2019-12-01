@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\WineArea;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -34,6 +35,7 @@ class WineAreaRepository extends ServiceEntityRepository
      * @param $region
      * @param $area
      * @return WineArea
+     * @throws ORMException
      */
     public function create($country, $region, $area) {
         $wine_area = new WineArea($country, $region, $area);
@@ -41,5 +43,13 @@ class WineAreaRepository extends ServiceEntityRepository
         $this->_em->flush($wine_area);
 
         return $wine_area;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function truncate() {
+        $query = $this->createQueryBuilder('t')->delete()->getQuery()->execute();
+        return $query;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\WineBottle;
 use App\Entity\WineStock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -30,6 +31,7 @@ class WineStockRepository extends ServiceEntityRepository
      * @param $location_buy
      * @param $location_type_buy
      * @return WineStock
+     * @throws ORMException
      */
     public function create(WineBottle $bottle, \DateTime $date_buy, $price_buy, $quantity_current, $quantity_buy,  $comment_buy, $location_buy, $location_type_buy) {
         $wine_stock = new WineStock($bottle, $date_buy, $price_buy, $quantity_current, $quantity_buy, $comment_buy, $location_buy, $location_type_buy);
@@ -37,6 +39,14 @@ class WineStockRepository extends ServiceEntityRepository
         $this->_em->flush($wine_stock);
 
         return $wine_stock;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function truncate() {
+        $query = $this->createQueryBuilder('t')->delete()->getQuery()->execute();
+        return $query;
     }
 
 }

@@ -26,6 +26,9 @@ class BottleFixture extends Fixture implements OrderedFixtureInterface
         $bottle_150 = new BottleSize('magnum', 150);
         $manager->persist($bottle_150);
 
+        $bottle_500 = new BottleSize('jéroboam', 500);
+        $manager->persist($bottle_500);
+
         $bottle_600 = new BottleSize('imperiale', 600);
         $manager->persist($bottle_600);
 
@@ -36,6 +39,7 @@ class BottleFixture extends Fixture implements OrderedFixtureInterface
         $this->addReference('bottle_62cl', $bottle_62);
         $this->addReference('bottle_75cl', $bottle_75);
         $this->addReference('bottle_150cl', $bottle_150);
+        $this->addReference('bottle_500cl', $bottle_500);
         $this->addReference('bottle_600cl', $bottle_600);
     }
 

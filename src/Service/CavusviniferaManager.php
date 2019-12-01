@@ -42,9 +42,53 @@ class CavusviniferaManager extends AbstractManager {
 		$this->wine_manager = $wine_manager;
 	}
 
+    /**
+     * @return int
+     */
 	public function import() {
-		$this->wine_manager->importCSV(explode("\n", $this->getExport()));
-	}
+	    // Clear existing data
+        $this->wine_manager->clear();
+
+        $data = $first_line = [];
+        $is_first = true;
+        $nb_cols = 0;
+        $lines_done = [];
+        foreach (explode("\n", $this->getExport()) as $line) {
+            if (!in_array($line, $lines_done)) {
+                if ($is_first) {
+                    $is_first = false;
+                    $first_line = str_getcsv($line, "\t");
+                    $nb_cols = count($first_line);
+                } else {
+                    $line_data = [];
+                    $raw_line_data = str_getcsv($line, "\t");
+                    if (count($raw_line_data) == $nb_cols) {
+                        foreach ($raw_line_data as $key => $value) {
+                            $line_data[$first_line[$key]] = $value;
+                        }
+                        $data[] = $line_data;
+                    }
+                }
+                $lines_done[] = $line;
+            }
+        }
+
+        // Create
+        $total = 0;
+        foreach ($data as $stock) {
+            list($volume, $unit) = explode(' ', $stock['volume']);
+            $volume = floatval(str_replace(',', '.', $volume));
+            if ($unit == 'l') $volume *= 100;
+
+            $this->wine_manager->import($volume, $stock['label'], $stock['country_label'], $stock['subregion_label'], $stock['area_label'], $stock['nomCru'], $stock['millesime'],
+                $stock['garde_min'], $stock['garde_max'], $stock['garde_optimum'], $stock['date_achat'], $stock['prix'], $stock['quantite_courante'], $stock['quantite_achat'],
+                $stock['comment'], $stock['lieu_achat'], $stock['canal_vente']);
+
+            $total += $stock['quantite_courante'];
+        }
+
+        return $total;
+    }
 
 	public function getExport() {
 		// Login
@@ -63,7 +107,7 @@ class CavusviniferaManager extends AbstractManager {
 				'Accept-Encoding' => 'gzip, deflate',
 			],
 			'form_params' => [
-				'type_export' => 'synthesis',
+				'type_export' => 'raked',
 				'x' => '39',
 				'y' => '12',
 			],

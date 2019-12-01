@@ -7,6 +7,7 @@ use App\Entity\WineArea;
 use App\Entity\WineBottle;
 use App\Entity\WineColor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -58,6 +59,7 @@ class WineBottleRepository extends ServiceEntityRepository
      * @param $drinkability_end_year
      * @param $drinkability_optimum
      * @return WineBottle
+     * @throws ORMException
      */
     public function create($name, WineArea $area, WineColor $color, BottleSize $bottle_size, $vintage, $drinkability_start_year, $drinkability_end_year, $drinkability_optimum) {
         $wine_bottle = new WineBottle($name, $area, $color, $bottle_size, $vintage, $drinkability_start_year, $drinkability_end_year, $drinkability_optimum);
@@ -65,5 +67,13 @@ class WineBottleRepository extends ServiceEntityRepository
         $this->_em->flush($wine_bottle);
 
         return $wine_bottle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function truncate() {
+        $query = $this->createQueryBuilder('t')->delete()->getQuery()->execute();
+        return $query;
     }
 }

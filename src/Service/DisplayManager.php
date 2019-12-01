@@ -81,7 +81,7 @@ class DisplayManager extends AbstractManager {
 			$json = json_encode((object)['display' => $display_list, 'screen_rotation' => $this->screen_orientation]);
 			$this->getLogger()->debug('Send to display with json => {json}', ['json' => $json]);
 
-			// Send to disaply server and read result
+			// Send to display server and read result
 			socket_write($this->_socket, $json);
 			return socket_read($this->_socket, 1);
 		}

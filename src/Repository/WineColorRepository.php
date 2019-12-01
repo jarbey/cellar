@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\WineColor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -30,6 +31,7 @@ class WineColorRepository extends ServiceEntityRepository
     /**
      * @param $name
      * @return WineColor
+     * @throws ORMException
      */
     public function create($name) {
         $wine_color = new WineColor(strtolower($name));
@@ -37,5 +39,13 @@ class WineColorRepository extends ServiceEntityRepository
         $this->_em->flush($wine_color);
 
         return $wine_color;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function truncate() {
+        $query = $this->createQueryBuilder('t')->delete()->getQuery()->execute();
+        return $query;
     }
 }

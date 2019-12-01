@@ -91,6 +91,8 @@ class WinePairingManager extends AbstractManager {
                 }
             }
         }
+
+        return $raw_result;
     }
 
     /**

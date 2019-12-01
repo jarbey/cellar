@@ -8,7 +8,6 @@
 
 namespace App\Command;
 
-
 use App\Entity\Display\Display;
 use App\Entity\Display\DisplayColor;
 use App\Entity\Display\DisplayFont;

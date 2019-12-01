@@ -3,7 +3,6 @@ namespace App\Command;
 
 use App\Service\ChromecastManager;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,5 +32,7 @@ class ChromecastCommand extends AbstractCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln('<info>Start Chromecast</info>');
         $this->chromecastManager->DMP->play('https://cellar.arbey.fr/1');
+
+
     }
 }

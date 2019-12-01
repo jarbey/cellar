@@ -16,6 +16,7 @@ use App\Repository\WineAreaRepository;
 use App\Repository\WineBottleRepository;
 use App\Repository\WineColorRepository;
 use App\Repository\WineStockRepository;
+use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -56,69 +57,6 @@ class WineManager extends AbstractManager {
 	}
 
     /**
-     * @param array $lines
-     */
-    public function importCSV($lines) {
-        $data = [];
-        $first_line = [];
-        $is_first = true;
-        $nb_cols = 0;
-        foreach ($lines as $line) {
-            if ($is_first) {
-                $is_first = false;
-                $first_line = str_getcsv($line, "\t");
-                $nb_cols = count($first_line);
-            } else {
-                $line_data = [];
-                $raw_line_data = str_getcsv($line, "\t");
-                if (count($raw_line_data) == $nb_cols) {
-                    foreach ($raw_line_data as $key => $value) {
-                        $line_data[$first_line[$key]] = $value;
-                    }
-                    $data[] = $line_data;
-                }
-            }
-        }
-
-        // Create
-        foreach ($data as $stock) {
-            list($volume, $unit) = explode(' ', $stock['volume']);
-            $volume = floatval(str_replace(',', '.', $volume));
-            if ($unit == 'l') {
-                $volume *= 100;
-            }
-
-            // Bottle
-            $bottle_size = $this->getBottleSize($volume);
-
-            // Color
-            $wine_color = $this->getWineColor($stock['label']);
-            if (!$wine_color) {
-                $wine_color = $this->wine_color_repository->create($stock['label']);
-            }
-
-            // Area
-            $wine_area = $this->getWineArea($stock['country_label'], $stock['subregion_label'], $stock['area_label']);
-            if (!$wine_area) {
-                $wine_area = $this->wine_area_repository->create($stock['country_label'], $stock['subregion_label'], $stock['area_label']);
-            }
-
-            // Wine bottle
-            $wine_bottle = $this->getWineBottle($stock['nomCru'], $wine_area, $wine_color, $bottle_size, $stock['millesime']);
-            if (!$wine_bottle) {
-                $wine_bottle = $this->wine_bottle_repository->create($stock['nomCru'], $wine_area, $wine_color, $bottle_size, $stock['millesime'], $stock['garde_min'], $stock['garde_max'], $stock['garde_optimum']);
-            }
-
-            // Stock
-            $this->wine_stock_repository->create($wine_bottle,
-                new \DateTime($stock['date_achat']), $stock['prix'],
-                $stock['quantite_courante'], $stock['quantite_achat'],
-                $stock['comment'], $stock['lieu_achat'], $stock['canal_vente']
-            );
-        }
-    }
-
-    /**
      * @param $capacity
      * @return BottleSize|null
      */
@@ -157,6 +95,68 @@ class WineManager extends AbstractManager {
     }
 
     /**
+     *
+     */
+    public function clear() {
+        $this->wine_stock_repository->truncate();
+        $this->wine_bottle_repository->truncate();
+        $this->wine_area_repository->truncate();
+        $this->wine_color_repository->truncate();
+    }
+
+    /**
+     * @param $volume
+     * @param $label
+     * @param $country_label
+     * @param $subregion_label
+     * @param $area_label
+     * @param $nomCru
+     * @param $millesime
+     * @param $garde_min
+     * @param $garde_max
+     * @param $garde_optimum
+     * @param $date_achat
+     * @param $prix
+     * @param $quantite_courante
+     * @param $quantite_achat
+     * @param $comment
+     * @param $lieu_achat
+     * @param $canal_vente
+     * @return \App\Entity\WineStock
+     */
+    public function import($volume, $label, $country_label, $subregion_label, $area_label, $nomCru, $millesime, $garde_min, $garde_max, $garde_optimum, $date_achat, $prix,
+       $quantite_courante, $quantite_achat, $comment, $lieu_achat, $canal_vente) {
+        // Bottle
+        $bottle_size = $this->getBottleSize($volume);
+        if (!$bottle_size) throw new \Exception('Cannot found bottle size for : ' . $volume);
+
+        // Color
+        $wine_color = $this->getWineColor($label);
+        if (!$wine_color) {
+            $wine_color = $this->wine_color_repository->create($label);
+        }
+
+        // Area
+        $wine_area = $this->getWineArea($country_label, $subregion_label, $area_label);
+        if (!$wine_area) {
+            $wine_area = $this->wine_area_repository->create($country_label, $subregion_label, $area_label);
+        }
+
+        // Wine bottle
+        $wine_bottle = $this->getWineBottle($nomCru, $wine_area, $wine_color, $bottle_size, $millesime);
+        if (!$wine_bottle) {
+            $wine_bottle = $this->wine_bottle_repository->create($nomCru, $wine_area, $wine_color, $bottle_size, $millesime, $garde_min, $garde_max, $garde_optimum);
+        }
+
+        // Stock
+        return $this->wine_stock_repository->create($wine_bottle,
+            new \DateTime($date_achat), $prix,
+            $quantite_courante, $quantite_achat,
+            $comment, $lieu_achat, $canal_vente
+        );
+    }
+
+    /**
      * @return WineColorRepository
      */
     public function getWineColorRepository() {
@@ -169,6 +169,5 @@ class WineManager extends AbstractManager {
     public function getWineBottleRepository() {
         return $this->wine_bottle_repository;
     }
-
 
 }

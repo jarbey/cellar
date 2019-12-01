@@ -58,23 +58,28 @@ class InformationUpdateCommand extends AbstractCommand {
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		try {
-			$this->getLogger()->info('Execute info update');
+	    while (true) {
+            try {
+                $this->getLogger()->info('Execute info update');
 
-			// Get data
-			$sensor_data = $this->sensor_manager->executeSensor();
+                // Get data
+                $sensor_data = $this->sensor_manager->executeSensor();
 
-			// Buffer data
-			$this->sensor_data_manager->bufferData($sensor_data);
+                // Buffer data
+                $this->sensor_data_manager->bufferData($sensor_data);
 
-			// Display data
-			$this->display_manager->displaySensorData($sensor_data);
+                // Display data
+                $this->display_manager->displaySensorData($sensor_data);
 
-			// Send to front
-			$this->web_front_manager->sendData($sensor_data);
-		} catch (\Exception $e) {
-			$this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
-		}
+                // Send to front
+                $this->web_front_manager->sendData($sensor_data);
+            } catch (\Exception $e) {
+                $this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
+            }
+
+            sleep(10);
+        }
+
 	}
 
 
