@@ -105,6 +105,8 @@
                     var sensor_raw_data = JSON.parse(event.data);
                     console.log(sensor_raw_data);
 
+                    _receiver.innerHTML = 'Connected (@' + sensor_raw_data.date + ')';
+
                     var header_content = [];
                     for(var k in sensor_raw_data.sensor_data) {
                         var sensor_data = sensor_raw_data.sensor_data[k];
