@@ -21,15 +21,15 @@
 				<div class="col text-center" style="margin: auto">Actuellement</div>
 			</div>
 			{% for sensor in db.sensors %}
-			<div class="row text-white bg-success" style="display: flex; height: 5em" id="sensor_{{ sensor.id }}_temperature_state">
+			<div class="row text-white bg-secondary" style="display: flex; height: 5em">
 				<div class="col" style="display: flex; margin: auto">
 					{{ sensor.name }} :
 				</div>
-				<div class="col" style="display: flex; margin: auto">
+				<div class="col" style="display: flex; margin: auto" id="sensor_{{ sensor.id }}_temperature_state">
 					<div style="margin: auto"><i class="fa fa-thermometer-quarter" id="sensor_{{ sensor.id }}_temperature_icon"></i></div>
 					<div id="sensor_{{ sensor.id }}_temperature_value">???</div>
 				</div>
-				<div class="col" style="display: flex; margin: auto">
+				<div class="col" style="display: flex; margin: auto" id="sensor_{{ sensor.id }}_humidity_state">
 					<div style="margin: auto"><i class="fa fa-tint" id="sensor_{{ sensor.id }}_humidity_icon"></i></div>
 					<div id="sensor_{{ sensor.id }}_humidity_value">???</div>
 				</div>
