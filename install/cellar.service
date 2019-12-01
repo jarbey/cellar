@@ -1,0 +1,19 @@
+[Unit]
+Description=Cellar WebSocket service
+After=network-online.target
+
+[Service]
+Type=simple
+
+User=arbey
+Group=arbey
+UMask=007
+
+ExecStart=/home/arbey/cellar/server.sh
+
+Restart=on-failure
+
+TimeoutSec=60
+
+[Install]
+WantedBy=multi-user.target

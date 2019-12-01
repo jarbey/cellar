@@ -17,6 +17,8 @@ class WebSocketServerCommand extends AbstractCommand {
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
+        $this->getLogger()->info('Start WebSocket server...');
+
 		$server = IoServer::factory(
 			new HttpServer(new WsServer(new WebSocketComponent())),
 			8080,
@@ -24,5 +26,7 @@ class WebSocketServerCommand extends AbstractCommand {
 		);
 
 		$server->run();
+
+        $this->getLogger()->info('WebSocket server finished !');
 	}
 }
