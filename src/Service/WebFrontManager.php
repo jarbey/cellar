@@ -9,6 +9,7 @@
 namespace App\Service;
 
 use App\Entity\SensorDataGroup;
+use App\Server\WebSocketClient;
 use JMS\Serializer\SerializationContext;
 use Psr\Log\LoggerInterface;
 use JMS\Serializer\SerializerInterface;
@@ -35,13 +36,19 @@ class WebFrontManager extends AbstractManager {
 
 	/**
 	 * @param SensorDataGroup $sensor_data
+     * @return bool|string
 	 */
 	public function sendData(SensorDataGroup $sensor_data) {
-		\Ratchet\Client\connect('wss://' . $this->websocket_host)->then(function(\Ratchet\Client\WebSocket $conn) use ($sensor_data) {
-			$conn->send($this->serializer->serialize($sensor_data, 'json', SerializationContext::create()->setGroups(['updateSensorData'])));
-			$conn->close();
-		}, function (\Exception $e) {
-			echo "Could not connect: {$e->getMessage()}\n";
-		});
+        $ws = new WebSocketClient([
+            'host' => $this->websocket_host,
+            'port' => 80,
+            'path' => ''
+        ]);
+        $result = $ws->send(
+            $this->serializer->serialize($sensor_data, 'json', SerializationContext::create()->setGroups(['updateSensorData']))
+        );
+        $ws->close();
+
+        return $result;
 	}
 }
