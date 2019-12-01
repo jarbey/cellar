@@ -40,10 +40,12 @@ class WebSocketClient {
 
     private function connect()
     {
-        $sock = fsockopen($this->params['host'], $this->params['port'], $errno, $errstr, 2);
-        fwrite($sock, $this->head);
-        $headers = fread($sock, 2000);
-        $this->instance = $sock;
+        if (!$this->instance) {
+            $sock = fsockopen($this->params['host'], $this->params['port'], $errno, $errstr, 2);
+            fwrite($sock, $this->head);
+            $headers = fread($sock, 2000);
+            $this->instance = $sock;
+        }
     }
 
     private function hybi10Decode($data)

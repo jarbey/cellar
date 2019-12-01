@@ -26,7 +26,6 @@ class WebFrontManager extends AbstractManager {
 	 * WebFrontManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SerializerInterface $serializer
-     * @param string $websocket_host
 	 */
 	public function __construct(LoggerInterface $logger, SerializerInterface $serializer, $websocket_host) {
 		parent::__construct($logger);
@@ -41,6 +40,7 @@ class WebFrontManager extends AbstractManager {
 
 	/**
 	 * @param SensorDataGroup $sensor_data
+     * @return bool|string
 	 */
 	public function sendData(SensorDataGroup $sensor_data) {
         $this->websocket_client->send(
