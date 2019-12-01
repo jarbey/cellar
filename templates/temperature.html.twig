@@ -57,6 +57,7 @@
 
 {% block javascripts %}
 	<script type="text/javascript">
+        var ws;
         (function () {
             'use strict';
 
@@ -93,7 +94,7 @@
             {% endfor %}
 
             var _receiver = document.getElementById('ws-content-receiver');
-            var ws = new WebSocket('wss://{{ ws_url }}');
+            ws = new WebSocket('wss://{{ ws_url }}');
 
             ws.onopen = function () {
                 _receiver.innerHTML = 'Connected !';
