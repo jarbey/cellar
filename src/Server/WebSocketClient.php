@@ -27,8 +27,7 @@ class WebSocketClient {
         $this->head .= "Content-Length: ".strlen($method)."\r\n\r\n";
         $this->connect();
         fwrite($this->instance, $this->hybi10Encode($method));
-        $wsdata = fread($this->instance, 2000);
-        return $this->hybi10Decode($wsdata);
+        return ;
     }
     public function close()
     {

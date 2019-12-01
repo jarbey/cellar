@@ -19,36 +19,32 @@ class WebFrontManager extends AbstractManager {
 	/** @var SerializerInterface */
 	private $serializer;
 
-	/** @var string */
-	private $websocket_host;
+    /** @var WebSocketClient */
+    private $websocket_client;
 
 	/**
 	 * WebFrontManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SerializerInterface $serializer
+     * @param string $websocket_host
 	 */
 	public function __construct(LoggerInterface $logger, SerializerInterface $serializer, $websocket_host) {
 		parent::__construct($logger);
 		$this->serializer = $serializer;
 
-		$this->websocket_host = $websocket_host;
+        $this->websocket_client = new WebSocketClient([
+            'host' => $websocket_host,
+            'port' => 80,
+            'path' => ''
+        ]);
 	}
 
 	/**
 	 * @param SensorDataGroup $sensor_data
-     * @return bool|string
 	 */
 	public function sendData(SensorDataGroup $sensor_data) {
-        $ws = new WebSocketClient([
-            'host' => $this->websocket_host,
-            'port' => 80,
-            'path' => ''
-        ]);
-        $result = $ws->send(
+        $this->websocket_client->send(
             $this->serializer->serialize($sensor_data, 'json', SerializationContext::create()->setGroups(['updateSensorData']))
         );
-        $ws->close();
-
-        return $result;
 	}
 }
