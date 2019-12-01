@@ -93,7 +93,7 @@
             {% endfor %}
 
             var _receiver = document.getElementById('ws-content-receiver');
-            var ws = new WebSocket('ws://{{ ws_url }}');
+            var ws = new WebSocket('wss://{{ ws_url }}');
 
             ws.onopen = function () {
                 _receiver.innerHTML = 'Connected !';

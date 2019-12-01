@@ -1,10 +1,6 @@
 <?php
 namespace App\Command;
 
-use App\Repository\WineBottleRepository;
-use App\Service\IDealWineManager;
-use App\Service\PlatsnetvinsManager;
-use App\Service\WineDeciderManager;
 use App\Service\WinePairingManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,9 +13,9 @@ class WinePairingCommand extends AbstractCommand {
     private $winepairing_manager;
 
     /**
-     * CavusViniferaLoadCommand constructor.
+     * WinePairingCommand constructor.
      * @param LoggerInterface $logger
-     * @param WineDeciderManager $wine_decider_manager
+     * @param WinePairingManager $winepairing_manager
      */
     public function __construct(LoggerInterface $logger, WinePairingManager $winepairing_manager) {
         parent::__construct($logger);
