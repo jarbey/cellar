@@ -196,4 +196,11 @@ class TemperatureLimit extends AbstractSensorLimit
 
 		return $this;
 	}
+
+    public function __toString()
+    {
+        return $this->getLowAlertValue() . ' < ' . $this->getLowWarningValue() . ' < EXP > ' . $this->getHighWarningValue() . ' > ' . $this->getHighAlertValue();
+    }
+
+
 }
