@@ -37,7 +37,7 @@ class WebFrontManager extends AbstractManager {
 	 * @param SensorDataGroup $sensor_data
 	 */
 	public function sendData(SensorDataGroup $sensor_data) {
-		\Ratchet\Client\connect('ws://' . $this->websocket_host)->then(function(\Ratchet\Client\WebSocket $conn) use ($sensor_data) {
+		\Ratchet\Client\connect('wss://' . $this->websocket_host)->then(function(\Ratchet\Client\WebSocket $conn) use ($sensor_data) {
 			$conn->send($this->serializer->serialize($sensor_data, 'json', SerializationContext::create()->setGroups(['updateSensorData'])));
 			$conn->close();
 		}, function (\Exception $e) {

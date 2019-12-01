@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Server\WebSocketComponent;
+use Ratchet\Client\WebSocket;
 use Ratchet\Http\HttpServer;
 use Ratchet\Server\IoServer;
 use Ratchet\WebSocket\WsServer;
@@ -20,7 +21,7 @@ class WebSocketServerCommand extends AbstractCommand {
         $this->getLogger()->info('Start WebSocket server...');
 
 		$server = IoServer::factory(
-			new HttpServer(new WsServer(new WebSocketComponent())),
+			new HttpServer(new WsServer(new WebSocketComponent($this->getLogger()))),
 			8080,
 			'127.0.0.1'
 		);
