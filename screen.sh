@@ -19,7 +19,11 @@ fi
 
 while true
 do
-    /usr/bin/php $CELLAR_DIR/bin/console cellar:information:update -vv 2>&1 >> $CELLAR_DIR/information_update.log &
-    /usr/bin/php $CELLAR_DIR/bin/console cellar:data:send -vv 2>&1 >> $CELLAR_DIR/data_send.log &
-sleep 15
+        p=`ps -fax | grep "cellar:data:send" | grep -v grep | wc -l`
+        if [ "$p" -eq "0" ];
+        then
+                /usr/bin/php $CELLAR_DIR/bin/console cellar:information:update -vv 2>&1 >> $CELLAR_DIR/information_update.log
+                /usr/bin/php $CELLAR_DIR/bin/console cellar:data:send -vv 2>&1 >> $CELLAR_DIR/data_send.log
+        fi
+        sleep 15
 done
