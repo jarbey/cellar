@@ -103,8 +103,8 @@ class DisplayManager extends AbstractManager {
 				'gpio' => $data->getSensor()->getGpio(),
 				'temperature' => $data->getTemperature(),
 				'humidity' => $data->getHumidity(),
-				't_limit' => $data->getSensor()->getTemperatureLimit(),
-				'h_limit' => $data->getSensor()->getHumidityLimit(),
+				't_limit' => $data->getSensor()->getTemperatureLimit()->__toString(),
+				'h_limit' => $data->getSensor()->getHumidityLimit()->__toString(),
 			]);
 
 			$display_data[] = new Display($data->getTemperature() . "°C", new DisplayFont(self::FONT_SIZE_DATA), new DisplayPosition(30, 130 + $y_offset), $data->getSensor()->getTemperatureLimit()->getColor($data->getTemperature()));
