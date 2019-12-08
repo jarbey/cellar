@@ -31,3 +31,7 @@ rrdtool create maison.rrd \
 'RRA:MAX:0.99:480:720' \
 'RRA:MAX:0.99:2880:730' \
 'RRA:MAX:0.99:20160:1043'
+
+## UPDATE COMMAND
+
+rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:clear
