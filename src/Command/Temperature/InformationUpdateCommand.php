@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jarbey
- * Date: 24/12/2017
- * Time: 13:33
- */
+namespace App\Command\Temperature;
 
-namespace App\Command;
-
+use App\Command\AbstractCommand;
 use App\Service\DisplayManager;
 use App\Service\SensorDataManager;
 use App\Service\SensorManager;
@@ -50,7 +44,7 @@ class InformationUpdateCommand extends AbstractCommand {
 	protected function configure()
 	{
 		$this
-			->setName('cellar:information:update')
+			->setName('cellar:temperature:update')
 			->setDescription('Send information to databse')
 			->setHelp('This command get current values from sensor and push-it into the database')
 		;

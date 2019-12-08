@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jarbey
- * Date: 24/12/2017
- * Time: 13:33
- */
+namespace App\Command\Temperature;
 
-namespace App\Command;
-
+use App\Command\AbstractCommand;
 use App\Service\SensorDataManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +25,7 @@ class SendDataCommand extends AbstractCommand {
 
 	protected function configure() {
 		$this
-			->setName('cellar:data:send')
+			->setName('cellar:temperature:send')
 			->setDescription('Send data to server')
 			->setHelp('Send buffered sensor data to server')
 		;

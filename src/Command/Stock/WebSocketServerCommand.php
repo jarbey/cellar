@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Temperature;
 
+use App\Command\AbstractCommand;
 use App\Server\WebSocketComponent;
 use Ratchet\Client\WebSocket;
 use Ratchet\Http\HttpServer;
@@ -13,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class WebSocketServerCommand extends AbstractCommand {
 	protected function configure() {
 		$this
-			->setName('cellar:websocket:server')
+			->setName('cellar:temperature:websocket:server')
 			->setDescription('Start websocket server');
 	}
 
