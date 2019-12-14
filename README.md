@@ -36,7 +36,7 @@ rrdtool create maison.rrd \
 
 #### Install prerequisites
 sudo apt-get update
-sudo apt-get install git php-cli python-pip sqlite3
+sudo apt-get install git php-cli python-pip sqlite3 php-xml php-curl php-sqlite3
 sudo python -m pip install --upgrade pip setuptools wheel
 sudo pip install Adafruit_DHT
 

@@ -18,5 +18,12 @@ class SensorRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Sensor::class);
     }
+    /**
+     * @param string $name
+     * @return Sensor[]
+     */
+    public function getAllDbSensors($db_id) {
+        return $this->findBy(['db' => $db_id]);
+    }
 
 }

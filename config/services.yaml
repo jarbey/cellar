@@ -38,6 +38,7 @@ services:
     App\Service\SensorManager:
         arguments:
             $sensor_script: '%sensor_script%'
+            $db_id: '%db_id%'
 
     App\Service\DisplayManager:
         arguments:
