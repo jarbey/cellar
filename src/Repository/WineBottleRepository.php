@@ -26,7 +26,8 @@ class WineBottleRepository extends ServiceEntityRepository
 
     /**
      * @param WineColor $wine_color
-     * @return int
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getNbWineBottleColor(WineColor $wine_color) {
         $qb = $this->createQueryBuilder('t');
@@ -34,6 +35,21 @@ class WineBottleRepository extends ServiceEntityRepository
         $qb->join('t.stocks', 'stocks');
         $qb->where('t.color = :color');
         $qb->setParameter('color', $wine_color);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param BottleSize $bottleSize
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getNbWineBottleSize(BottleSize $bottleSize) {
+        $qb = $this->createQueryBuilder('t');
+        $qb->select('SUM(stocks.quantity_current) AS nb');
+        $qb->join('t.stocks', 'stocks');
+        $qb->where('t.bottle_size = :bottle_size');
+        $qb->setParameter('bottle_size', $bottleSize);
 
         return $qb->getQuery()->getSingleScalarResult();
     }

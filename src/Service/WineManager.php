@@ -170,4 +170,11 @@ class WineManager extends AbstractManager {
         return $this->wine_bottle_repository;
     }
 
+    /**
+     * @return BottleSizeRepository
+     */
+    public function getBottleSizeRepository() {
+        return $this->bottle_size_repository;
+    }
+
 }

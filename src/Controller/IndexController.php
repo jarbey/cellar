@@ -29,11 +29,12 @@ class IndexController extends Controller {
 	 * @param Request $request
 	 * @param DbRepository $db_repository
 	 * @param WineManager $wineManager
+     * @param WinePairingManager $winepairing_manager
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @throws EntityNotFoundException
 	 * @throws \Exception
 	 */
-	public function home($id, Request $request, DbRepository $db_repository, WineManager $wineManager) {
+	public function home($id, Request $request, DbRepository $db_repository, WineManager $wineManager, WinePairingManager $winepairing_manager) {
 		/** @var Db $db */
 		$db = $db_repository->find($id);
 		if ($db == null) {
@@ -45,10 +46,23 @@ class IndexController extends Controller {
 			$stats_color[$wine_color->getName()] = $wineManager->getWineBottleRepository()->getNbWineBottleColor($wine_color);
 		}
 
+        $stats_bottle_size = [];
+        foreach ($wineManager->getBottleSizeRepository()->findAll() as $bottle_size) {
+            $stats_bottle_size[$bottle_size->getName()] = ['capacity' => $bottle_size->getCapacity(), 'nb' => $wineManager->getWineBottleRepository()->getNbWineBottleSize($bottle_size)];
+        }
+
+        // PAIRING
+        $pairing = '';
+        if ($meal = $request->get('meal')) {
+            $pairing = $winepairing_manager->getWinePairing($meal);
+        }
+
 		return $this->render('home.html.twig', [
 			'db' => $db,
 			'ws_url' => 'cellar.arbey.fr/ws',
 			'stats_color' => $stats_color,
+            'stats_bottle_size' => $stats_bottle_size,
+            'pairing' => $pairing,
 		]);
 	}
 

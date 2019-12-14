@@ -64,7 +64,7 @@ class CavusviniferaManager extends AbstractManager {
                     $raw_line_data = str_getcsv($line, "\t");
                     if (count($raw_line_data) == $nb_cols) {
                         foreach ($raw_line_data as $key => $value) {
-                            $line_data[$first_line[$key]] = $value;
+                            $line_data[$first_line[$key]] = utf8_encode($value);
                         }
                         $data[] = $line_data;
                     }

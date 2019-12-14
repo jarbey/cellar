@@ -32,6 +32,23 @@ rrdtool create maison.rrd \
 'RRA:MAX:0.99:2880:730' \
 'RRA:MAX:0.99:20160:1043'
 
-## UPDATE COMMAND
+## INSTALL COMMAND
 
+#### Install prerequisites
+sudo apt-get update
+sudo apt-get install git php-cli python-pip sqlite3
+sudo python -m pip install --upgrade pip setuptools wheel
+sudo pip install Adafruit_DHT
+
+#### Install composer
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'baf1608c33254d00611ac1705c1d9958c817a1a33bce370c0595974b342601bd80b92a3f46067da89e3b06bff421f182') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+php composer-setup.php
+php -r "unlink('composer-setup.php');"
+
+#### Install cellar
+git clone https://github.com/jarbey/cellar.git
+
+
+## UPDATE COMMAND
 rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:clear
