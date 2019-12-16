@@ -43,8 +43,6 @@ class SensorManager extends AbstractManager {
 		$this->sensor_script = $sensor_script;
 		$this->sensor_repository = $sensor_repository;
 
-		$this->process = new Process('');
-
         $this->db_id = $db_id;
 	}
 
@@ -52,6 +50,7 @@ class SensorManager extends AbstractManager {
 	 * @return SensorDataGroup
 	 */
 	public function executeSensor() {
+
 		/** @var Sensor[] $sensors */
 		$sensors = $this->sensor_repository->getAllDbSensors($this->db_id);
 
@@ -65,6 +64,7 @@ class SensorManager extends AbstractManager {
 
 		// EXECUTE COMMAND
 		$command = $this->sensor_script . ' ' . join(' ', $cmd_args);
+        $this->process = new Process($command);
 		$this->getLogger()->debug('executeSensor GPIO ' . $command);
 
 		$this->process->setCommandLine($command);

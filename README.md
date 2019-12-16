@@ -48,6 +48,9 @@ php -r "unlink('composer-setup.php');"
 
 #### Install cellar
 git clone https://github.com/jarbey/cellar.git
+cd cellar/
+mv ../composer.phar ./
+php composer.phar install
 
 
 ## UPDATE COMMAND

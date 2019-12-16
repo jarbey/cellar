@@ -68,7 +68,7 @@ class InformationUpdateCommand extends AbstractCommand {
                 // Send to front
                 $this->web_front_manager->sendData($sensor_data);
             } catch (\Exception $e) {
-                $this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getTraceAsString() ]);
+                $this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
             }
 
             sleep(10);
