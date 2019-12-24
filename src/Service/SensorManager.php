@@ -44,6 +44,8 @@ class SensorManager extends AbstractManager {
 		$this->sensor_repository = $sensor_repository;
 
         $this->db_id = $db_id;
+
+        $this->process = new Process('');
 	}
 
 	/**
@@ -64,7 +66,7 @@ class SensorManager extends AbstractManager {
 
 		// EXECUTE COMMAND
 		$command = $this->sensor_script . ' ' . join(' ', $cmd_args);
-        $this->process = new Process($command);
+        $this->process->isTerminated(); // To free mem from previous exec
 		$this->getLogger()->debug('executeSensor GPIO ' . $command);
 
 		$this->process->setCommandLine($command);
