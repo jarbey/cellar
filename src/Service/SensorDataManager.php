@@ -57,9 +57,11 @@ class SensorDataManager extends AbstractManager {
 
     /**
      * Clear buffered data (and all doctrine entities)
+     *
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
      */
 	public function clear() {
-	    $this->sensor_data_repository->clear();
+	    $this->sensor_data_repository->clearAll();
     }
 
     /**

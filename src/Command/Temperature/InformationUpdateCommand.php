@@ -117,15 +117,18 @@ class InformationUpdateCommand extends AbstractCommand {
 	}
 
 	private function getSensors() {
+        $this->sensors = null;
 	    $this->sensors = $this->sensor_manager->getSensors($this->db_id);
     }
 
     /**
      * Detach all entities, then fetch sensors and force garbage collecting
+     *
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
      */
 	private function flush_memory() {
         $this->sensor_data_manager->clear();
-	    $this->getSensors();
+        $this->getSensors();
 
         gc_enable();
         gc_collect_cycles();

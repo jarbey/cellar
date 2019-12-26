@@ -47,4 +47,11 @@ class SensorDataRepository extends ServiceEntityRepository
 		$this->getEntityManager()->flush();
 	}
 
+    /**
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     */
+    public function clearAll() {
+        $this->getEntityManager()->clear();
+    }
+
 }
