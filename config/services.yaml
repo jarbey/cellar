@@ -89,4 +89,4 @@ services:
     App\Command\Temperature\InformationUpdateCommand:
         arguments:
             $wait_interval: '%wait_interval%'
-            $debug_memory: '%$debug_memory%'
+            $debug_memory: '%debug_memory%'
