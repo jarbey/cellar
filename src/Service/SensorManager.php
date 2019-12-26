@@ -36,25 +36,27 @@ class SensorManager extends AbstractManager {
 	 * @param LoggerInterface $logger
 	 * @param $sensor_script
 	 * @param SensorRepository $sensor_repository
-     * @param integer $db_id
 	 */
-	public function __construct(LoggerInterface $logger, $sensor_script, SensorRepository $sensor_repository, $db_id) {
+	public function __construct(LoggerInterface $logger, $sensor_script, SensorRepository $sensor_repository) {
 		parent::__construct($logger);
 		$this->sensor_script = $sensor_script;
 		$this->sensor_repository = $sensor_repository;
-
-        $this->db_id = $db_id;
 	}
 
-	/**
-	 * @return SensorDataGroup
-	 */
-	public function executeSensor() {
-		/** @var Sensor[] $sensors */
-		$sensors = $this->sensor_repository->getAllDbSensors($this->db_id);
+    /**
+     * @param $db_id
+     * @return Sensor[]
+     */
+	public function getSensors($db_id) {
+	    return $this->sensor_repository->getAllDbSensors($db_id);
+    }
 
+    /**
+     * @param Sensor[] $sensors
+     * @return SensorDataGroup
+     */
+	public function executeSensor($sensors) {
 		$this->getLogger()->debug('ENTER executeSensor for ' . count($sensors) . ' GPIOs');
-
 
 		// EXECUTE COMMAND
         if (!$this->process) {

@@ -40,7 +40,6 @@ services:
     App\Service\SensorManager:
         arguments:
             $sensor_script: '%sensor_script%'
-            $db_id: '%db_id%'
 
     App\Service\DisplayManager:
         arguments:
@@ -86,7 +85,12 @@ services:
 #### COMMANDS ####
 ##################
 
+    App\Command\Temperature\SendDataCommand:
+        arguments:
+            $db_id: '%db_id%'
+
     App\Command\Temperature\InformationUpdateCommand:
         arguments:
+            $db_id: '%db_id%'
             $wait_interval: '%wait_interval%'
             $debug_memory: '%debug_memory%'

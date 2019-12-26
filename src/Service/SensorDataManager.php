@@ -30,40 +30,39 @@ class SensorDataManager extends AbstractManager {
 	/** @var \GuzzleHttp\Client $client */
 	private $client;
 
-	/** @var string */
-	private $db_id;
-
 	/**
 	 * SensorDataManager constructor.
 	 * @param LoggerInterface $logger
 	 * @param SensorDataRepository $sensor_data_repository
 	 * @param SerializerInterface $serializer
 	 * @param $client
-	 * @param $db_id
 	 */
-	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, SerializerInterface $serializer, $client, $db_id) {
+	public function __construct(LoggerInterface $logger, SensorDataRepository $sensor_data_repository, SerializerInterface $serializer, $client) {
 		parent::__construct($logger);
 		$this->sensor_data_repository = $sensor_data_repository;
 		$this->serializer = $serializer;
 
 		/** @var \GuzzleHttp\Client $client */
 		$this->client = $client;
-
-		$this->db_id = $db_id;
 	}
 
-	/**
-	 * @param SensorDataGroup $sensor_data
-	 */
+    /**
+     * @param SensorDataGroup $sensor_data
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
 	public function bufferData(SensorDataGroup $sensor_data) {
 		$this->sensor_data_repository->save($sensor_data->getSensorData());
 	}
 
-	/**
-	 * @return int
-	 * @throws ServerException
-	 */
-	public function serverSend() {
+    /**
+     * @param int $db_id
+     * @return int
+     * @throws ServerException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+	public function serverSend($db_id) {
 		$nb_sent = 0;
 
 		/** @var SensorData[] $sensor_data_list */
@@ -90,7 +89,7 @@ class SensorDataManager extends AbstractManager {
 
 			// Server call
 			$this->getLogger()->debug('Call updateDataServer');
-			if (!$this->updateDataServer($sensor_data_group)) {
+			if (!$this->updateDataServer($db_id, $sensor_data_group)) {
 				throw new ServerException();
 			}
 
@@ -114,10 +113,11 @@ class SensorDataManager extends AbstractManager {
 	}
 
 	/**
+     * @param int $db_id
 	 * @param SensorDataGroup $sensor_data_group
 	 * @return bool
 	 */
-	private function updateDataServer(SensorDataGroup $sensor_data_group) {
+	private function updateDataServer($db_id, SensorDataGroup $sensor_data_group) {
 		$this->getLogger()->debug('Update server data for date {date}', [ 'date' => $sensor_data_group->getDate() ]);
 
 		$payload = $this->serializer->serialize($sensor_data_group, 'json', SerializationContext::create()->setGroups(['updateSensorData']));
@@ -126,7 +126,7 @@ class SensorDataManager extends AbstractManager {
 
 		try {
 			// PUT /{db_id}/{timestamp}
-			$response = $this->client->put($this->db_id . '/' . $sensor_data_group->getDate()->getTimestamp(), [
+			$response = $this->client->put($db_id . '/' . $sensor_data_group->getDate()->getTimestamp(), [
 				'body' => $payload
 			]);
 
@@ -145,7 +145,7 @@ class SensorDataManager extends AbstractManager {
 			echo $e->getMessage();
 		}
 
-
+        return false;
 	}
 
 }
