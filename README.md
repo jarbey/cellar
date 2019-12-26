@@ -52,6 +52,9 @@ cd cellar/
 mv ../composer.phar ./
 php composer.phar install
 
+#### Adjust the .env file
+change DB_ID
+
 
 ## UPDATE COMMAND
 rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:clear

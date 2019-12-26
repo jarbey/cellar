@@ -11,6 +11,8 @@ parameters:
     chromecast.ip: '%env(CHROMECAST_IP)%'
     chromecast.port: '%env(CHROMECAST_PORT)%'
     locale: 'en'
+    wait_interval: '%env(TEMPERATURE_WAIT_INTERVAL)%'
+    debug_memory: '%env(TEMPERATURE_DEBUG_MEMORY)%'
 
 services:
     # default configuration for services in *this* file
@@ -79,3 +81,12 @@ services:
     App\Service\CavusviniferaManager:
         arguments:
             $client: '@eight_points_guzzle.client.cavusvinifera'
+
+##################
+#### COMMANDS ####
+##################
+
+    App\Command\Temperature\InformationUpdateCommand:
+        arguments:
+            $wait_interval: '%$wait_interval%'
+            $debug_memory: '%$debug_memory%'

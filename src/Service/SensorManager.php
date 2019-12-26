@@ -44,32 +44,29 @@ class SensorManager extends AbstractManager {
 		$this->sensor_repository = $sensor_repository;
 
         $this->db_id = $db_id;
-
-        $this->process = new Process('');
 	}
 
 	/**
 	 * @return SensorDataGroup
 	 */
 	public function executeSensor() {
-
 		/** @var Sensor[] $sensors */
 		$sensors = $this->sensor_repository->getAllDbSensors($this->db_id);
 
 		$this->getLogger()->debug('ENTER executeSensor for ' . count($sensors) . ' GPIOs');
 
-		// CONSTRUCT COMMAND ARGS
-		$cmd_args = [];
-		foreach ($sensors as $sensor) {
-			$cmd_args[] = $sensor->getType() . ',' . $sensor->getGpio();
-		}
 
 		// EXECUTE COMMAND
-		$command = $this->sensor_script . ' ' . join(' ', $cmd_args);
-        $this->process->isTerminated(); // To free mem from previous exec
-		$this->getLogger()->debug('executeSensor GPIO ' . $command);
+        if (!$this->process) {
+            // CONSTRUCT COMMAND ARGS
+            $cmd_args = [$this->sensor_script];
+            foreach ($sensors as $sensor) {
+                $cmd_args[] = $sensor->getType() . ',' . $sensor->getGpio();
+            }
+            $this->process = new Process($cmd_args);
+        }
 
-		$this->process->setCommandLine($command);
+		$this->getLogger()->debug('executeSensor GPIO ' . $this->process->getCommandLine());
 		$this->process->run();
 
 		// executes after the command finishes
