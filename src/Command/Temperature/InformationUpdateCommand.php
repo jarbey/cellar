@@ -2,6 +2,7 @@
 namespace App\Command\Temperature;
 
 use App\Command\AbstractCommand;
+use App\Entity\Sensor;
 use App\Service\DisplayManager;
 use App\Service\SensorDataManager;
 use App\Service\SensorManager;
@@ -24,8 +25,15 @@ class InformationUpdateCommand extends AbstractCommand {
 	/** @var WebFrontManager */
 	private $web_front_manager;
 
+	//=============
+
     /** @var int */
     private $db_id;
+
+    /** @var Sensor[] */
+    private $sensors;
+
+    //=============
 
     /** @var bool */
     private $wait_interval = 10;
@@ -73,9 +81,8 @@ class InformationUpdateCommand extends AbstractCommand {
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-        gc_enable();
-
-	    $sensors = $this->sensor_manager->getSensors($this->db_id);
+	    // Fetch sensors
+	    $this->getSensors();
 
 	    while (true) {
             try {
@@ -84,7 +91,7 @@ class InformationUpdateCommand extends AbstractCommand {
                 $this->getLogger()->info('Execute info update');
 
                 // Get data
-                $sensor_data = $this->sensor_manager->executeSensor($sensors);
+                $sensor_data = $this->sensor_manager->executeSensor($this->sensors);
 
                 // Buffer data
                 $this->sensor_data_manager->bufferData($sensor_data);
@@ -95,7 +102,6 @@ class InformationUpdateCommand extends AbstractCommand {
                 // Send to front
                 $this->web_front_manager->sendData($sensor_data);
 
-                $sensor_data = null;
                 // Memory management
                 if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
                     $this->flush_memory();
@@ -110,7 +116,18 @@ class InformationUpdateCommand extends AbstractCommand {
 
 	}
 
+	private function getSensors() {
+	    $this->sensors = $this->sensor_manager->getSensors($this->db_id);
+    }
+
+    /**
+     * Detach all entities, then fetch sensors and force garbage collecting
+     */
 	private function flush_memory() {
+        $this->sensor_data_manager->clear();
+	    $this->getSensors();
+
+        gc_enable();
         gc_collect_cycles();
     }
 

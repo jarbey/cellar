@@ -57,4 +57,4 @@ change DB_ID
 
 
 ## UPDATE COMMAND
-rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:clear
+rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:warmup

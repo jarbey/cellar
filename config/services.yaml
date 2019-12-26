@@ -49,7 +49,6 @@ services:
     App\Service\SensorDataManager:
         arguments:
             $client: '@eight_points_guzzle.client.cellar_server'
-            $db_id: '%db_id%'
 
     App\Service\WebFrontManager:
         arguments:

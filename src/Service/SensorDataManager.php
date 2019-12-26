@@ -56,6 +56,13 @@ class SensorDataManager extends AbstractManager {
 	}
 
     /**
+     * Clear buffered data (and all doctrine entities)
+     */
+	public function clear() {
+	    $this->sensor_data_repository->clear();
+    }
+
+    /**
      * @param int $db_id
      * @return int
      * @throws ServerException
