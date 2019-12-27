@@ -11,7 +11,7 @@ UMask=007
 
 ExecStart=/home/pi/cellar/temperature_get.sh
 
-Restart=on-failure
+Restart=always
 
 TimeoutSec=60
 

@@ -18,9 +18,6 @@ class SendDataCommand extends AbstractBackgroundCommand {
 
     //=============
 
-    /** @var bool */
-    private $wait_interval = 10;
-
     /** @var string */
     protected $debug_memory_filename = '/home/pi/cellar/debug_memory_send.log';
 
@@ -46,36 +43,18 @@ class SendDataCommand extends AbstractBackgroundCommand {
 		;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output) {
-	    while (true) {
-            try {
-                $this->loop_iteration++;
+    protected function preLoop(InputInterface $input, OutputInterface $output) {
+    }
 
-                $this->getLogger()->info('Execute send buffered data');
+    protected function postLoop(InputInterface $input, OutputInterface $output) {
+    }
 
-                $nb = $this->sensor_data_manager->serverSend($this->db_id);
-                $this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
+    protected function executeBackgroundLoop(InputInterface $input, OutputInterface $output) {
+        $this->getLogger()->info('Execute send buffered data');
 
-                // Memory management
-                $this->debug_memory_usage();
-            } catch (\Exception $e) {
-                $this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getMessage() ]);
-            }
-
-            // Memory management
-            try {
-                if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
-                    $this->manage_memory();
-                }
-            } catch (\Exception $e) {
-                $this->getLogger()->warning('Memory - {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
-                break;
-            }
-
-            sleep(10);
-        }
-	}
-
+        $nb = $this->sensor_data_manager->serverSend($this->db_id);
+        $this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
+    }
 
     protected function flush_memory() {
         $this->sensor_data_manager->clear();

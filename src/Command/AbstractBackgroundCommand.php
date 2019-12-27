@@ -4,6 +4,8 @@ namespace App\Command;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractBackgroundCommand extends AbstractCommand {
 
@@ -22,6 +24,9 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
     /** @var int */
     protected $loop_iteration = 0;
 
+    /** @var bool */
+    protected $wait_interval = 10;
+
 
     protected function getMaxMemory() {
         return $this->max_memory;
@@ -32,6 +37,47 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
      * @throws \Doctrine\Common\Persistence\Mapping\MappingException
      */
     abstract protected function flush_memory();
+
+    /**
+     * @throws \Exception
+     */
+    abstract protected function executeBackgroundLoop(InputInterface $input, OutputInterface $output);
+
+    abstract protected function preLoop(InputInterface $input, OutputInterface $output);
+
+    abstract protected function postLoop(InputInterface $input, OutputInterface $output);
+
+    protected function execute(InputInterface $input, OutputInterface $output) {
+
+        $this->preLoop($input, $output);
+
+        while (true) {
+            try {
+                $this->loop_iteration++;
+
+                $this->executeBackgroundLoop($input, $output);
+
+                $this->debug_memory_usage();
+            } catch (\Exception $e) {
+                $this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
+            }
+
+            // Memory management
+            try {
+                if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
+                    $this->manage_memory();
+                }
+            } catch (\Exception $e) {
+                $this->getLogger()->warning('Memory - {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
+                return 1;
+            }
+
+            sleep($this->wait_interval);
+        }
+
+        $this->postLoop($input, $output);
+        return 0;
+    }
 
     /**
      * Detach all entities, then fetch sensors and force garbage collecting

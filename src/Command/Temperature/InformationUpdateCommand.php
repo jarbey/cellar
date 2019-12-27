@@ -36,9 +36,6 @@ class InformationUpdateCommand extends AbstractBackgroundCommand {
 
     //=============
 
-    /** @var bool */
-    private $wait_interval = 10;
-
     /** @var string */
     protected $debug_memory_filename = '/home/pi/cellar/debug_memory_get.log';
 
@@ -74,49 +71,31 @@ class InformationUpdateCommand extends AbstractBackgroundCommand {
 		;
 	}
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-	    // Fetch sensors
-	    $this->getSensors();
+	protected function preLoop(InputInterface $input, OutputInterface $output) {
+        // Fetch sensors
+        $this->getSensors();
+    }
 
-	    while (true) {
-            try {
-                $this->loop_iteration++;
+    protected function postLoop(InputInterface $input, OutputInterface $output) {
+    }
 
-                $this->getLogger()->info('Execute info update');
+	protected function executeBackgroundLoop(InputInterface $input, OutputInterface $output) {
+        $this->getLogger()->info('Execute info update');
 
-                // Get data
-                $sensor_data = $this->sensor_manager->executeSensor($this->sensors);
+        // Get data
+        $sensor_data = $this->sensor_manager->executeSensor($this->sensors);
 
-                // Buffer data
-                $this->sensor_data_manager->bufferData($sensor_data);
+        // Buffer data
+        $this->sensor_data_manager->bufferData($sensor_data);
 
-                // Display data
-                $this->display_manager->displaySensorData($sensor_data);
+        // Display data
+        $this->display_manager->displaySensorData($sensor_data);
 
-                // Send to front
-                $this->web_front_manager->sendData($sensor_data);
+        // Send to front
+        $this->web_front_manager->sendData($sensor_data);
 
-                // Clear data from memory
-                $sensor_data = null;
-                $this->debug_memory_usage();
-            } catch (\Exception $e) {
-                $this->getLogger()->warning('Error during info update : {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
-            }
-
-            // Memory management
-            try {
-                if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
-                    $this->manage_memory();
-                }
-            } catch (\Exception $e) {
-                $this->getLogger()->warning('Memory - {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
-                break;
-            }
-
-            sleep($this->wait_interval);
-        }
-
+        // Clear data from memory
+        $sensor_data = null;
 	}
 
 	private function getSensors() {
