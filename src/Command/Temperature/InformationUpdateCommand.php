@@ -103,6 +103,7 @@ class InformationUpdateCommand extends AbstractCommand {
                 $this->web_front_manager->sendData($sensor_data);
 
                 // Memory management
+                $sensor_data = null;
                 if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
                     $this->flush_memory();
                 }
@@ -136,7 +137,7 @@ class InformationUpdateCommand extends AbstractCommand {
 
     private function debug_memory_usage() {
         $mem_usage = memory_get_usage();
-        file_put_contents('/home/pi/cellar/debug_memory.log', 'Memory usage after iteration ' . $this->loop_iteration . ': ' . round($mem_usage / 1024) . 'KB' . "\n", FILE_APPEND);
+        file_put_contents('/home/pi/cellar/debug_memory_get.log', 'Memory usage after iteration ' . $this->loop_iteration . ': ' . round($mem_usage / 1024) . 'KB' . "\n", FILE_APPEND);
     }
 
 

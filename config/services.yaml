@@ -87,6 +87,8 @@ services:
     App\Command\Temperature\SendDataCommand:
         arguments:
             $db_id: '%db_id%'
+            $wait_interval: '%wait_interval%'
+            $debug_memory: '%debug_memory%'
 
     App\Command\Temperature\InformationUpdateCommand:
         arguments:
