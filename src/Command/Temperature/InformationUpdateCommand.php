@@ -1,6 +1,7 @@
 <?php
 namespace App\Command\Temperature;
 
+use App\Command\AbstractBackgroundCommand;
 use App\Command\AbstractCommand;
 use App\Entity\Sensor;
 use App\Service\DisplayManager;
@@ -11,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InformationUpdateCommand extends AbstractCommand {
+class InformationUpdateCommand extends AbstractBackgroundCommand {
 
 	/** @var SensorManager */
 	private $sensor_manager;
@@ -38,17 +39,8 @@ class InformationUpdateCommand extends AbstractCommand {
     /** @var bool */
     private $wait_interval = 10;
 
-    /** @var bool */
-    private $debug_memory = 0;
-
-	/** @var int */
-	private $loop_iteration = 0;
-
-    /** @var int */
-    private $loop_memory_flush = 10;
-
-    /** @var int */
-    private $max_memory = 32 * 1024 * 1024;
+    /** @var string */
+    protected $debug_memory_filename = '/home/pi/cellar/debug_memory_get.log';
 
 	/**
 	 * InformationUpdateCommand constructor.
@@ -132,27 +124,9 @@ class InformationUpdateCommand extends AbstractCommand {
 	    $this->sensors = $this->sensor_manager->getSensors($this->db_id);
     }
 
-    /**
-     * Detach all entities, then fetch sensors and force garbage collecting
-     *
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-     * @throws \Exception
-     */
-	private function manage_memory() {
+
+	protected function flush_memory() {
         $this->sensor_data_manager->clear();
         $this->getSensors();
-
-        gc_enable();
-        gc_collect_cycles();
-
-        $mem_usage = memory_get_usage();
-        if ($mem_usage > $this->max_memory) {
-            throw new \Exception('Exceed memory limit : ' . $mem_usage . ' vs ' . $this->max_memory);
-        }
-    }
-
-    private function debug_memory_usage() {
-        $mem_usage = memory_get_usage();
-        file_put_contents('/home/pi/cellar/debug_memory_get.log', 'Memory usage after iteration ' . $this->loop_iteration . ': ' . round($mem_usage / 1024) . 'KB' . "\n", FILE_APPEND);
     }
 }

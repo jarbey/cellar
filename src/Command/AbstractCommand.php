@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jarbey
- * Date: 27/12/2017
- * Time: 21:57
- */
-
 namespace App\Command;
 
 

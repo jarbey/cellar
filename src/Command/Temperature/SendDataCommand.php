@@ -1,13 +1,14 @@
 <?php
 namespace App\Command\Temperature;
 
+use App\Command\AbstractBackgroundCommand;
 use App\Command\AbstractCommand;
 use App\Service\SensorDataManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SendDataCommand extends AbstractCommand {
+class SendDataCommand extends AbstractBackgroundCommand {
 
 	/** @var SensorDataManager */
 	private $sensor_data_manager;
@@ -20,17 +21,8 @@ class SendDataCommand extends AbstractCommand {
     /** @var bool */
     private $wait_interval = 10;
 
-    /** @var bool */
-    private $debug_memory = 0;
-
-    /** @var int */
-    private $loop_iteration = 0;
-
-    /** @var int */
-    private $loop_memory_flush = 10;
-
-    /** @var int */
-    private $max_memory = 32 * 1024 * 1024;
+    /** @var string */
+    protected $debug_memory_filename = '/home/pi/cellar/debug_memory_send.log';
 
 	/**
 	 * InformationUpdateCommand constructor.
@@ -84,27 +76,9 @@ class SendDataCommand extends AbstractCommand {
         }
 	}
 
-    /**
-     * Detach all entities, then fetch sensors and force garbage collecting
-     *
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-     * @throws \Exception
-     */
-    private function manage_memory() {
+
+    protected function flush_memory() {
         $this->sensor_data_manager->clear();
-
-        gc_enable();
-        gc_collect_cycles();
-
-        $mem_usage = memory_get_usage();
-        if ($mem_usage > $this->max_memory) {
-            throw new \Exception('Exceed memory limit : ' . $mem_usage . ' vs ' . $this->max_memory);
-        }
-    }
-
-    private function debug_memory_usage() {
-        $mem_usage = memory_get_usage();
-        file_put_contents('/home/pi/cellar/debug_memory_send.log', 'Memory usage after iteration ' . $this->loop_iteration . ': ' . round($mem_usage / 1024) . 'KB' . "\n", FILE_APPEND);
     }
 
 }
