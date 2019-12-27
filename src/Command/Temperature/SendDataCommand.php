@@ -29,6 +29,9 @@ class SendDataCommand extends AbstractCommand {
     /** @var int */
     private $loop_memory_flush = 10;
 
+    /** @var int */
+    private $max_memory = 32 * 1024 * 1024;
+
 	/**
 	 * InformationUpdateCommand constructor.
 	 * @param LoggerInterface $logger
@@ -62,29 +65,41 @@ class SendDataCommand extends AbstractCommand {
                 $this->getLogger()->info('Data sent : {nb}', [ 'nb' => $nb ]);
 
                 // Memory management
-                if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
-                    $this->flush_memory();
-                }
                 $this->debug_memory_usage();
             } catch (\Exception $e) {
                 $this->getLogger()->warning('Error during sending server data : {error}', [ 'error' => $e->getMessage() ]);
+            }
+
+            // Memory management
+            try {
+                if (($this->loop_iteration % $this->loop_memory_flush) == 0) {
+                    $this->manage_memory();
+                }
+            } catch (\Exception $e) {
+                $this->getLogger()->warning('Memory - {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
+                break;
             }
 
             sleep(10);
         }
 	}
 
-
     /**
      * Detach all entities, then fetch sensors and force garbage collecting
      *
      * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Exception
      */
-    private function flush_memory() {
+    private function manage_memory() {
         $this->sensor_data_manager->clear();
 
         gc_enable();
         gc_collect_cycles();
+
+        $mem_usage = memory_get_usage();
+        if ($mem_usage > $this->max_memory) {
+            throw new \Exception('Exceed memory limit : ' . $mem_usage . ' vs ' . $this->max_memory);
+        }
     }
 
     private function debug_memory_usage() {

@@ -55,6 +55,15 @@ php composer.phar install
 #### Adjust the .env file
 change DB_ID
 
+#### Copy Services ####
+cp install/temperature*.service /etc/systemd/system/
+sudo systemctl enable temperature_get
+sudo systemctl enable temperature_send
+
+#### Start Services ####
+sudo systemctl start temperature_get
+sudo systemctl start temperature_send
+
 
 ## UPDATE COMMAND
 rm -r src/ ; git reset --hard origin/master ; git pull ; chmod 755 src/Python/*.py ; chmod 755 *.sh ; rm -r var/cache ; php composer.phar dumpautoload ; php bin/console cache:warmup
