@@ -27,8 +27,6 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
         return $this->max_memory;
     }
 
-    abstract protected function get();
-
 
     /**
      * @throws \Doctrine\Common\Persistence\Mapping\MappingException
