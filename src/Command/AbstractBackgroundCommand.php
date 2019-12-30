@@ -12,6 +12,9 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
     /** @var int */
     private $max_memory = 32 * 1024 * 1024;
 
+    /** @var int */
+    private $max_time = 3600;
+
     /** @var bool */
     protected $debug_memory = 0;
 
@@ -49,6 +52,8 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
+        $start_time = microtime(true);
+
         $this->preLoop($input, $output);
 
         while (true) {
@@ -70,6 +75,11 @@ abstract class AbstractBackgroundCommand extends AbstractCommand {
             } catch (\Exception $e) {
                 $this->getLogger()->warning('Memory - {error}', [ 'error' => $e->getMessage() . "\n" . $e->getTraceAsString() ]);
                 return 1;
+            }
+
+            // Time limit
+            if ((microtime(true) - $start_time) > $this->max_time) {
+                break;
             }
 
             sleep($this->wait_interval);
