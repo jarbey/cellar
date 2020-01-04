@@ -49,8 +49,8 @@
 
     {% for sensor in db.sensors %}
 		<div class="row">
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" id="{{ sensor.id }}_temperature_graph" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" id="{{ sensor.id }}_humidity_graph" /></div>
 		</div>
     {% endfor %}
 {% endblock %}
@@ -146,6 +146,17 @@
 
             ws.onerror = function () {
             };
+
+            setInterval(refreshGraphs, 300000);
         })();
+
+        function refreshGraphs() {
+            {% for sensor in db.sensors %}
+                var to = Date.now();
+                var from = new Date(Date.now() - 86400000);
+                $('#sensor_{{ sensor.id }}_temperature_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
+                $('#sensor_{{ sensor.id }}_humidity_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
+            {% endfor %}
+        }
 	</script>
 {% endblock %}
