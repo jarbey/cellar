@@ -50,7 +50,7 @@ php -r "unlink('composer-setup.php');"
 git clone https://github.com/jarbey/cellar.git
 cd cellar/
 mv ../composer.phar ./
-php composer.phar install
+php composer.phar install --no-dev --optimize-autoloader
 
 #### Adjust the .env file
 change DB_ID

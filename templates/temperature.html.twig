@@ -49,8 +49,8 @@
 
     {% for sensor in db.sensors %}
 		<div class="row">
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" id="{{ sensor.id }}_temperature_graph" /></div>
-			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" id="{{ sensor.id }}_humidity_graph" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from={{ from|date('U') }}&to={{ to|date('U') }}" id="sensor_{{ sensor.id }}_temperature_graph" /></div>
+			<div class="col"><img src="/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from={{ from|date('U') }}&to={{ to|date('U') }}" id="sensor_{{ sensor.id }}_humidity_graph" /></div>
 		</div>
     {% endfor %}
 {% endblock %}
@@ -112,6 +112,8 @@
                         var sensor_data = sensor_raw_data.sensor_data[k];
                         var sid = sensor_data.sensor.id;
 
+                        if (sensors_definition[sid] == null) continue;
+
                         $('#sensor_' + sid + '_temperature_value').html(sensor_data.temperature + '°C');
                         var state_sel = $('#sensor_' + sid + '_temperature_state');
                         state_sel.removeClass().addClass('card text-white');
@@ -151,11 +153,12 @@
         })();
 
         function refreshGraphs() {
+            var to = new Date(Date.now());
+            var from = new Date(Date.now() - 86400000);
+            console.log("Refresh @" + to.getTime());
             {% for sensor in db.sensors %}
-                var to = Date.now();
-                var from = new Date(Date.now() - 86400000);
-                $('#sensor_{{ sensor.id }}_temperature_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
-                $('#sensor_{{ sensor.id }}_humidity_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
+            $('#sensor_{{ sensor.id }}_temperature_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
+            $('#sensor_{{ sensor.id }}_humidity_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
             {% endfor %}
         }
 	</script>
