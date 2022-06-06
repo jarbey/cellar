@@ -158,7 +158,7 @@
             console.log("Refresh @" + to.getTime());
             {% for sensor in db.sensors %}
             $('#sensor_{{ sensor.id }}_temperature_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
-            $('#sensor_{{ sensor.id }}_humidity_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/temperature?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
+            $('#sensor_{{ sensor.id }}_humidity_graph').attr("src", "/api/{{ db.id }}/sensors/{{ sensor.id }}/graph/humidity?from=" + (from.getTime() / 1000) + "&to=" + (to.getTime() / 1000));
             {% endfor %}
         }
 	</script>
