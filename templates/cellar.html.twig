@@ -4,13 +4,12 @@
 
 	<div class="row">
         <img src="/cellar.png" />
-		<div id="sensor_1"></div>
-		<div id="sensor_2"></div>
-		<div id="sensor_3"></div>
-		<div id="sensor_4"></div>
-		<div id="sensor_7"></div>
-		<div id="sensor_8"></div>
-		<div id="sensor_9"></div>
+		<div id="sensor_1" style="position: absolute; top: 430px; left: 736px;"></div>
+		<div id="sensor_2" style="position: absolute; top: 700px; left: 736px;"></div>
+		<div id="sensor_3" style="position: absolute; top: 282px; left: 750px;"></div>
+		<div id="sensor_7" style="position: absolute; top: 650px; left: 130px;"></div>
+		<div id="sensor_8" style="position: absolute; top: 80px;  left: 400px;"></div>
+		<div id="sensor_9" style="position: absolute; top: 170px; left: 580px;"></div>
 	</div>
 
 {% endblock %}
@@ -39,7 +38,7 @@
 
 						const temp = Math.round(sensor_data.temperature * 10) / 10;
 						const humi = Math.round(sensor_data.humidity * 10) / 10;
-						$('#sensor_' + sid).html(temp + " / " + humi);
+						$('#sensor_' + sid).html(temp + "°C<br />" + humi + "%");
 					}
 				} catch (error) {
 					console.log(error);
