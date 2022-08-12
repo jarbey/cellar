@@ -14,13 +14,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Created by PhpStorm.
- * User: jarbey
- * Date: 05/02/2018
- * Time: 22:40
- */
 class IndexController extends Controller {
+
+    /**
+     * @Route("/cellar", name="cellar")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function cellar(Request $request) {
+
+        return $this->render('cellar.html.twig', [
+            'ws_url' => 'cellar.arbey.fr/ws',
+        ]);
+    }
 
 	/**
 	 * @Route("/{id}", name="home", requirements={"id" = "\d+"})
@@ -101,21 +110,6 @@ class IndexController extends Controller {
             'db' => $db,
             'from' => $from,
             'to' => $to,
-            'ws_url' => 'cellar.arbey.fr/ws',
-        ]);
-    }
-
-    /**
-     * @Route("/cellar", name="cellar")
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws EntityNotFoundException
-     * @throws \Exception
-     */
-    public function cellar(Request $request) {
-
-        return $this->render('cellar.html.twig', [
             'ws_url' => 'cellar.arbey.fr/ws',
         ]);
     }
