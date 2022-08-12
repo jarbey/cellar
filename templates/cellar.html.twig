@@ -4,12 +4,47 @@
 
 	<div class="row">
         <img src="/cellar.png" />
+		<div id="sensor_1"></div>
+		<div id="sensor_2"></div>
+		<div id="sensor_3"></div>
+		<div id="sensor_4"></div>
+		<div id="sensor_7"></div>
+		<div id="sensor_8"></div>
+		<div id="sensor_9"></div>
 	</div>
 
 {% endblock %}
 
 {% block javascripts %}
 	<script type="text/javascript">
+		var ws;
+		(function () {
+			'use strict';
 
+			var _receiver = document.getElementById('ws-content-receiver');
+			ws = new WebSocket('wss://{{ ws_url }}');
+
+			ws.onopen = function () {
+				_receiver.innerHTML = 'Connected !';
+			};
+
+			ws.onmessage = function (event) {
+				try {
+					var sensor_raw_data = JSON.parse(event.data);
+					console.log(sensor_raw_data);
+
+					_receiver.innerHTML = 'Connected (@' + sensor_raw_data.date + ')';
+
+				} catch (error) {
+					console.log(error);
+				}
+			};
+
+			ws.onclose = function () {
+			};
+
+			ws.onerror = function () {
+			};
+		})();
 	</script>
 {% endblock %}

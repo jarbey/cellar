@@ -10,6 +10,7 @@ use App\Model\ApiResult;
 use App\Repository\DbRepository;
 use App\Repository\SensorRepository;
 use App\Service\RrdManager;
+use App\Service\WebFrontManager;
 use FOS\RestBundle\Controller\Annotations AS FOS;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -72,7 +73,7 @@ class ApiController extends FOSRestController {
 	 * @return Response
 	 * @throws SensorNotFoundException
 	 */
-	public function updateSensorDataAction(Db $db, $date, SensorDataGroup $sensor_data_group) {
+	public function updateSensorDataAction(Db $db, $date, SensorDataGroup $sensor_data_group, WebFrontManager $webFrontManager) {
 		// TODO : Add Validator for values RequestParam
 
 		// Check sensor values
@@ -87,6 +88,8 @@ class ApiController extends FOSRestController {
 
 		try {
 			$this->rrd_manager->updateArchive($db, $sensor_data_group, $date);
+
+            $webFrontManager->sendData($sensor_data_group);
 
 			$view = $this->view(new ApiResult(ApiResult::OK, ''), 200);
 		} catch (Exception $e) {
