@@ -25,7 +25,7 @@
 			ws = new WebSocket('wss://{{ ws_url }}');
 
 			ws.onopen = function () {
-				_receiver.innerHTML = 'Connected !';
+				//_receiver.innerHTML = 'Connected !';
 			};
 
 			ws.onmessage = function (event) {
