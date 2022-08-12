@@ -33,6 +33,14 @@
 					var sensor_raw_data = JSON.parse(event.data);
 					console.log(sensor_raw_data);
 
+					for(var k in sensor_raw_data.sensor_data) {
+						const sensor_data = sensor_raw_data.sensor_data[k];
+						const sid = sensor_data.sensor.id;
+
+						const temp = Math.round(sensor_data.temperature * 10) / 10;
+						const humi = Math.round(sensor_data.humidity * 10) / 10;
+						$('#sensor_' + sid).html(temp + " / " + humi);
+					}
 				} catch (error) {
 					console.log(error);
 				}
