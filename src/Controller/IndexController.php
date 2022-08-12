@@ -106,6 +106,21 @@ class IndexController extends Controller {
     }
 
     /**
+     * @Route("/cellar", name="cellar")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function cellar(Request $request) {
+
+        return $this->render('cellar.html.twig', [
+            'ws_url' => 'cellar.arbey.fr/ws',
+        ]);
+    }
+
+    /**
      * @Route("/{id}/pairing", name="pairing", requirements={"id" = "\d+"})
      *
      * @param $id
