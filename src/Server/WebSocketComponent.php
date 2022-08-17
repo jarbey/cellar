@@ -59,7 +59,7 @@ class WebSocketComponent implements MessageComponentInterface
             $this->getLogger()->info('Message : ' . $message);
             $json_data = json_decode($message);
 
-            $this->last_messages[$json_data['db_id']] = $message;
+            $this->last_messages[$json_data->db_id] = $message;
             foreach ($this->clients as $client) {
                 if ($from !== $client) {
                     $client->send($message);
