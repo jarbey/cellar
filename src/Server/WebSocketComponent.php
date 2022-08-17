@@ -11,8 +11,8 @@ class WebSocketComponent implements MessageComponentInterface
 	/** @var \SplObjectStorage */
 	private $clients;
 
-	/** @var string */
-	private $last_message;
+	/** @var array */
+	private $last_messages = [];
 
     /** @var LoggerInterface */
     private $logger;
@@ -34,9 +34,11 @@ class WebSocketComponent implements MessageComponentInterface
         $this->getLogger()->info('New client..');
 
 		$this->clients->attach($conn);
-		if ($this->last_message) {
-            $this->getLogger()->info('Send last message');
-			$conn->send($this->last_message);
+		if (count($this->last_messages)) {
+            $this->getLogger()->info('Send last messages');
+            foreach ($this->last_messages as $message) {
+                $conn->send($message);
+            }
 		}
 	}
 
@@ -55,7 +57,9 @@ class WebSocketComponent implements MessageComponentInterface
 	{
         if ($message) {
             $this->getLogger()->info('Message : ' . $message);
-            $this->last_message = $message;
+            $json_data = json_decode($message);
+
+            $this->last_messages[$json_data['db_id']] = $message;
             foreach ($this->clients as $client) {
                 if ($from !== $client) {
                     $client->send($message);
