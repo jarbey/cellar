@@ -114,7 +114,10 @@
 
                         if (sensors_definition[sid] == null) continue;
 
-                        $('#sensor_' + sid + '_temperature_value').html(sensor_data.temperature + '°C');
+                        const temp = Math.round(sensor_data.temperature * 10) / 10;
+                        const humi = Math.round(sensor_data.humidity * 10) / 10;
+
+                        $('#sensor_' + sid + '_temperature_value').html(temp + '°C');
                         var state_sel = $('#sensor_' + sid + '_temperature_state');
                         state_sel.removeClass().addClass('card text-white');
                         var limit = sensors_definition[sid].temperature_limit;
@@ -126,7 +129,7 @@
                             state_sel.addClass('bg-success');
                         }
 
-                        $('#sensor_' + sid + '_humidity_value').html(sensor_data.humidity + '%');
+                        $('#sensor_' + sid + '_humidity_value').html(humi + '%');
                         var state_sel = $('#sensor_' + sid + '_humidity_state');
                         state_sel.removeClass().addClass('card text-white');
                         limit = sensors_definition[sid].humidity_limit;
