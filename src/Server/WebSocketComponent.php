@@ -34,7 +34,8 @@ class WebSocketComponent implements MessageComponentInterface
         $this->getLogger()->info('New client..');
 
 		$this->clients->attach($conn);
-		if ($this->last_message != '') {
+		if ($this->last_message) {
+            $this->getLogger()->info('Send last message');
 			$conn->send($this->last_message);
 		}
 	}
