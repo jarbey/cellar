@@ -53,13 +53,15 @@ class WebSocketComponent implements MessageComponentInterface
 
 	public function onMessage(ConnectionInterface $from, $message)
 	{
-        $this->getLogger()->info('Message : ' . $message);
+        if ($message) {
+            $this->getLogger()->info('Message : ' . $message);
+            $this->last_message = $message;
+            foreach ($this->clients as $client) {
+                if ($from !== $client) {
+                    $client->send($message);
+                }
+            }
+        }
 
-		$this->last_message = $message;
-		foreach ($this->clients as $client) {
-			if ($from !== $client) {
-				$client->send($message);
-			}
-		}
 	}
 }

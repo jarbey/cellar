@@ -89,6 +89,7 @@ class ApiController extends FOSRestController {
 		try {
 			$this->rrd_manager->updateArchive($db, $sensor_data_group, $date);
 
+            $sensor_data_group->setDbId($db->getId());
             $webFrontManager->sendData($sensor_data_group);
 
 			$view = $this->view(new ApiResult(ApiResult::OK, ''), 200);

@@ -21,6 +21,12 @@ class SensorDataGroup {
 	 */
 	private $sensor_data;
 
+    /**
+     * @var int
+     * @Groups({"updateSensorData"})
+     */
+    private $db_id;
+
 	/**
 	 * SensorDataGroup constructor.
 	 * @param \DateTime $date
@@ -64,4 +70,22 @@ class SensorDataGroup {
 
 		return $this;
 	}
+
+    /**
+     * @return int
+     */
+    public function getDbId()
+    {
+        return $this->db_id;
+    }
+
+    /**
+     * @param int $db_id
+     * @return SensorDataGroup
+     */
+    public function setDbId(int $db_id)
+    {
+        $this->db_id = $db_id;
+        return $this;
+    }
 }
